@@ -1,0 +1,41 @@
+server:
+  ssl:
+    key-store: keystore.p12
+    key-store-type: PKCS12
+    key-store-password: 123456
+    key-alias: bns-ssl
+  port: 8443
+#
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
+    username: ownwear
+    password: ow1234
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            client-id: 603118660853659
+            client-secret: ed5da6393cd3c33bfff415fe07603961
+
+
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update #create update none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
