@@ -3,16 +3,15 @@ package com.ownwear.app.model;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Data
 public class User {
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
@@ -27,4 +26,12 @@ public class User {
     private String instaId;
     private String pinterestId;
     private String twitterId;
+
+    @OneToMany
+    @JoinColumn(name = "ID")
+    private Set<Alert> alerts;
+    private Set<Post> posts;
+    private Set<LikePost> likePosts;
+    private Set<Comment> comments;
+    private Set<Follow> follows;
 }
