@@ -23,7 +23,7 @@ public class Post {
 
     @OneToMany
     @JoinColumn(name = "POSTNO")
-    private Set<LikePost> postLikes;
+    private Set<LikePost> likePosts;
     private Set<Comment> comments;
     private Set<PostHashTag> postHashTags;
 }
