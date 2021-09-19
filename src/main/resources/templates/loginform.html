@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>loginform</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <h2>loginform</h2>
@@ -16,6 +17,18 @@
 </form>
 <a href="javascript:;" class="btn_social" data-social="facebook">페이스북 로그인</a><br/>
 <script>
+   /* const responseGoogle = async (response) => {
+        console.log(1, response);
+        let jwtToken = await Axios.post(
+            "http://localhost:8080/oauth/jwt/facebook",
+            JSON.stringify(response),
+            // config
+        );
+        if (jwtToken.status === 200) {
+            console.log(2, jwtToken.data);
+            localStorage.setItem("jwtToken", jwtToken.data);
+        }
+    };*/
     let socials = document.getElementsByClassName("btn_social");
     for (let social of socials) {
         social.addEventListener('click', function () {

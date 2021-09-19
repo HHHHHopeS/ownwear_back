@@ -1,38 +1,52 @@
 package com.ownwear.app.model;
 
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Data
 public class User {
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
     private String password;
-    private String useremail;
+    private String email;
     private String role;
     @CreationTimestamp
     private Timestamp rdate;
+
+    //facebook
+    private String provider;
+    private String providerId;
+    private boolean isVerified=true;
+
     private String sex;
     private String height;
-
     private String instaId;
     private String pinterestId;
     private String twitterId;
 
-    @OneToMany
-    @JoinColumn(name = "ID")
-    private Set<Alert> alerts;
-    private Set<Post> posts;
-    private Set<LikePost> likePosts;
-    private Set<Comment> comments;
-    private Set<Follow> follows;
+    @Builder
+    public User(String username, String password, String email, String role, Timestamp rdate, String provider, String providerId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.rdate = rdate;
+        this.provider = provider;
+        this.providerId= providerId;
+        this.isVerified = false;
+    }
+
+    public User() {
+
+    }
 }
-//aeijfoawejfoawejfoawejf
