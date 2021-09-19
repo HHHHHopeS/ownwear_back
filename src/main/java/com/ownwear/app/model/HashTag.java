@@ -1,3 +1,4 @@
+/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -17,4 +18,4 @@ public class HashTag {
     @OneToMany
     @JoinColumn(name = "HASHTAG")
     private Set<PostHashTag> postHashTags;
-}
+}*/

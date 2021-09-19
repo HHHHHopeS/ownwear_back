@@ -1,3 +1,4 @@
+/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -11,3 +12,4 @@ public class Brand {
     @Column(name = "BRAND", nullable = false, unique = true)
     private String brand;
 }
+*/

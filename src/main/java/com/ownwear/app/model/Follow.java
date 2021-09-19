@@ -1,3 +1,4 @@
+/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -19,3 +20,4 @@ public class Follow {
     @Column(name = "FLWN_ID", nullable = false)
     private long flwn_id;
 }
+*/

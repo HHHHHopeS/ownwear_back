@@ -1,3 +1,4 @@
+/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -13,3 +14,4 @@ public class PostHashTag {
     @Column(name = "HASHTAG", nullable = false, length = 100, unique = true)
     private String hashtag;
 }
+*/

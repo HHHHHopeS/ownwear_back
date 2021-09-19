@@ -1,3 +1,4 @@
+/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -27,3 +28,4 @@ public class Post {
     private Set<Comment> comments;
     private Set<PostHashTag> postHashTags;
 }
+*/
