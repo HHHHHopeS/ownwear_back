@@ -1,6 +1,11 @@
 package com.ownwear.app.config;
 
-import com.ownwear.app.config.oauth.CustomOAuth2UserService;
+import com.ownwear.app.config.jwt.JwtAuthenticationFilter;
+import com.ownwear.app.config.jwt.JwtAuthorizationFilter;
+import com.ownwear.app.config.oauth.OAuth2SuccessHandler;
+import com.ownwear.app.config.oauth.PrincipalOAuth2UserService;
+import com.ownwear.app.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +13,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,29 +30,46 @@ import static com.ownwear.app.config.oauth.SocialType.FACEBOOK;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private PrincipalOAuth2UserService principalOAuth2UserService;
 
+    @Autowired
+    private UserRepository userRepository;
 
+    @Autowired
+    private OAuth2SuccessHandler successHandler;
+
+    private final CorsFilter corsFilter;
+//cjvbfwfwyg_1631086512@tfbnw.net   100059341094395
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http.addFilterBefore(new MyFilter1(), SecurityContextPersistenceFilter.class); //시큐리티 컨피규어 이전에 실행
         http.csrf().disable();
-        http.authorizeRequests()  .antMatchers("/","/joinform/**", "/test/**","/oauth2/**", "/login/**", "/loginform/**", "/css/**",
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))//필수 파라미터 AuthenticationManager
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(),userRepository))//필수 파라미터 AuthenticationManager
+                .addFilter(corsFilter)
+                .authorizeRequests().antMatchers("/", "/test/**","/oauth2/**","/join/**","/joinform/**", "/login/**", "/loginform/**","/replace/**","/css/**",
                 "/images/**", "/js/**", "/console/**", "/favicon.ico/**","/accounts/login").permitAll()
                 .antMatchers("/facebook").hasAuthority(FACEBOOK.getRoleType())
                 .antMatchers("/user/**").authenticated()
                 .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
-            .and()
-                .formLogin()
-                .loginPage("/loginform")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
+//            .and()
+//                .formLogin()
+//                .loginProcessingUrl("/login")
             .and()
                 .oauth2Login()
                 .loginPage("/loginform")
-                .userInfoEndpoint().userService(new CustomOAuth2UserService());
+                .successHandler(successHandler)
+                .userInfoEndpoint().userService(principalOAuth2UserService);
 
     }
 //    @Bean
@@ -64,22 +88,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+    }}
+/*
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository(
             OAuth2ClientProperties oAuth2ClientProperties
-           /* @Value("${custom.oauth2.kakao.client-id}") String kakaoClientId,
+           */
+/* @Value("${custom.oauth2.kakao.client-id}") String kakaoClientId,
             @Value("${custom.oauth2.kakao.client-secret}") String kakaoClientSecret,
             @Value("${custom.oauth2.naver.client-id}") String naverClientId,
-            @Value("${custom.oauth2.naver.client-secret}") String naverClientSecret*/) {
+            @Value("${custom.oauth2.naver.client-secret}") String naverClientSecret*//*
+) {
         List<ClientRegistration> registrations = oAuth2ClientProperties
                 .getRegistration().keySet().stream()
                 .map(client -> getRegistration(oAuth2ClientProperties, client))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-      /*  registrations.add(CustomOAuth2Provider.KAKAO.getBuilder("kakao")
+      */
+/*  registrations.add(CustomOAuth2Provider.KAKAO.getBuilder("kakao")
                 .clientId(kakaoClientId)
                 .clientSecret(kakaoClientSecret)
                 .jwkSetUri("temp")
@@ -89,20 +117,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .clientId(naverClientId)
                 .clientSecret(naverClientSecret)
                 .jwkSetUri("temp")
-                .build());*/
+                .build());*//*
+
         return new InMemoryClientRegistrationRepository(registrations);
     }
 
 
     private ClientRegistration getRegistration(OAuth2ClientProperties clientProperties, String client) {
-       /* if("google".equals(client)) {
+       */
+/* if("google".equals(client)) {
             OAuth2ClientProperties.Registration registration = clientProperties.getRegistration().get("google");
             return CommonOAuth2Provider.GOOGLE.getBuilder(client)
                     .clientId(registration.getClientId())
                     .clientSecret(registration.getClientSecret())
                     .scope("email", "profile")
                     .build();
-        }*/
+        }*//*
+
         if("facebook".equals(client)) {
             OAuth2ClientProperties.Registration registration = clientProperties.getRegistration().get("facebook");
             return CommonOAuth2Provider.FACEBOOK.getBuilder(client)
@@ -116,3 +147,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return null;
     }
 }
+*/
