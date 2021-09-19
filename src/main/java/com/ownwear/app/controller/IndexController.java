@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 //@ResponseBody
-@Controller
+@RestController
 public class IndexController {
 
     @Autowired
@@ -32,9 +32,9 @@ public class IndexController {
     }
 
     @GetMapping("/replace")
-    public @ResponseBody String replace(HttpServletRequest http) {
-
-        return "<form method='post' action='/replace'><input type='text' name='jwtToken'/> <button>입력</button></form>";
+    public String replace(HttpServletRequest http) {
+        String token = (String) http.getSession().getAttribute("token");
+         return token;
     }
 
     @PostMapping("/replace")

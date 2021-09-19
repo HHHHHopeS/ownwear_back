@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
@@ -67,11 +69,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .loginProcessingUrl("/login")
             .and()
                 .oauth2Login()
-                .loginPage("/loginform")
                 .successHandler(successHandler)
                 .userInfoEndpoint().userService(principalOAuth2UserService);
 
     }
+
 //    @Bean
 //    @Override
 //    protected UserDetailsService userDetailsService() {
@@ -88,7 +90,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }}
+    }
+}
 /*
 
     @Bean

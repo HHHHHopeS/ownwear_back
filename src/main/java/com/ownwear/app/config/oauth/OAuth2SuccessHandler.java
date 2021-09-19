@@ -7,6 +7,7 @@ import com.ownwear.app.model.User;
 import com.ownwear.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -50,5 +51,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     .sign(Algorithm.HMAC512("hopes"));
             response.addHeader("Authorization","Bearer "+jwtToken);
         }
+        request.getSession().setAttribute("token",jwtToken);
+        response.sendRedirect("/replace");
     }
 }
