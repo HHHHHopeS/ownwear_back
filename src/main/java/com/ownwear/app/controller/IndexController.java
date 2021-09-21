@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 //@ResponseBody
-@RestController
+@Controller
 public class IndexController {
 
     @Autowired

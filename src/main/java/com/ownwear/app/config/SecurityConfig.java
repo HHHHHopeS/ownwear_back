@@ -4,29 +4,21 @@ import com.ownwear.app.config.jwt.JwtAuthenticationFilter;
 import com.ownwear.app.config.jwt.JwtAuthorizationFilter;
 import com.ownwear.app.config.oauth.OAuth2SuccessHandler;
 import com.ownwear.app.config.oauth.PrincipalOAuth2UserService;
+import com.ownwear.app.config.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.ownwear.app.filter.TokenAuthenticationFilter;
 import com.ownwear.app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.ownwear.app.config.oauth.SocialType.FACEBOOK;
 
@@ -38,39 +30,70 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PrincipalOAuth2UserService principalOAuth2UserService;
 
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
+    }
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private OAuth2SuccessHandler successHandler;
 
+
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter();
+    }
+
     private final CorsFilter corsFilter;
 //cjvbfwfwyg_1631086512@tfbnw.net   100059341094395
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.addFilterBefore(new MyFilter1(), SecurityContextPersistenceFilter.class); //시큐리티 컨피규어 이전에 실행
+        http.addFilterBefore(tokenAuthenticationFilter(), SecurityContextPersistenceFilter.class); //시큐리티 컨피규어 이전에 실행
         http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .formLogin().disable()
-                .httpBasic().disable()
+        http
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                .formLogin()
+                    .disable()
+                .httpBasic()
+                    .disable()
+                .exceptionHandling()
+                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                    .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))//필수 파라미터 AuthenticationManager
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(),userRepository))//필수 파라미터 AuthenticationManager
                 .addFilter(corsFilter)
-                .authorizeRequests().antMatchers("/", "/test/**","/oauth2/**","/join/**","/joinform/**", "/login/**", "/loginform/**","/replace/**","/css/**",
-                "/images/**", "/js/**", "/console/**", "/favicon.ico/**","/accounts/login").permitAll()
-                .antMatchers("/facebook").hasAuthority(FACEBOOK.getRoleType())
-                .antMatchers("/user/**").authenticated()
-                .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .anyRequest().authenticated()
-//            .and()
-//                .formLogin()
-//                .loginProcessingUrl("/login")
-            .and()
-                .oauth2Login()
-                .successHandler(successHandler)
-                .userInfoEndpoint().userService(principalOAuth2UserService);
+                .authorizeRequests()
+                    .antMatchers("/", "/test/**","/oauth2/**","/join/**","/joinform/**", "/login/**", "/loginform/**","/replace/**","/css/**",
+                        "/images/**", "/js/**", "/console/**", "/favicon.ico/**","/accounts/login")
+                        .permitAll()
+                    .antMatchers("/facebook")
+                        .hasAuthority(FACEBOOK.getRoleType())
+                    .antMatchers("/user/**")
+                        .authenticated()
+                    .antMatchers("/manager/**")
+                        .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+                    .antMatchers("/admin/**")
+                        .access("hasRole('ROLE_ADMIN')")
+                    .anyRequest()
+                        .authenticated()
+                .and()
+            .oauth2Login()
+                .redirectionEndpoint()
+                    .baseUri("/oauth2/callback/*") //상관없음
+                    .and()
+                .userInfoEndpoint()
+                    .userService(principalOAuth2UserService)
+                    .and()
+                .authorizationEndpoint()
+                    .baseUri("/oauth2/authorize")
+                    .authorizationRequestRepository(cookieAuthorizationRequestRepository())//https://127.0.0.1:8443/oauth2/authorization/facebook 시 제일 처음 접근함
+                    .and()
+                .successHandler(successHandler);
 
     }
 

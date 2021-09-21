@@ -1,6 +1,7 @@
 package com.ownwear.app.config.auth;
 
 import com.ownwear.app.config.auth.PrincipalDetails;
+import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.model.User;
 import com.ownwear.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 //시큐리티에서 loginProcessUrl("/login")
 //login 요청이 오면 자동으로 UserDetailsService 타입으로 IoC되어있는 loadByUsername 함수 호출
@@ -25,7 +27,8 @@ public class PrincipalDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("##PrincipalDetailsService 진입");
         System.out.println("##PrincipalDetailsService load : " + username);
-        User user = userRepository.findByUsername(username); //스프링 시큐리티에서 리턴값을 User로 변환할수 없기떄문에 변환
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found with username : " + username)); //스프링 시큐리티에서 리턴값을 User로 변환할수 없기떄문에 변환
         System.out.println("##PrincipalDetailsService 유저 : "+user);
         if (user != null) {
             return new PrincipalDetails(user);
@@ -38,6 +41,15 @@ public class PrincipalDetailsService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         return new User(User.getEmail(), User.getPassword(), authorities);//User는 userDetails 를 implements 중이라 가능
         */
+
+    @Transactional
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id)
+        );
+
+        return new PrincipalDetails(user);
+    }
 
 
 
