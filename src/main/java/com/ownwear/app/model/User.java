@@ -4,10 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -15,7 +12,9 @@ import java.sql.Timestamp;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "userno")
     private long id;
+    private String userImg;
     private String username;
     private String password;
     private String email;
@@ -47,7 +46,6 @@ public class User {
     }
 
     public User() {
-
+        this.setRole("ROLE_USER");
     }
-
 }
