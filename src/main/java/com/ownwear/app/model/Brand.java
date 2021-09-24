@@ -1,4 +1,4 @@
-/*
+package com.ownwear.app.model;/*
 package com.ownwear.app.model;
 
 import lombok.Data;
