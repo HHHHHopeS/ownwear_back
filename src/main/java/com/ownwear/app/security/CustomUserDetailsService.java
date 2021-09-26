@@ -3,6 +3,7 @@ package com.ownwear.app.security;
 
 import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.model.User;
+import com.ownwear.app.repository.CurrentUsersRepository;
 import com.ownwear.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CurrentUsersRepository currentUsersRepository;
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email)
@@ -29,8 +33,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email : " + email)
         );
+        System.out.println("##CustomUserDetailsService loadUserByUsername email : "+ email);
+        if (user!=null){
+            return UserPrincipal.create(user);
+        }
 
-        return UserPrincipal.create(user);
+
+        return null;
     }
 
     @Transactional

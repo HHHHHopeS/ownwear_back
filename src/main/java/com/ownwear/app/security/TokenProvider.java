@@ -1,9 +1,12 @@
 package com.ownwear.app.security;
 
 import com.ownwear.app.config.AppProperties;
+import com.ownwear.app.model.CurrentUsers;
+import com.ownwear.app.repository.CurrentUsersRepository;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,10 @@ import java.util.Date;
 
 @Service
 public class TokenProvider {
+
+
+    @Autowired
+    private CurrentUsersRepository currentUsersRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
@@ -25,13 +32,16 @@ public class TokenProvider {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
-
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
+        UserPrincipal user = (UserPrincipal)authentication.getPrincipal();
+        CurrentUsers currentUsers = new CurrentUsers(user.getId(), token);
+        currentUsersRepository.save(currentUsers);
+        return token;
     }
 
     public Long getUserIdFromToken(String token) {

@@ -11,16 +11,15 @@ import javax.persistence.Id;
 public class CurrentUsers {
 
     @Id
-    @Column(name = "userno")
-    private long userid;
+    private long id;
 
     private String token;
 
     public CurrentUsers() {
     }
 
-    public CurrentUsers(long userid, String token) {
-        this.userid = userid;
+    public CurrentUsers(long id, String token) {
+        this.id = id;
         this.token = token;
     }
 }

@@ -28,12 +28,14 @@ public class UserController {
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest request) {
+        System.out.println("##userme user: "+ userPrincipal);
+        System.out.println("##userme getId: "+userPrincipal.getId());
         User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
         Optional<CurrentUsers> byId = currentUsersRepository.findById(user.getId());
         if (byId.isPresent()) {
             CurrentUsers currentUsers = byId.get();
-            System.out.println("user/me currnet token: " + currentUsers.getToken());
+            System.out.println("##user/me currnet token: " + currentUsers.getToken());
             String requestToken = request.getHeader("Authorization");
             if (requestToken != null && requestToken.startsWith("Bearer")) {
                 requestToken = requestToken.substring(7);
@@ -45,6 +47,7 @@ public class UserController {
             }
             return null;
         }
+        System.out.println(byId.get());
         return null;
     }
 }

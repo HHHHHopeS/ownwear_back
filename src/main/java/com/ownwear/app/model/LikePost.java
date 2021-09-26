@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Data
 public class LikePost {
     @Id
-    private int postno;
+    private long postno;
     @Column(name = "ID", nullable = false)
     private long id;
 }

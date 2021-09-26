@@ -32,8 +32,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    @Autowired
-    private CurrentUsersRepository currentUsersRepository;
 
 
     @Autowired
@@ -69,9 +67,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String token = tokenProvider.createToken(authentication);
 
-        UserPrincipal user = (UserPrincipal)authentication.getPrincipal();
-        CurrentUsers currentUsers = new CurrentUsers(user.getId(), token);
-        currentUsersRepository.save(currentUsers);
         System.out.println("success token: "+ token);
 
         return UriComponentsBuilder.fromUriString(targetUrl)

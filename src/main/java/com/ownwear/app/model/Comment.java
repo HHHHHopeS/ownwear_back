@@ -11,9 +11,9 @@ import java.sql.Timestamp;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int commentno;
+    private long commentno;
     @Column(name = "POSTNO", nullable = false)
-    private int postno;
+    private long postno;
     @Column(name = "ID", nullable = false)
     private long id;
     @Column(name = "CONTENT", nullable = false)
