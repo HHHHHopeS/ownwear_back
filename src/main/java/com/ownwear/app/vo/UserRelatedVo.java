@@ -1,4 +1,4 @@
-package com.ownwear.app.dto;
+package com.ownwear.app.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

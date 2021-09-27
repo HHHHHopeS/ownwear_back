@@ -58,9 +58,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             System.out.println(user);
             if(!user.getProvider().equals(oAuth2UserRequest.getClientRegistration().getRegistrationId())) {
                 System.out.println("이메일은 있는데 페이스북이 아님");
-                throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
+                /*throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
                         user.getProvider() + " account. Please use your " + user.getProvider() +
-                        " account to login.");
+                        " account to login.");*/
+                userRepository.save(user);
             }
             user = updateExistingUser(user, oAuth2UserInfo);
         } else { //없으면 회원가입
