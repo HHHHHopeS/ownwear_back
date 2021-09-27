@@ -1,3 +1,4 @@
+package com.ownwear.app.model;/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -17,4 +18,4 @@ public class Search {
     @CreationTimestamp
     @Column(name = "SRCHDATE", nullable = false)
     private Timestamp srchdate;
-}
+}*/

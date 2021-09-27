@@ -1,3 +1,4 @@
+package com.ownwear.app.model;/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -9,12 +10,12 @@ import javax.persistence.OneToMany;
 import java.util.Set;
 
 @Entity
-@Data
-public class HashTag {
+@Data*/
+public class HashTag {/*
     @Id
     private String hashtag;
 
     @OneToMany
     @JoinColumn(name = "HASHTAG")
-    private Set<PostHashTag> postHashTags;
+    private Set<PostHashTag> postHashTags;*/
 }

@@ -2,13 +2,18 @@ package com.ownwear.app.repository;
 
 import com.ownwear.app.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-//CRUD함수를 jpa에서 들고이따.
-//@Repository 가 없어도 jpaRepository가 상속을 해서 안해도됨
-public interface UserRepository extends JpaRepository<User,Long> {
-    //findBy 규칙  -> Username문법
-    //select * from user where username= ?
-    User findByUsername(String username);//Jpa Query Method
+import java.util.Optional;
 
-//    public User findByUseremail(String useremail);
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String username);
+    Optional<User> findById(long id);
+
+
+    Boolean existsByEmail(String email);
+
 }

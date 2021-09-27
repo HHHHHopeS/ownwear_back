@@ -12,7 +12,7 @@ import java.util.Set;
 public class Post {
     @Id
     @Column(name = "POSTNO")
-    private int postno;
+    private long postno;
     private long id;
     @Column(name = "IMGDATA", nullable = false, length = 4000)
     private String imgdata;
@@ -20,10 +20,10 @@ public class Post {
     @Column(name = "RDATE", nullable = false)
     private Timestamp rdate;
     private Timestamp edate;
-
-    @OneToMany
-    @JoinColumn(name = "POSTNO")
-    private Set<LikePost> postLikes;
-    private Set<Comment> comments;
-    private Set<PostHashTag> postHashTags;
+//
+//    @OneToMany
+//    @JoinColumn(name = "POSTNO")
+//    private Set<LikePost> likePosts;
+//    private Set<Comment> comments;
+//    private Set<PostHashTag> postHashTags;
 }

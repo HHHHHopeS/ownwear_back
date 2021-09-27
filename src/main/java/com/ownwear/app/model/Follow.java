@@ -1,3 +1,4 @@
+package com.ownwear.app.model;/*
 package com.ownwear.app.model;
 
 import lombok.Data;
@@ -14,6 +15,9 @@ import javax.persistence.UniqueConstraint;
         columnNames = {"FLWD_ID", "FLWN_ID"}
 )})
 public class Follow {
+    @Column(name = "FLWD_ID", nullable = false)
     private long flwd_id;
+    @Column(name = "FLWN_ID", nullable = false)
     private long flwn_id;
 }
+*/
