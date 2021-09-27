@@ -1,7 +1,8 @@
-package com.ownwear.app.dto;
+package com.ownwear.app.vo;
 
 import com.ownwear.app.model.Comment;
 import com.ownwear.app.model.HashTag;
+import com.ownwear.app.model.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,14 +14,11 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostVo {
-    private long postno;
-    private long id;
-    private String imgdata;
-    private Timestamp rdate;
-    private Timestamp edate;
+    private Post postData;
     private int likecount;
     private ArrayList<HashTag> hashtags;
     private ArrayList<UserRelatedVo> userRelated;
     private ArrayList<Comment> comments;
+    private String username;
 
 }

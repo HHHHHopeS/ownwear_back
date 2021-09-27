@@ -1,40 +1,45 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.dto.PostVo;
+import com.ownwear.app.model.HashTag;
+import com.ownwear.app.repository.UserRepository;
+import com.ownwear.app.vo.PostVo;
 import com.ownwear.app.model.Comment;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.repository.CommentRepository;
 import com.ownwear.app.repository.PostRepository;
+import com.ownwear.app.vo.UserRelatedVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("detail")
+@RequestMapping("/detail")
 public class DetailController {
 
     @Autowired
     private PostRepository postRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    @PostMapping("get")
-    public PostVo getDetail(long postno){
+    @GetMapping("/{postno}")
+    public PostVo getDetail(@PathVariable("postno") Long postno){
+
         Optional<Post> byPostno = postRepository.findByPostno(postno);
         if (byPostno.isPresent()){
-            PostVo postVo = new PostVo();
             Post post = byPostno.get();
-            ArrayList<Comment> postComments = commentRepository.findByPostno(postno);
-            if (!postComments.isEmpty()){
+            System.out.println(userRepository.findById(post.getId()));
+            String username = userRepository.findById(post.getId()).get().getUsername();
+            int likecount = 1;
+            ArrayList<HashTag> hashtags = null;
+            ArrayList<UserRelatedVo> userRelated = null;
+            ArrayList<Comment> comments = commentRepository.findByPostno(postno);
 
-            }
-//            postVo.set
+            PostVo postVo = new PostVo(post,likecount,hashtags,userRelated,comments,username);
+            return postVo;
         }
         return null;
     }

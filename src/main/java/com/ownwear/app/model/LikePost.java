@@ -9,7 +9,7 @@ import javax.persistence.Id;
 @Entity
 @Data
 public class LikePost {
-    @Id
+    @Id //todo 좋아요 테이블에 프라이머리키가 있으면 안됨
     private long postno;
     @Column(name = "ID", nullable = false)
     private long id;
