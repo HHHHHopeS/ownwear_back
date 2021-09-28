@@ -1,46 +1,41 @@
 package com.ownwear.app.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.json.JSONObject;
+import org.json.JSONString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@TypeDef(
+        name = "json",
+        typeClass = JsonStringType.class
+)
 public class Post {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
-    private long post_id;
+    @Column(name = "POSTNO")
+    private long postno;
+    private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Column(name = "imgdata", nullable = false, length = 4000)
-    private String imgdata;
-
+    @Column(name = "IMGDATA", columnDefinition = "json",nullable = true)
+    @Type(type = "json")
+    private Map<String , Object> imgdata = new HashMap<>();
     @CreationTimestamp
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
+    @Column(name = "RDATE", nullable = false)
     private Timestamp rdate;
-
-    @UpdateTimestamp
     private Timestamp edate;
-
-    @OneToMany(mappedBy = "post")
-    private List<LikePost> likePost;
-
-    @OneToMany(mappedBy = "post")
-    private List<PostHashTag> posthashtag;
-
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comment;
+//
+//    @OneToMany
+//    @JoinColumn(name = "POSTNO")
+//    private Set<LikePost> likePosts;
+//    private Set<Comment> comments;
+//    private Set<PostHashTag> postHashTags;
 }
