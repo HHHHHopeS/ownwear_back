@@ -1,16 +1,31 @@
 package com.ownwear.app.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class LikePost {
+
     @Id //todo 좋아요 테이블에 프라이머리키가 있으면 안됨
-    private long postno;
-    @Column(name = "ID", nullable = false)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "likepost_id")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    @Column(name = "post_id", nullable = false)
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @Column(name = "user_id", nullable = false)
+    private User user;
+
 }
