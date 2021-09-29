@@ -1,6 +1,7 @@
 package com.ownwear.app.security;
 
 import com.ownwear.app.model.User;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Long id;
     private String email;
@@ -30,7 +32,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new UserPrincipal(
-                user.getId(),
+                user.getUser_id(),
                 user.getEmail(),
                 user.getPassword(),
                 authorities

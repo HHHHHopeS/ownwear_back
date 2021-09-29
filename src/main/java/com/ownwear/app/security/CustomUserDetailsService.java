@@ -22,9 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    CurrentUsersRepository currentUsersRepository;
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email)

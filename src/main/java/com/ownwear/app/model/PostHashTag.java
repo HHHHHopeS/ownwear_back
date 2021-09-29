@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class PostHashTag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "posthashtag_id")
     private long posthashtag_id;
 

@@ -25,8 +25,8 @@ public class CurrentUsers {
 
     }
 
-    public CurrentUsers(long id, String token) {
-        this.currentusers_id = id;
+    public CurrentUsers(User user, String token) {
+        this.user = user;
         this.token = token;
     }
 }

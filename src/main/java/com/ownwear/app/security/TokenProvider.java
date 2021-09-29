@@ -2,7 +2,9 @@ package com.ownwear.app.security;
 
 import com.ownwear.app.config.AppProperties;
 import com.ownwear.app.model.CurrentUsers;
+import com.ownwear.app.model.User;
 import com.ownwear.app.repository.CurrentUsersRepository;
+import com.ownwear.app.repository.UserRepository;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,8 @@ import java.util.Date;
 @Service
 public class TokenProvider {
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CurrentUsersRepository currentUsersRepository;
@@ -38,8 +42,10 @@ public class TokenProvider {
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
-        UserPrincipal user = (UserPrincipal)authentication.getPrincipal();
-        CurrentUsers currentUsers = new CurrentUsers(user.getId(), token);
+
+        System.out.println("##tokenprovider userPrincipal Id : "+userPrincipal.getId());
+        User user = userRepository.findById(userPrincipal.getId()).get();
+        CurrentUsers currentUsers = new CurrentUsers(user, token);
         currentUsersRepository.save(currentUsers);
         return token;
     }

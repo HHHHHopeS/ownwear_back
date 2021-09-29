@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CurrentUsersRepository extends JpaRepository<CurrentUsers, Long> {
 
-    Optional<CurrentUsers> findById(long id);
+    Optional<CurrentUsers> findByUser(User user);
 
 
 }

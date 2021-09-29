@@ -27,6 +27,6 @@ public class Alert {
     private Timestamp alertdate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user")
     private User user;
 }

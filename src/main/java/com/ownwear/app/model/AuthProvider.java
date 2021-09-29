@@ -1,6 +1,6 @@
 package com.ownwear.app.model;
 
-public enum  AuthProvider {
+public enum AuthProvider {
     local,
     facebook,
     google,
