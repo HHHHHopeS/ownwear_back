@@ -1,7 +1,6 @@
 package com.ownwear.app.controller;
 
 import com.ownwear.app.exception.BadRequestException;
-import com.ownwear.app.model.AuthProvider;
 import com.ownwear.app.model.User;
 import com.ownwear.app.payload.ApiResponse;
 import com.ownwear.app.payload.AuthResponse;
@@ -16,7 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;

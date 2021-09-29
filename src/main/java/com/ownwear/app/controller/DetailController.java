@@ -8,19 +8,17 @@ import com.ownwear.app.model.Post;
 import com.ownwear.app.repository.CommentRepository;
 import com.ownwear.app.repository.PostRepository;
 import com.ownwear.app.vo.UserRelatedVo;
-import org.apache.tomcat.util.json.JSONParser;
-import org.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/detail")
+@Slf4j
 public class DetailController {
 
     @Autowired
@@ -30,43 +28,41 @@ public class DetailController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/{postno}")
-    public PostVo getDetail(@PathVariable("postno") long postno){
-
-        Optional<Post> byPostno = postRepository.findByPostno(postno);
-
+    @GetMapping("/{post_id}")
+    public PostVo getDetail(@PathVariable("post_id") Long post_id){
+        log.info("들어온값 {}", post_id);
+        Optional<Post> byPostno = postRepository.findById(post_id);
         if (byPostno.isPresent()){
-
             Post post = byPostno.get();
+            System.out.println(userRepository.findById(post.getPost_id()));
 
-            Map<String, Object> imgdata = post.getImgdata();
-            imgdata= new HashMap<>();
-            imgdata.put("asd","Asd");
-            imgdata.put("assd","Assd");
-                    post.setImgdata(imgdata);
-            System.out.println(userRepository.findById(post.getId()));
-
-            String username = userRepository.findById(post.getId()).get().getUsername();
-
-            postRepository.save(post);
+            String username = userRepository.findById(post.getPost_id()).get().getUsername();
             int likecount = 1;
-
             ArrayList<HashTag> hashtags = null;
-
             ArrayList<UserRelatedVo> userRelated = null;
-
-            ArrayList<Comment> comments = commentRepository.findByPostno(postno);
+            ArrayList<Comment> comments = commentRepository.findByPost(post);
 
             PostVo postVo = new PostVo(post,likecount,hashtags,userRelated,comments,username);
-
             return postVo;
         }
         return null;
     }
 
-    @PostMapping("/save")
-    public PostVo savePost(@RequestBody PostVo postVo){
+    @PostMapping("/create")
+    public Post createPost(@RequestBody Post post){
+        Optional<Post> byId = postRepository.findById(post.getPost_id());
+        if (byId.isPresent()){
+            return null;
+        }
 
-        return postVo;
+        return postRepository.save(post);
+    }
+    @PostMapping("/update")
+    public Post updatePost(@RequestBody Post post){
+        Optional<Post> byId = postRepository.findById(post.getPost_id());
+        Timestamp rdate = byId.get().getRdate();
+        post.setEdate(new Timestamp(System.currentTimeMillis()));
+        post.setRdate(rdate);
+        return postRepository.save(post);
     }
 }

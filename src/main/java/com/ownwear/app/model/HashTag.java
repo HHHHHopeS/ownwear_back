@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,7 +16,7 @@ public class HashTag {
     @Id
     @Column(name = "hashtag_id")
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String hashtag_id;
+    private String hashtag;
 
     @Column(nullable = false, unique = true)
     private String hashtagname;
