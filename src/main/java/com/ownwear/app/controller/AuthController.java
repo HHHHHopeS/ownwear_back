@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/replace")
     public boolean replaceUser(@RequestBody User user) {
-        user.setVerified(true);
+        user.setIsverified(true);
         userRepository.save(user);
         return true;
     }

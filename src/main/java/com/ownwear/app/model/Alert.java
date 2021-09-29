@@ -14,7 +14,7 @@ public class Alert {
     @Id
     @GeneratedValue
     @Column(name = "Alert_id")
-    private long id;
+    private long alert_id;
 
     @Column(name = "ALERTCONTENT", nullable = false, length = 500)
     private String alertcontent;

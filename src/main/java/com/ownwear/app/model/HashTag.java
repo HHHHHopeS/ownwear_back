@@ -1,8 +1,6 @@
 package com.ownwear.app.model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,16 +10,17 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HashTag {
 
     @Id
     @Column(name = "hashtag_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private String hashtag_id;
 
     @Column(nullable = false, unique = true)
-    private String hastagname;
+    private String hashtagname;
 
-    @OneToMany(mappedBy = "posthashtag")
-    private List<PostHashTag> postHashtag = new ArrayList<>();
+    @OneToMany(mappedBy = "hashtag")
+    private List<PostHashTag> postHashTag = new ArrayList<>();
 }

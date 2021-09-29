@@ -8,14 +8,17 @@ import com.ownwear.app.model.Post;
 import com.ownwear.app.repository.CommentRepository;
 import com.ownwear.app.repository.PostRepository;
 import com.ownwear.app.vo.UserRelatedVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/detail")
+@Slf4j
 public class DetailController {
 
     @Autowired
@@ -25,10 +28,10 @@ public class DetailController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/{postno}")
-    public PostVo getDetail(@PathVariable("postno") Long postno){
-
-        Optional<Post> byPostno = postRepository.findByPostno(postno);
+    @GetMapping("/{id}")
+    public PostVo getDetail(@PathVariable("id") Long id){
+        log.info("들어온값 {}", id);
+        Optional<Post> byPostno = postRepository.findById(id);
         if (byPostno.isPresent()){
             Post post = byPostno.get();
             System.out.println(userRepository.findById(post.getId()));
@@ -36,7 +39,7 @@ public class DetailController {
             int likecount = 1;
             ArrayList<HashTag> hashtags = null;
             ArrayList<UserRelatedVo> userRelated = null;
-            ArrayList<Comment> comments = commentRepository.findByPostno(postno);
+            ArrayList<Comment> comments = commentRepository.findBypost(post);
 
             PostVo postVo = new PostVo(post,likecount,hashtags,userRelated,comments,username);
             return postVo;

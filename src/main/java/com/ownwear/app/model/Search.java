@@ -16,7 +16,7 @@ public class Search {
 
     @Id
     @Column(name = "srch_id", nullable = false, length = 100)
-    private String id;
+    private String srch_id;
 
     @Column(name = "srchcategory", nullable = false, length = 100)
     private String srchcategory;
