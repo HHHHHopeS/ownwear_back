@@ -1,5 +1,6 @@
 package com.ownwear.app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -28,7 +29,7 @@ public class Post {
     private String imgdata;
 
     @CreationTimestamp
-    @Column(name = "rdate", nullable = false)
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")
     private Timestamp rdate;
 
     @UpdateTimestamp
