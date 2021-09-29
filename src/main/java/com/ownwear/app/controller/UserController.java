@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
@@ -32,22 +31,27 @@ public class UserController {
         System.out.println("##userme getId: "+userPrincipal.getId());
         User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
-        Optional<CurrentUsers> byId = currentUsersRepository.findById(user.getId());
-        if (byId.isPresent()) {
-            CurrentUsers currentUsers = byId.get();
-            System.out.println("##user/me currnet token: " + currentUsers.getToken());
-            String requestToken = request.getHeader("Authorization");
-            if (requestToken != null && requestToken.startsWith("Bearer")) {
-                requestToken = requestToken.substring(7);
-            }
-            System.out.println("request token: " + requestToken);
+        System.out.println(user);
+        Optional<CurrentUsers> byUser = currentUsersRepository.findByUser(user);
+        String requestToken = request.getHeader("Authorization");
+        if (requestToken != null && requestToken.startsWith("Bearer")) {
+            requestToken = requestToken.substring(7);
+        }
+        if (byUser.isPresent()) {
+            CurrentUsers currentUsers = byUser.get();
+            System.out.println("##user/me current token: " + currentUsers.getToken());
+            System.out.println("##request token: " + requestToken);
             if (currentUsers.getToken().equals(requestToken)) {
                 System.out.println("일치");
                 return user;
             }
             return null;
+        }else {
+            System.out.println("##최초접속 user_id : "+user.getUser_id());
+            CurrentUsers currentUsers = new CurrentUsers(user,requestToken);
+            currentUsersRepository.save(currentUsers);
         }
-        System.out.println(byId.get());
+
         return null;
     }
 }

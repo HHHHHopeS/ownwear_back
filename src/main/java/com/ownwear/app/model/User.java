@@ -82,6 +82,4 @@ public class User {
     @OneToMany(mappedBy = "from")
     private List<Follow> following;
 
-    @OneToOne
-    private CurrentUsers currentUser;
 }

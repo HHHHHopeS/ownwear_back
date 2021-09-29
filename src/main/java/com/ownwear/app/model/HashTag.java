@@ -15,8 +15,8 @@ public class HashTag {
 
     @Id
     @Column(name = "hashtag_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String hashtag_id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String hashtag;
 
     @Column(nullable = false, unique = true)
     private String hashtagname;
