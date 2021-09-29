@@ -1,23 +1,29 @@
-package com.ownwear.app.model;/*
 package com.ownwear.app.model;
 
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "Follow", uniqueConstraints = {@UniqueConstraint(
         name = "Follow_id_UNIQUE",
-        columnNames = {"FLWD_ID", "FLWN_ID"}
+        columnNames = {"from_user", "to_user"}
 )})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow {
-    @Column(name = "FLWD_ID", nullable = false)
-    private long flwd_id;
-    @Column(name = "FLWN_ID", nullable = false)
-    private long flwn_id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "follow_id")
+    private long follow_id;
+
+    @ManyToOne
+    @JoinColumn(name = "from_user")
+    private User from;
+
+    @ManyToOne
+    @JoinColumn(name = "to_user")
+    private User to;
 }
-*/

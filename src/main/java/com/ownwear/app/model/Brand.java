@@ -1,15 +1,17 @@
-package com.ownwear.app.model;/*
 package com.ownwear.app.model;
 
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Brand {
-    @Column(name = "BRAND", nullable = false, unique = true)
-    private String brand;
+
+    @Id
+    @Column(name = "brand_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String brand_id;
 }
-*/

@@ -75,20 +75,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = new User();
 
         user.setProvider(oAuth2UserRequest.getClientRegistration().getRegistrationId());
-        user.setProviderId(oAuth2UserInfo.getId());
+        user.setProviderid(oAuth2UserInfo.getId());
         String username = oAuth2UserRequest.getClientRegistration().getRegistrationId()+"_"+oAuth2UserInfo.getId();
         user.setUsername(username);
         user.setEmail(oAuth2UserInfo.getEmail());
-        user.setUserImg(oAuth2UserInfo.getImageUrl());
+        user.setUserimg(oAuth2UserInfo.getImageUrl());
         user.setPassword(passwordEncoder.encode("hopes123"));
         System.out.println(passwordEncoder.encode("hopes123"));
-        user.setVerified(false);
+        user.setIsverified(false);
         return userRepository.save(user);
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setUsername(oAuth2UserInfo.getName());
-        existingUser.setUserImg(oAuth2UserInfo.getImageUrl());
+        existingUser.setUserimg(oAuth2UserInfo.getImageUrl());
         return userRepository.save(existingUser);
     }
 

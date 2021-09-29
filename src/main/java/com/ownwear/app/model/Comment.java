@@ -1,23 +1,33 @@
 package com.ownwear.app.model;
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long commentno;
-    @Column(name = "POSTNO", nullable = false)
-    private long postno;
-    @Column(name = "ID", nullable = false)
-    private long id;
+    @Column(name = "comment_id")
+    private long comment_id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "CONTENT", nullable = false)
     private String content;
+
     @CreationTimestamp
     private Timestamp commentdate;
 }
