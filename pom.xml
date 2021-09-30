@@ -85,8 +85,7 @@
 			<artifactId>hibernate-types-52</artifactId>
 			<version>2.12.1</version>
 		</dependency>
-
-		<!--	clarifai	-->
+	<!--	clarifai	-->
 		<dependency>
 			<groupId>com.clarifai</groupId>
 			<artifactId>clarifai-grpc</artifactId>
