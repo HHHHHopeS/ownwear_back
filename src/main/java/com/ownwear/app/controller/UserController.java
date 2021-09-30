@@ -32,7 +32,7 @@ public class UserController {
         System.out.println("##userme getId: "+userPrincipal.getId());
         User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
-        Optional<CurrentUsers> byId = currentUsersRepository.findById(user.getId());
+        Optional<CurrentUsers> byId = currentUsersRepository.findById(user.getUser_id());
         if (byId.isPresent()) {
             CurrentUsers currentUsers = byId.get();
             System.out.println("##user/me currnet token: " + currentUsers.getToken());

@@ -17,12 +17,11 @@ public class CurrentUsers {
 
     private String token;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     public CurrentUsers() {
-
     }
 
     public CurrentUsers(long id, String token) {
@@ -30,4 +29,3 @@ public class CurrentUsers {
         this.token = token;
     }
 }
-

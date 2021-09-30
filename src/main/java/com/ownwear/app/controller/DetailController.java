@@ -30,12 +30,12 @@ public class DetailController {
 
     @GetMapping("/{id}")
     public PostVo getDetail(@PathVariable("id") Long id){
-        log.info("들어온값 {}", id);
+        //log.info("들어온값 {}", id);
         Optional<Post> byPostno = postRepository.findById(id);
         if (byPostno.isPresent()){
             Post post = byPostno.get();
-            System.out.println(userRepository.findById(post.getId()));
-            String username = userRepository.findById(post.getId()).get().getUsername();
+            System.out.println(userRepository.findById(post.getPost_id()));
+            String username = userRepository.findById(post.getPost_id()).get().getUsername();
             int likecount = 1;
             ArrayList<HashTag> hashtags = null;
             ArrayList<UserRelatedVo> userRelated = null;
