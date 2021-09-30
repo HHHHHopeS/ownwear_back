@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Alert {
+
     @Id
     @GeneratedValue
     @Column(name = "Alert_id")

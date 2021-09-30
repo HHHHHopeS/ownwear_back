@@ -30,7 +30,6 @@ public class DetailController {
 
     @GetMapping("/{post_id}")
     public PostVo getDetail(@PathVariable("post_id") Long post_id){
-        log.info("들어온값 {}", post_id);
         Optional<Post> byPostno = postRepository.findById(post_id);
         if (byPostno.isPresent()){
             Post post = byPostno.get();
