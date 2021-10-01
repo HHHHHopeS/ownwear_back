@@ -40,6 +40,7 @@ public class DetailController {
     }
     @GetMapping("getlist")
     public Page<Post> getList(){
+
         return service.getList();
     }
 }

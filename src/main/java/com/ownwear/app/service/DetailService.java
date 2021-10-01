@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class DetailService {
@@ -74,10 +75,10 @@ public class DetailService {
     }
 
     public Page<Post> getList() {
-        List<User> user = userRepository.findAllBySex(false);
+        List<User> user = userRepository.findAllBySex(false );
         System.out.println(user);
-        PageRequest pageRequest= PageRequest.of(1,size);
+        PageRequest pageRequest= PageRequest.of(0,size);
         System.out.println(22222222222222L);
-        return postRepository.findByAll(pageRequest);
+        return postRepository.findAllByUserIn(user,pageRequest);
     }
 }
