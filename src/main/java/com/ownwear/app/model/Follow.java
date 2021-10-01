@@ -2,6 +2,7 @@ package com.ownwear.app.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
@@ -15,7 +16,6 @@ import javax.persistence.*;
         columnNames = {"from_user", "to_user"}
 )})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Follow {
 
     @Id
@@ -23,12 +23,14 @@ public class Follow {
     @Column(name = "follow_id")
     private long follow_id;
 
-    
+
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "from_user")
     private User from;
 
-    
+
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "to_user")
     private User to;

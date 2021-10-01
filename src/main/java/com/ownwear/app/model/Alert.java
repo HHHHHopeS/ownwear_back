@@ -28,7 +28,8 @@ public class Alert {
     @Column(name = "ALERTDATE", nullable = false)
     private Timestamp alertdate;
 
-    
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;

@@ -1,5 +1,6 @@
 package com.ownwear.app.repository;
 
+import com.ownwear.app.form.PostForm;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.model.User;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAll(Pageable pageable);
 
     Page<Post> findAllByUserIn(List<User> user, Pageable pageable);
+
+    Page<Post> findAllByUser(User users, Pageable pageable);
 
 //    Page<Post> findAll(User user, Pageable pageable);
 
