@@ -1,5 +1,6 @@
 package com.ownwear.app.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,6 +28,7 @@ public class Alert {
     @Column(name = "ALERTDATE", nullable = false)
     private Timestamp alertdate;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;

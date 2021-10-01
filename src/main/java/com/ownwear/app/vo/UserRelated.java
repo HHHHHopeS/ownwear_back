@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRelatedVo {
+public class UserRelated {
     private long postno;
     private String imgurl;
 }
