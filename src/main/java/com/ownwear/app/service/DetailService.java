@@ -1,5 +1,7 @@
 package com.ownwear.app.service;
 
+import com.ownwear.app.form.PostForm;
+import com.ownwear.app.form.UserInfo;
 import com.ownwear.app.model.Comment;
 import com.ownwear.app.model.HashTag;
 import com.ownwear.app.model.Post;
@@ -9,16 +11,18 @@ import com.ownwear.app.repository.PostHashTagRepository;
 import com.ownwear.app.repository.PostRepository;
 import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.vo.PostVo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class DetailService {
@@ -33,6 +37,8 @@ public class DetailService {
     private UserRepository userRepository;
     @Autowired
     private PostHashTagRepository postHashTagRepository;
+
+    final ModelMapper modelMapper = new ModelMapper();
 
     public PostVo getDetail(Long post_id) {
 
@@ -49,6 +55,7 @@ public class DetailService {
 
             PostVo postVo = new PostVo(post,likecount,hashtags,userRelated,comments,user.getUsername());
             return postVo;
+
         }
         return null;
     }
@@ -74,11 +81,42 @@ public class DetailService {
         postRepository.delete(post);
     }
 
-    public Page<Post> getList() {
-        List<User> user = userRepository.findAllBySex(false );
+    public List<PostForm> getList(int page) {
+        PageRequest pageRequest= PageRequest.of(0,size);
+        Page<Post> allByUserIn = postRepository.findAll(pageRequest);
+        List<PostForm> pp = new ArrayList<>();
+        for (Post p : allByUserIn){
+            System.out.println(p.getUser());
+            UserInfo userInfo= modelMapper.map(p.getUser(), UserInfo.class);
+            PostForm postForm = getPostForm(p.getPost_id());
+            postForm.setUser(userInfo);
+            pp.add(postForm);
+        }
+        System.out.println(pp.get(3).getUser());
+        return pp;
+    }
+public List<PostForm> getList(int page,boolean sex) {
+        List<User> user = userRepository.findAllBySex(false);
         System.out.println(user);
         PageRequest pageRequest= PageRequest.of(0,size);
         System.out.println(22222222222222L);
-        return postRepository.findAllByUserIn(user,pageRequest);
+        User users = new User(false);
+        Page<Post> allByUserIn = postRepository.findAllByUser(users, pageRequest);
+        System.out.println(allByUserIn);
+        List<PostForm> pp = new ArrayList<>();
+        for (Post p : allByUserIn){
+            PostForm postForm = getPostForm(p.getPost_id());
+            pp.add(postForm);
+        }
+        System.out.println(pp.get(3).getUser());
+        return pp;
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public PostForm getPostForm(long post_id){
+        Post post= postRepository.findById(post_id).get();
+        return modelMapper.map(post,PostForm.class);
     }
 }

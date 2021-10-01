@@ -1,5 +1,7 @@
 package com.ownwear.app.controller;
 
+import com.ownwear.app.form.PostForm;
+import com.ownwear.app.model.User;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
 import com.ownwear.app.model.Post;
@@ -27,6 +29,7 @@ public class DetailController {
 
     @PostMapping("/create")
     public Post createPost(@RequestBody Post post){
+
         return  service.createPost(post);
     }
     @PostMapping("/update")
@@ -39,8 +42,13 @@ public class DetailController {
         service.deletePost(post);
     }
     @GetMapping("getlist")
-    public Page<Post> getList(){
-
-        return service.getList();
+    public List<PostForm> getList(int page){
+        return service.getList(page);
+    }@GetMapping("getlist/man")
+    public List<PostForm> getManList(int page){
+        return service.getList(page,true);
+    }@GetMapping("getlist/woman")
+    public List<PostForm> getWomanList(int page){
+        return service.getList(page,false);
     }
 }
