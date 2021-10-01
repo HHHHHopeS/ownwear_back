@@ -67,31 +67,31 @@ public class User {
     public User() {
         this.setRole("ROLE_USER");
     }
+
     public User(boolean sex) {
         setSex(sex);
     }
 
-    @JsonManagedReference
+
     @OneToMany(mappedBy = "user")
     private List<Alert> alerts = new ArrayList<>();
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
-    @JsonManagedReference
+    
     @OneToMany(mappedBy = "user")
     private List<LikePost> likePosts = new ArrayList<>();
 
-    @JsonManagedReference
+    
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 
-    @JsonManagedReference
+    
     @OneToMany(mappedBy = "to")
-    private List<Follow> follwers;
+    private List<Follow> followers;
 
-    @JsonManagedReference
+    
     @OneToMany(mappedBy = "from")
     private List<Follow> following;
 

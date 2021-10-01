@@ -21,12 +21,12 @@ public class LikePost {
     @Column(name = "likepost_id")
     private Long likepost_id;
 
-    @JsonBackReference
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @JsonBackReference
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

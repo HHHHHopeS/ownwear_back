@@ -19,12 +19,12 @@ public class PostHashTag {
     @Column(name = "posthashtag_id")
     private long posthashtag_id;
 
-    @JsonBackReference
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @JsonBackReference
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hashtag_id")
     private HashTag hashtag;
