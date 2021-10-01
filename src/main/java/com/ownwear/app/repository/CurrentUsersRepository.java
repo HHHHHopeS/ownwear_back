@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface CurrentUsersRepository extends JpaRepository<CurrentUsers, Long> {
 
     Optional<CurrentUsers> findByUser(User user);
