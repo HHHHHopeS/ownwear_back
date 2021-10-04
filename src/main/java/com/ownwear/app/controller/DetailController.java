@@ -27,19 +27,20 @@ public class DetailController {
         return service.getDetail(post_id);
     }
 
-    @PostMapping("/create")
-    public Post createPost(@RequestBody Post post){
 
-        return  service.createPost(post);
+    @PostMapping("/create")//,"detail/create/**" authenicated
+    public PostForm createPost(@RequestBody PostForm postForm){
+
+        return  service.createPost(postForm);
     }
-    @PostMapping("/update")
-    public Post updatePost(@RequestBody Post post){
-        return service.updatePost(post);
+    @PostMapping("/update")//,"detail/update/**" authentticated
+    public PostForm updatePost(@RequestBody PostForm postForm){
+        return service.updatePost(postForm);
     }
 
-    @GetMapping("/delete")
-    public void deletePost(@RequestBody Post post){
-        service.deletePost(post);
+    @GetMapping("/delete")//,"detail/delete/**" authenicated
+    public void deletePost(long post_id){
+        service.deleteById(post_id);
     }
     @GetMapping("getlist")
     public List<PostForm> getList(int page){

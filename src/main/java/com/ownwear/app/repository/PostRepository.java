@@ -17,13 +17,12 @@ import java.util.Set;
 public interface PostRepository extends JpaRepository<Post, Long> {
     ArrayList<Post> findByUser(User user);
 
-//   Page<Post> findByUser(List<User> user, Pageable pageable);
     Page<Post> findAll(Pageable pageable);
 
     Page<Post> findAllByUserIn(List<User> user, Pageable pageable);
 
     Page<Post> findAllByUser(User users, Pageable pageable);
 
-//    Page<Post> findAll(User user, Pageable pageable);
+    void deleteById(long id);
 
 }
