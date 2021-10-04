@@ -5,6 +5,7 @@ import com.ownwear.app.model.LikePost;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.model.PostHashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
 
 public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> {
 
-    ArrayList<HashTag> findByPost(Post post);
+    ArrayList<PostHashTag> findByPost(Post post);
 
+    @Query("select p.hashtag from PostHashTag p where p.post = ?1")
+    List<HashTag> findHashTagsByPost(Post post);
 }
