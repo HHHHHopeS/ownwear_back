@@ -19,10 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByEmail(String email);
 
-<<<<<<< Updated upstream
 
     List<User> findAllBySex(boolean sex);
-=======
-    Optional<User> findAllBySex(Boolean sex);
->>>>>>> Stashed changes
 }

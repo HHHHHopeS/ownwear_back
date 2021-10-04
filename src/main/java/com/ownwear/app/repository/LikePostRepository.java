@@ -11,12 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-<<<<<<< Updated upstream
-
-public interface LikePostRepository extends JpaRepository<LikePost, Long> {
-
-        int countByPost(Post post);
-=======
 @Repository
 public interface LikePostRepository extends JpaRepository<LikePost, Long>{
 
@@ -27,5 +21,4 @@ public interface LikePostRepository extends JpaRepository<LikePost, Long>{
     List<LikePost> findByUser(User user);
 
     long countByPost(Post post); // 유저 좋아요 갯수 조회
->>>>>>> Stashed changes
 }
