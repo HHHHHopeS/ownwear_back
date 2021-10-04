@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostVo {
     private PostForm postform;
-    private int likecount;
+    private long likecount;
     private List<HashTag> hashtags;
     private List<PostForm> userRelated;
     private List<Comment> comments;

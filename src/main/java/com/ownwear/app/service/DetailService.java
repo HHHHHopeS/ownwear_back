@@ -39,7 +39,7 @@ public class DetailService {
         if (byPostno.isPresent()) {
             Post post = byPostno.get();
             User user = userRepository.findById(post.getUser().getUser_id()).get();
-            int likecount = likePostRepository.countByPost(post);
+            long likecount = likePostRepository.countByPost(post);
             List<HashTag> hashtags = postHashTagRepository.findHashTagsByPost(post);
             List<PostForm> postForms = changeToFormList(postRepository.findByUser(user));
             List<Comment> comments = commentRepository.findByPost(post);
