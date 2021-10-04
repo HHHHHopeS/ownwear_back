@@ -1,9 +1,13 @@
 package com.ownwear.app.model;
 
+<<<<<<< Updated upstream
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+=======
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+>>>>>>> Stashed changes
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +25,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private long user_id;
+    private Long user_id;
 
     private String userimg;
 
@@ -55,12 +59,11 @@ public class User {
 
 
     @Builder
-    public User(String username, String password, String email, String role, Timestamp rdate, String provider, String providerid) {
+    public User(String username, String password, String email, String role, String provider, String providerid) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.rdate = rdate;
         this.provider = provider;
         this.providerid = providerid;
         this.isverified = false;
@@ -70,6 +73,7 @@ public class User {
         this.setRole("ROLE_USER");
     }
 
+<<<<<<< Updated upstream
     public User(boolean sex) {
         setSex(sex);
     }
@@ -101,5 +105,25 @@ public class User {
     @JsonBackReference
     @OneToMany(mappedBy = "from")
     private List<Follow> following;
+=======
+//    @OneToMany(mappedBy = "user")
+//    private List<Alert> alerts = new ArrayList<>();
+//
+//    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "user")
+//    private List<LikePost> likePosts = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "user")
+//    private List<Comment> comments = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "to")
+//    private List<Follow> follwers;
+//
+//    @OneToMany(mappedBy = "from")
+//    private List<Follow> following;
+>>>>>>> Stashed changes
 
 }

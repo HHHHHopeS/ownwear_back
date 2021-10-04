@@ -12,12 +12,17 @@ import java.util.Set;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
-    Optional<User> findByUsername(String username);
-    Optional<User> findById(long user_id);
 
+    Optional<User> findByUsername(String username);
+
+    Optional<User> findById(long user_id);
 
     Boolean existsByEmail(String email);
 
+<<<<<<< Updated upstream
 
     List<User> findAllBySex(boolean sex);
+=======
+    Optional<User> findAllBySex(Boolean sex);
+>>>>>>> Stashed changes
 }
