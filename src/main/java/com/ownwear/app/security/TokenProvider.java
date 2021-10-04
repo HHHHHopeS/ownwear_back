@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class TokenProvider {
@@ -46,6 +47,10 @@ public class TokenProvider {
         System.out.println("##tokenprovider userPrincipal Id : "+userPrincipal.getId());
         User user = userRepository.findById(userPrincipal.getId()).get();
         CurrentUsers currentUsers = new CurrentUsers(user, token);
+        Optional<CurrentUsers> byUser = currentUsersRepository.findByUser(user);
+        if (byUser.isPresent()){
+            currentUsersRepository.deleteById(byUser.get().getCurrentusers_id());
+        }
         currentUsersRepository.save(currentUsers);
         return token;
     }
