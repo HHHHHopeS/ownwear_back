@@ -18,9 +18,6 @@ import java.util.Base64;
 import java.util.List;
 
 @RestController
-@CrossOrigin(value = "*",maxAge = 3600)
-
-
 public class ClarifaiController {
 
     @RequestMapping("/getRectorData")

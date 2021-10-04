@@ -1,18 +1,16 @@
 package com.ownwear.app.controller;
 
+import com.ownwear.app.form.PostCreateForm;
 import com.ownwear.app.form.PostForm;
-import com.ownwear.app.model.User;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
-import com.ownwear.app.model.Post;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/detail")
@@ -23,19 +21,23 @@ public class DetailController {
     private DetailService service;
 
     @GetMapping("/{post_id}") // ,"/detail/" permitAll(모두허용) ,authenticated(어떤 권한이든 소유)
-    public PostVo getDetail(@PathVariable("post_id") Long post_id){
+    public PostVo getDetail(@PathVariable("post_id") long post_id){
         return service.getDetail(post_id);
     }
 
 
+    @RequestMapping("/insert")
+    private static long insert(@RequestBody JSONObject data) throws  Exception{
+        System.out.println(data);
+        return 1;
+    }
     @PostMapping("/create")//,"detail/create/**" authenicated
-    public PostForm createPost(@RequestBody PostForm postForm){
-
-        return  service.createPost(postForm);
+    public PostVo createPost(@RequestBody PostCreateForm post){
+        return  service.createPost(post);
     }
     @PostMapping("/update")//,"detail/update/**" authentticated
-    public PostForm updatePost(@RequestBody PostForm postForm){
-        return service.updatePost(postForm);
+    public PostForm updatePost(@RequestBody PostForm post){
+        return service.updatePost(post);
     }
 
     @GetMapping("/delete")//,"detail/delete/**" authenicated
@@ -51,5 +53,14 @@ public class DetailController {
     }@GetMapping("getlist/woman")
     public List<PostForm> getWomanList(int page){
         return service.getList(page,false);
+    }
+
+
+    @RequestMapping("/hashtagAutoComplete")
+    private static JSONArray hashtagAutoComplete(@RequestBody String data){
+        String[] str = {"assdf","asdfwefewf","asfwefew"};
+
+        JSONArray arr = JSONArray.fromObject(str);
+        return arr;
     }
 }
