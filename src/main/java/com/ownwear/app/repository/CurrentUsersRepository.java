@@ -11,5 +11,5 @@ public interface CurrentUsersRepository extends JpaRepository<CurrentUsers, Long
 
     Optional<CurrentUsers> findByUser(User user);
 
-
+    void deleteByUser(User user);
 }
