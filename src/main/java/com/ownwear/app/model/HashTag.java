@@ -20,7 +20,7 @@ public class HashTag {
     @Id
     @Column(name = "hashtag_id")
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String hashtag;
+    private long hashtag_id;
 
     @Column(nullable = false, unique = true)
     private String hashtagname;
@@ -28,4 +28,9 @@ public class HashTag {
     @JsonBackReference
     @OneToMany(mappedBy = "hashtag")
     private List<PostHashTag> postHashTag = new ArrayList<>();
+
+    @Builder
+    public HashTag(String hashtagname){
+        this.hashtagname = hashtagname;
+    }
 }

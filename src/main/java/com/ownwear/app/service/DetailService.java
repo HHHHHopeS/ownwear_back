@@ -1,5 +1,6 @@
 package com.ownwear.app.service;
 
+import com.ownwear.app.form.PostCreateForm;
 import com.ownwear.app.form.PostForm;
 import com.ownwear.app.form.UserInfo;
 import com.ownwear.app.model.*;
@@ -30,6 +31,8 @@ public class DetailService {
     private PostHashTagRepository postHashTagRepository;
     @Autowired
     private LikePostRepository likePostRepository;
+    @Autowired
+    private HashTagRepository hashTagRepository;
 
     final ModelMapper modelMapper = new ModelMapper();
 
@@ -38,26 +41,27 @@ public class DetailService {
         Optional<Post> byPostno = postRepository.findById(post_id);
         if (byPostno.isPresent()) {
             Post post = byPostno.get();
-            User user = userRepository.findById(post.getUser().getUser_id()).get();
-            long likecount = likePostRepository.countByPost(post);
-            List<HashTag> hashtags = postHashTagRepository.findHashTagsByPost(post);
-            List<PostForm> postForms = changeToFormList(postRepository.findByUser(user));
-            List<Comment> comments = commentRepository.findByPost(post);
-            PostForm postForm = modelMapper.map(post, PostForm.class);
-            PostVo postVo = new PostVo(postForm, likecount, hashtags, postForms, comments, user.getUsername());
-            return postVo;
-
+            return getPostVo(post);
         }
         return null;
     }
 
-    public PostForm createPost(PostForm postForm) {
-        Optional<Post> byId = postRepository.findById(postForm.getPost_id());
-        if (byId.isPresent()) {
-            return null; //todo 에러페이지(잘못된 요청방식)
+    public PostVo createPost(PostCreateForm postCreateForm) {
+//        Optional<Post> byId = postRepository.findById(postForm.getPost_id());
+//        if (byId.isPresent()) {
+//            return null; //todo 에러페이지(잘못된 요청방식)
+//        }
+
+        Post post = modelMapper.map(postCreateForm, Post.class);
+        postRepository.save(post);
+        List<String> hashtags = postCreateForm.getHashtags();
+        for (String hashtagString : hashtags) {
+            HashTag hashTag = new HashTag(hashtagString);
+            hashTagRepository.save(hashTag);
+            PostHashTag postHashTag = new PostHashTag(post,hashTag);
+            postHashTagRepository.save(postHashTag);
         }
-        Post map1 = modelMapper.map(postForm, Post.class);
-        return saveAndPostForm(map1);
+        return getPostVo(post);
     }
 
     public PostForm updatePost(PostForm postForm) {
@@ -95,7 +99,8 @@ public class DetailService {
 
 
 
-    public void deleteById(long post_id) {
+    public void deleteById(long post_id) { //todo delete query 직접 작성하여 성능 개선
+        System.out.println(post_id);
         postRepository.deleteById(post_id);
     }
 
@@ -121,5 +126,14 @@ public class DetailService {
         }
         return postForms;
     }
-
+    private PostVo getPostVo(Post post){
+        User user = userRepository.findById(post.getUser().getUser_id()).get();
+        long likecount = likePostRepository.countByPost(post);
+        List<HashTag> hashtags = postHashTagRepository.findHashTagsByPost(post);
+        List<PostForm> postForms = changeToFormList(postRepository.findByUser(user));
+        List<Comment> comments = commentRepository.findByPost(post);
+        PostForm postForm = modelMapper.map(post, PostForm.class);
+        PostVo postVo = new PostVo(postForm, likecount, hashtags, postForms, comments, user.getUsername());
+        return postVo;
+    }
 }

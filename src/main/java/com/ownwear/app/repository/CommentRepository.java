@@ -1,5 +1,6 @@
 package com.ownwear.app.repository;
 
+import com.ownwear.app.form.CommentForm;
 import com.ownwear.app.model.Comment;
 import com.ownwear.app.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findByPost(Post post);
 
+    List<Comment> findAllByPost(Post post);
 }
