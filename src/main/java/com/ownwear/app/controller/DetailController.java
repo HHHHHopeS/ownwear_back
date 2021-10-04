@@ -1,10 +1,19 @@
 package com.ownwear.app.controller;
 
+<<<<<<< Updated upstream
 import com.ownwear.app.form.PostForm;
 import com.ownwear.app.model.User;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
 import com.ownwear.app.model.Post;
+=======
+import com.ownwear.app.model.*;
+import com.ownwear.app.repository.UserRepository;
+import com.ownwear.app.vo.PostVo;
+import com.ownwear.app.repository.CommentRepository;
+import com.ownwear.app.repository.PostRepository;
+import com.ownwear.app.vo.UserRelatedVo;
+>>>>>>> Stashed changes
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +29,17 @@ import java.util.Optional;
 public class DetailController {
 
     @Autowired
+<<<<<<< Updated upstream
     private DetailService service;
+=======
+    private PostRepository postRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+>>>>>>> Stashed changes
 
     @GetMapping("/{post_id}") // ,"/detail/" permitAll(모두허용) ,authenticated(어떤 권한이든 소유)
     public PostVo getDetail(@PathVariable("post_id") Long post_id){
@@ -42,6 +61,7 @@ public class DetailController {
     public void deletePost(long post_id){
         service.deleteById(post_id);
     }
+<<<<<<< Updated upstream
     @GetMapping("getlist")
     public List<PostForm> getList(int page){
         return service.getList(page);
@@ -51,5 +71,15 @@ public class DetailController {
     }@GetMapping("getlist/woman")
     public List<PostForm> getWomanList(int page){
         return service.getList(page,false);
+=======
+
+    @PostMapping("/update")
+    public Post updatePost(@RequestBody Post post){
+        Optional<Post> byId = postRepository.findById(post.getPost_id());
+        Timestamp rdate = byId.get().getRdate();
+        post.setEdate(new Timestamp(System.currentTimeMillis()));
+        post.setRdate(rdate);
+        return postRepository.save(post);
+>>>>>>> Stashed changes
     }
 }
