@@ -14,7 +14,7 @@ public class PostBrand {
     @Id
     @GeneratedValue
     @Column(name = "post_brand_id")
-    private long post_brand_id;
+    private Long post_brand_id;
 
 //    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)

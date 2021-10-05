@@ -1,18 +1,13 @@
 package com.ownwear.app.controller;
 
 import com.ownwear.app.form.PostForm;
-import com.ownwear.app.model.User;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
-import com.ownwear.app.model.Post;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/detail")
