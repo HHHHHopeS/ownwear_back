@@ -100,6 +100,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                     .and()
                 .authorizeRequests()
+                    .antMatchers(
+                 "/detail/create/**",
+                            "/detail/update/**",
+                            "/detail/delete/**",
+                            "/like/toggle/**","/user/m")
+                        .authenticated()
                     .antMatchers("/",
                         "/error",
                         "/favicon.ico",
@@ -112,8 +118,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js",
                         "/detail/**","/like/**","/comment/**","/user/**","/auth/**", "/oauth2/**")
                         .permitAll()
-                    .antMatchers("/user/me")
-                        .authenticated()
                     .anyRequest()
                         .authenticated()
                     .and()

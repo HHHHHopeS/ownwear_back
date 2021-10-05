@@ -23,5 +23,7 @@ public class UserInfo {
 
     private String twitterid;
 
+    private Boolean isverified;
+
 
 }

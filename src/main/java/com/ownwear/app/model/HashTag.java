@@ -28,4 +28,9 @@ public class HashTag {
     @JsonBackReference
     @OneToMany(mappedBy = "hashtag")
     private List<PostHashTag> postHashTag = new ArrayList<>();
+
+    @Builder
+    public HashTag(String hashtagname){
+        this.hashtagname = hashtagname;
+    }
 }
