@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+
     ArrayList<Post> findByUser(User user);
 
     Page<Post> findAll(Pageable pageable);
