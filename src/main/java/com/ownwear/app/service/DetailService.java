@@ -46,14 +46,14 @@ public class DetailService {
         return null;
     }
 
-    public PostVo createPost(PostCreateForm postCreateForm) {
+    public long createPost(PostCreateForm postCreateForm) {
 //        Optional<Post> byId = postRepository.findById(postForm.getPost_id());
 //        if (byId.isPresent()) {
 //            return null; //todo 에러페이지(잘못된 요청방식)
 //        }
 
         Post post = modelMapper.map(postCreateForm, Post.class);
-        postRepository.save(post);
+        Post save = postRepository.save(post);
         List<String> hashtags = postCreateForm.getHashtags();
         for (String hashtagString : hashtags) {
             HashTag hashTag = new HashTag(hashtagString);
@@ -61,7 +61,7 @@ public class DetailService {
             PostHashTag postHashTag = new PostHashTag(post,hashTag);
             postHashTagRepository.save(postHashTag);
         }
-        return getPostVo(post);
+        return save.getPost_id();
     }
 
     public PostForm updatePost(PostForm postForm) {
@@ -85,7 +85,6 @@ public class DetailService {
 
 
     public List<PostForm> getList(int page, boolean sex) {
-        List<User> user = userRepository.findAllBySex(sex);
         PageRequest pageRequest = PageRequest.of(page, size);
         User users = new User(sex);
         Page<Post> allByUserIn = postRepository.findAllByUser(users, pageRequest);

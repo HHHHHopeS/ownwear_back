@@ -3,9 +3,11 @@ package com.ownwear.app.controller;
 import com.ownwear.app.form.UserInfo;
 import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.form.UserInfo;
+import com.ownwear.app.model.Alert;
 import com.ownwear.app.model.CurrentUsers;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.model.User;
+import com.ownwear.app.repository.AlertRepository;
 import com.ownwear.app.repository.CurrentUsersRepository;
 import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.security.CurrentUser;
@@ -30,6 +32,12 @@ public class UserController {
     @Autowired
     private CurrentUsersRepository currentUsersRepository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AlertRepository alertRepository;
+
     final ModelMapper modelMapper = new ModelMapper();
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
@@ -46,14 +54,14 @@ public class UserController {
             CurrentUsers currentUsers = byUser.get();
             if (currentUsers.getToken().equals(requestToken)) {
 
-                return modelMapper.map(user, UserInfo.class);
+                return checkAndReturn(user);
             }
-            return null;
-        } else {
-            System.out.println("##최초접속 user_id : " + user.getUser_id());
-            CurrentUsers currentUsers = new CurrentUsers(user, requestToken);
+            return null; //todo 유효하지않은 토큰입니다.
+        }else {
+            System.out.println("##최초접속 user_id : "+user.getUser_id());
+            CurrentUsers currentUsers = new CurrentUsers(user,requestToken);
             currentUsersRepository.save(currentUsers);
-            return modelMapper.map(user, UserInfo.class);
+            return checkAndReturn(user);
         }
 
     }
@@ -69,5 +77,17 @@ public class UserController {
     @GetMapping("/{username}/posts")
     public List<Post> getUserPosts(@PathVariable("username") String username) {
         return userService.getUserPosts(username);
+    }
+    
+    private UserInfo checkAndReturn(User user){
+
+        UserInfo userInfo = modelMapper.map(user, UserInfo.class);
+        List<Alert> falseByUser = alertRepository.findFalseByUser(user);
+        if (falseByUser.isEmpty()){
+            userInfo.setIschecked(true);
+        }else {
+            userInfo.setIschecked(false);
+        }
+        return userInfo;
     }
 }

@@ -25,5 +25,5 @@ public class UserInfo {
 
     private Boolean isverified;
 
-
+    private Boolean ischecked;
 }

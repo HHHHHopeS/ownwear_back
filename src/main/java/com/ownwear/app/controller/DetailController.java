@@ -6,7 +6,6 @@ import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +25,10 @@ public class DetailController {
     }
 
 
-    @RequestMapping("/insert")
-    private static long insert(@RequestBody JSONObject data) throws  Exception{
-        System.out.println(data);
-        return 1;
-    }
     @PostMapping("/create")//,"detail/create/**" authenicated
-    public PostVo createPost(@RequestBody PostCreateForm post){
+    public long createPost(@RequestBody PostCreateForm post)
+    {
+//        System.out.println(post);
         return  service.createPost(post);
     }
     @PostMapping("/update")//,"detail/update/**" authentticated
@@ -47,10 +43,14 @@ public class DetailController {
     @GetMapping("getlist")
     public List<PostForm> getList(int page){
         return service.getList(page);
-    }@GetMapping("getlist/man")
+    }
+
+    @GetMapping("getlist/man")
     public List<PostForm> getManList(int page){
         return service.getList(page,true);
-    }@GetMapping("getlist/woman")
+    }
+
+    @GetMapping("getlist/woman")
     public List<PostForm> getWomanList(int page){
         return service.getList(page,false);
     }

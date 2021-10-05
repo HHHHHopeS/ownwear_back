@@ -15,17 +15,17 @@ public class Alert {
 
     @Id
     @GeneratedValue
-    @Column(name = "Alert_id")
+    @Column(name = "alert_id")
     private Long alert_id;
 
-    @Column(name = "ALERTCONTENT", nullable = false, length = 500)
+    @Column(name = "alert_content", nullable = false, length = 500)
     private String alertcontent;
 
-    @Column(name = "ALERTCHECK", nullable = false)
-    private Boolean alertcheck;
+    @Column(name = "ischecked", nullable = false)
+    private boolean ischecked;
 
     @CreationTimestamp
-    @Column(name = "ALERTDATE", nullable = false)
+    @Column(name = "alert_date", nullable = false)
     private Timestamp alertdate;
 
 
