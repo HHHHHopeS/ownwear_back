@@ -17,7 +17,7 @@ public class PostHashTag {
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "posthashtag_id")
-    private long posthashtag_id;
+    private Long posthashtag_id;
 
 
     @JsonManagedReference

@@ -21,7 +21,7 @@ public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")
-    private long follow_id;
+    private Long follow_id;
 
 
     @JsonManagedReference

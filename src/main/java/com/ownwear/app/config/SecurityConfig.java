@@ -104,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                  "/detail/create/**",
                             "/detail/update/**",
                             "/detail/delete/**",
-                            "/like/toggle/**")
+                            "/like/toggle/**","/user/m")
                         .authenticated()
                     .antMatchers("/",
                         "/error",
@@ -116,7 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/detail/**","/like/**","/comment/**","/auth/**", "/oauth2/**")
+                        "/detail/**","/like/**","/comment/**","/user/**","/auth/**", "/oauth2/**")
                         .permitAll()
                     .anyRequest()
                         .authenticated()

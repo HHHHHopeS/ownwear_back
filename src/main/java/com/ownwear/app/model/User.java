@@ -25,10 +25,12 @@ public class User {
 
     private String userimg;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
 
+    @Column(unique = true)
     private String email;
 
     private String role;
@@ -43,7 +45,7 @@ public class User {
 
     private boolean isverified = true;
 
-    private boolean sex;
+    private Boolean sex;
 
     private String height;
 
@@ -86,19 +88,15 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LikePost> likePosts = new ArrayList<>();
 
-
     @JsonBackReference
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
-
 
     @JsonBackReference
     @OneToMany(mappedBy = "to")
     private List<Follow> followers;
 
-
     @JsonBackReference
     @OneToMany(mappedBy = "from")
     private List<Follow> following;
-
 }

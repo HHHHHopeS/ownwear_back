@@ -17,7 +17,7 @@ public class CurrentUsers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long currentusers_id;
+    private Long currentusers_id;
 
     private String token;
 

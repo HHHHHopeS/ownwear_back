@@ -2,12 +2,10 @@ package com.ownwear.app.form;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 @Data
 public class UserInfo {
 
-    private long user_id;
+    private Long user_id;
 
     private String userimg;
 
@@ -15,7 +13,7 @@ public class UserInfo {
 
     private String email;
 
-    private boolean sex;
+    private Boolean sex;
 
     private String height;
 
