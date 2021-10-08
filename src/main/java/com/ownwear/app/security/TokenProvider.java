@@ -44,7 +44,7 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
 
-        System.out.println("##tokenprovider userPrincipal Id : "+userPrincipal.getId());
+        //System.out.println("##tokenprovider userPrincipal Id : "+userPrincipal.getId());
         User user = userRepository.findById(userPrincipal.getId()).get();
         CurrentUsers currentUsers = new CurrentUsers(user, token);
         Optional<CurrentUsers> byUser = currentUsersRepository.findByUser(user);

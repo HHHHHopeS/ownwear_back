@@ -69,7 +69,7 @@ public class VisionController {
                     ProductSearchClient.formatProductSetName(projectId, computeRegion, productSetId);
             // Delete the product set.
             client.deleteProductSet(formattedName);
-            System.out.println(String.format("Product set deleted"));
+//            //System.out.println(String.format("Product set deleted"));
         }
     }
     private static void listProducts(String projectId, String computeRegion) throws IOException {
@@ -81,7 +81,7 @@ public class VisionController {
             // List all the products available in the region.
             for (Product product : client.listProducts(formattedParent).iterateAll()) {
                 // Display the product information
-                System.out.println(product.toString());
+//                //System.out.println(product.toString());
 //                list.add(product.getName().substring(product.getName().lastIndexOf('/') + 1).toString());
 
 
@@ -101,7 +101,7 @@ public class VisionController {
 
             // Delete a product.
             client.deleteProduct(formattedName);
-            System.out.println("Product deleted.");
+//            //System.out.println("Product deleted.");
         }
     }
 
@@ -126,9 +126,9 @@ public class VisionController {
                             .setImageContext(imageContext)
                             .build();
             List<AnnotateImageRequest> requests = Arrays.asList(annotateImageRequest);
-            System.out.println(requests);
+//            //System.out.println(requests);
             BatchAnnotateImagesResponse response = queryImageClient.batchAnnotateImages(requests);
-            System.out.println(response);
+//            //System.out.println(response);
 
             return JsonFormat.printer().print(response);
 
@@ -137,7 +137,7 @@ public class VisionController {
     }
 
     @RequestMapping("/uploadImageFile")
-    private static JSONObject uploadImage(@RequestBody String base64data) throws  IOException{
+    public static JSONObject uploadImage(@RequestBody String base64data) throws  IOException{
         String filetype = base64data.substring(base64data.indexOf("/")+1,base64data.indexOf(";"));
         String base64Byte = base64data.substring(base64data.indexOf(",")+1);
         byte[] imagebyte = Base64.getDecoder().decode(base64Byte);

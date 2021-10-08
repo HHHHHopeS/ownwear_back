@@ -41,16 +41,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication); //스프링 시큐리티 에서 컨텍스트에 어선티케이션 강제 저장
                 Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-                System.out.println(authentication1.toString());
-                System.out.println(authentication1.getAuthorities().toString());
+//                //System.out.println(authentication1.toString());
+//                //System.out.println(authentication1.getAuthorities().toString());
                 UserPrincipal userPrincipal = (UserPrincipal)authentication1.getPrincipal();
-                System.out.println(userPrincipal.getEmail());
+//                //System.out.println(userPrincipal.getEmail());
             }
 
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
-        System.out.println("##필터3");
+//        //System.out.println("##필터3");
         filterChain.doFilter(request, response);
     }
 

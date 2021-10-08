@@ -104,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                  "/detail/create/**",
                             "/detail/update/**",
                             "/detail/delete/**",
-                            "/like/toggle/**","/user/m")
+                            "/like/toggle/**","/user/me/**")
                         .authenticated()
                     .antMatchers("/",
                         "/error",

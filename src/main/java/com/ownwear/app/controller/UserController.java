@@ -27,42 +27,13 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CurrentUsersRepository currentUsersRepository;
-
-    @Autowired
     private UserService userService;
 
-    @Autowired
-    private AlertRepository alertRepository;
-
     final ModelMapper modelMapper = new ModelMapper();
-    @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
-    public UserInfo getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest request) {
-        User user = userRepository.findById(userPrincipal.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
-        System.out.println(user);
-        Optional<CurrentUsers> byUser = currentUsersRepository.findByUser(user);
-        String requestToken = request.getHeader("Authorization");
-        if (requestToken != null && requestToken.startsWith("Bearer")) {
-            requestToken = requestToken.substring(7);
-        }
-        if (byUser.isPresent()) {
-            CurrentUsers currentUsers = byUser.get();
-            if (currentUsers.getToken().equals(requestToken)) {
 
-                return checkAndReturn(user);
-            }
-            return null; //todo 유효하지않은 토큰입니다.
-        }else {
-            System.out.println("##최초접속 user_id : "+user.getUser_id());
-            CurrentUsers currentUsers = new CurrentUsers(user,requestToken);
-            currentUsersRepository.save(currentUsers);
-            return checkAndReturn(user);
-        }
+    @GetMapping("/me")
+    public UserInfo getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest request) {
+         return userService.getCurrentUser(userPrincipal,request);
 
     }
 //    ", user/{username}" permit all
@@ -78,16 +49,14 @@ public class UserController {
     public List<Post> getUserPosts(@PathVariable("username") String username) {
         return userService.getUserPosts(username);
     }
-    
-    private UserInfo checkAndReturn(User user){
 
-        UserInfo userInfo = modelMapper.map(user, UserInfo.class);
-        List<Alert> falseByUser = alertRepository.findFalseByUser(user);
-        if (falseByUser.isEmpty()){
-            userInfo.setIschecked(true);
-        }else {
-            userInfo.setIschecked(false);
-        }
-        return userInfo;
+    @PostMapping("update/oauth2")
+    public boolean addInfoOauth2(@RequestBody UserInfo userInfo){
+        return userService.addInfoOauth2(userInfo);
+
+    }
+    @PostMapping("update/validationCheck")
+    public boolean validationCheck(@RequestBody String value){
+        return userService.validationCheck(value);
     }
 }

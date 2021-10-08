@@ -13,13 +13,13 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    ArrayList<Post> findByUser(User user);
+    List<Post> findByUser(User user); //해당 유저의 게시글
 
-    Page<Post> findAll(Pageable pageable);
+    Page<Post> findAll(Pageable pageable);//모든 게시글
 
-    Page<Post> findAllByUserIn(List<User> user, Pageable pageable);
+//    Page<Post> findAllByUserIn(List<User> user, Pageable pageable); //
 
-    Page<Post> findAllByUser(User users, Pageable pageable);
+    Page<Post> findAllByUser(User users, Pageable pageable); //유저의 컬럼에 따른 모든 게시글
 
     void deleteById(long id);
 

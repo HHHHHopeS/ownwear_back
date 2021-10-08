@@ -59,7 +59,6 @@ public class AuthController {
 
         String hopes123 = passwordEncoder.encode("hopes123");
 
-        System.out.println("AuthController password : "+hopes123);
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

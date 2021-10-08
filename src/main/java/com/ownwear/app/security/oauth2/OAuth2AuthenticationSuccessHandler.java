@@ -67,7 +67,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String token = tokenProvider.createToken(authentication);
 
-        System.out.println("success token: "+ token);
+        //System.out.println("success token: "+ token);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", token)
