@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username); // UserDetail 페이지
 
+    Optional<User> findById(Long id); //유저 My page
 
     Boolean existsByEmail(String email);
 
@@ -28,4 +29,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "ORDER BY Count(f.to_user) desc LIMIT 7;",nativeQuery = true)
     List<IIndexUser> findTop7ByFollow();
 
+    List<User> findByUsernameStartsWith(String username);
 }

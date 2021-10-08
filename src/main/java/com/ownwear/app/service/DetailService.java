@@ -110,10 +110,10 @@ public class DetailService {
 
 
     public Map<String, List<PostForm>> getIndexScroll(String url, int position) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Post> allByUserIn = postRepository.findAll(pageRequest);
-        List<PostForm> postForms = changeToFormList(allByUserIn);
-        return postForms;
+//        PageRequest pageRequest = PageRequest.of(page, size);
+//        Page<Post> allByUserIn = postRepository.findAll(pageRequest);
+//        List<PostForm> postForms = changeToFormList(allByUserIn);
+        return null;
     }
 
     private List<IndexUser> getIndexUsers() {

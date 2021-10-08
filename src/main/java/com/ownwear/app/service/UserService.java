@@ -5,6 +5,7 @@ import com.ownwear.app.controller.VisionController;
 import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.model.Alert;
 import com.ownwear.app.model.CurrentUsers;
+import com.ownwear.app.form.UserForm;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.model.User;
 import com.ownwear.app.repository.AlertRepository;
@@ -14,6 +15,7 @@ import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.security.UserPrincipal;
 import net.sf.json.JSONObject;
 import org.joda.time.LocalDate;
+import net.sf.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,19 +127,49 @@ public class UserService {
             Optional<User> byId = userRepository.findById((userInfo.getUser_id()));
             if (byId.isPresent()) {
                 User user = byId.get();
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+
+    public UserForm getUserData(Long user_id) {
+
+        Optional<User> byId = userRepository.findById(user_id);
+
+        if (byId.isPresent()) {
+            UserForm map = modelMapper.map(byId.get(), UserForm.class);
+            return map;
+        }
+
+        return null;
+
+    }
+
+
+    public UserForm UpdateUser(UserInfo userInfo) {
+
+        try {
+            Optional<User> byId = userRepository.findById(userInfo.getUser_id());
+
+            if (byId.isPresent()) {
+                User user = byId.get();
+                user.setUserimg(userInfo.getUserimg());
                 user.setUsername(userInfo.getUsername());
                 user.setEmail(userInfo.getEmail());
                 user.setHeight(userInfo.getHeight());
                 user.setSex(userInfo.getSex());
                 user.setRdate(new Timestamp(System.currentTimeMillis()));
                 JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
-                String data = (String)jsonObject.get("data");
+                String data = (String) jsonObject.get("data");
                 user.setUserimg(data);
-                return true;
+                return null;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
+
+        return null;
     }
 }

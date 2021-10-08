@@ -26,7 +26,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private long post_id;
+    private Long post_id;
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
