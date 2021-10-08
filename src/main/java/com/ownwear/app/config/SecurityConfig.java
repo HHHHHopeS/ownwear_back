@@ -116,7 +116,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/detail/**","/like/**","/comment/**","/user/**","/auth/**", "/oauth2/**")
+                        "/detail/**",
+                        "/like/**",
+                        "/comment/**",
+                        "/user/**",
+                        "/auth/**",
+                        "/oauth2/**",
+                        "/index/**")
                         .permitAll()
                     .anyRequest()
                         .authenticated()

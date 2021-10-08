@@ -19,5 +19,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
             "HAVING Count(p.brand_id) >= 1 " +
             "ORDER BY Count(p.brand_id) desc LIMIT 9;",nativeQuery = true)
     List<IIndexBrand> findTop9ByCountByBrand();
+
     List<Brand> findByBrandnameStartsWith(String brandname);
 }

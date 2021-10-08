@@ -12,5 +12,5 @@ public class SearchForm {
 
     private List<BrandForm> brandForms;
 
-    private List<HashTag> hashTagForms;
+    private List<HashTagForm> hashTagForms;
 }
