@@ -18,6 +18,9 @@ public class Alert {
     @Column(name = "alert_id")
     private Long alert_id;
 
+
+    String type;//like follow comment
+
     @Column(name = "alert_content", nullable = false, length = 500)
     private String alertcontent;
 

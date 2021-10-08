@@ -55,9 +55,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user;
         if(userOptional.isPresent()) { //이메일로 찾았을 때 이미 있으면
             user = userOptional.get();
-            System.out.println(user);
+            //System.out.println(user);
             if(!user.getProvider().equals(oAuth2UserRequest.getClientRegistration().getRegistrationId())) {
-                System.out.println("이메일은 있는데 페이스북이 아님");
+//                //System.out.println("이메일은 있는데 페이스북이 아님");
                 /*throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
                         user.getProvider() + " account. Please use your " + user.getProvider() +
                         " account to login.");*/
@@ -73,15 +73,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         User user = new User();
-
         user.setProvider(oAuth2UserRequest.getClientRegistration().getRegistrationId());
         user.setProviderid(oAuth2UserInfo.getId());
         String username = oAuth2UserRequest.getClientRegistration().getRegistrationId()+"_"+oAuth2UserInfo.getId();
+//        //System.out.println("    ###CustomOAuth2UserService  registerNewUser : "  + username);
         user.setUsername(username);
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setUserimg(oAuth2UserInfo.getImageUrl());
         user.setPassword(passwordEncoder.encode("hopes123"));
-        System.out.println(passwordEncoder.encode("hopes123"));
         user.setIsverified(false);
         return userRepository.save(user);
     }

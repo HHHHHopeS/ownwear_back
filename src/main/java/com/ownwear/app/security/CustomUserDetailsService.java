@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email : " + email)
         );
-        System.out.println("##CustomUserDetailsService loadUserByUsername email : "+ email);
+//        //System.out.println("##CustomUserDetailsService loadUserByUsername email : "+ email);
         if (user!=null){
             return UserPrincipal.create(user);
         }
