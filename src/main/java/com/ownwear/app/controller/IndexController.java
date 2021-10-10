@@ -20,11 +20,10 @@ public class IndexController {
     IndexService indexService;
 
     @GetMapping("/srchdata")
-    public SearchForm SrchData(String username) {
+    public SearchForm SrchData(String keyword) {
 
-        SearchForm searchForm = indexService.SrchUserData(username);
+        SearchForm searchForm = indexService.SrchUserData(keyword);
 
         return searchForm;
     }
-
 }

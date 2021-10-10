@@ -32,9 +32,9 @@ public class IndexService {
     @Autowired
     private HashTagRepository hashTagRepository;
 
-    public SearchForm SrchUserData(String username) {
-        System.out.println("username = " + username);
-        List<User> byUsernameStartsWith = userRepository.findByUsernameStartsWith(username);
+    public SearchForm SrchUserData(String keyword) {
+
+        List<User> byUsernameStartsWith = userRepository.findByUsernameStartsWith(keyword);
 
         List<UserForm> userForms = new ArrayList<>();
 
@@ -43,8 +43,7 @@ public class IndexService {
             userForms.add(userForm);
         }
 
-
-        List<Brand> byBrandnameStartsWith = brandRepository.findByBrandnameStartsWith(username);
+        List<Brand> byBrandnameStartsWith = brandRepository.findByBrandnameStartsWith(keyword);
 
         List<BrandForm> brandForms = new ArrayList<>();
 
@@ -53,7 +52,7 @@ public class IndexService {
             brandForms.add(map);
         }
 
-        List<HashTag> byHashtagnameStartsWith = hashTagRepository.findByHashtagnameStartsWith(username);
+        List<HashTag> byHashtagnameStartsWith = hashTagRepository.findByHashtagnameStartsWith(keyword);
 
         List<HashTagForm> hashTagForms = new ArrayList<>();
 

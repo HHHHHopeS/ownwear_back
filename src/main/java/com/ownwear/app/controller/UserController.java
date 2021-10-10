@@ -4,6 +4,7 @@ import com.ownwear.app.form.UserForm;
 import com.ownwear.app.form.UserInfo;
 import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.form.UserInfo;
+import com.ownwear.app.form.UserpwdForm;
 import com.ownwear.app.model.Alert;
 import com.ownwear.app.model.CurrentUsers;
 import com.ownwear.app.model.Post;
@@ -18,6 +19,8 @@ import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +30,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("user")
 public class UserController {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserService userService;
@@ -60,7 +66,6 @@ public class UserController {
     @PostMapping("update/oauth2")
     public boolean addInfoOauth2(@RequestBody UserInfo userInfo) {
         return userService.addInfoOauth2(userInfo);
-
     }
 
     @PostMapping("update/validationCheck")
@@ -82,9 +87,23 @@ public class UserController {
     @PostMapping("/mypage/update")
     public UserForm UpdateUser(UserInfo userInfo) {
 
-        UserForm userForm = userService.UpdateUser(userInfo);
+        UserForm userForm = userService.updateUser(userInfo);
 
         return userForm;
+    }
+
+    @PostMapping("/updateprofile")
+    public UserpwdForm updateprofile(@RequestBody UserpwdForm userpwdForm) {
+        UserpwdForm updatepf = userService.updatePw(userpwdForm);
+
+        return updatepf;
+    }
+
+    @PostMapping("/checkpw")
+    public boolean checkPw(@RequestBody UserpwdForm userpwdForm) {
+        String pw = userpwdForm.getPassword();
+        long id = userpwdForm.getUser_id();
+        return userService.checkPw(pw, id);
     }
 
     private UserInfo checkAndReturn(User user) {

@@ -3,6 +3,7 @@ package com.ownwear.app.service;
 
 import com.ownwear.app.controller.VisionController;
 import com.ownwear.app.exception.ResourceNotFoundException;
+import com.ownwear.app.form.UserpwdForm;
 import com.ownwear.app.model.Alert;
 import com.ownwear.app.model.CurrentUsers;
 import com.ownwear.app.form.UserForm;
@@ -18,6 +19,8 @@ import org.joda.time.LocalDate;
 import net.sf.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ownwear.app.form.UserInfo;
 
@@ -31,6 +34,9 @@ import java.util.Optional;
 public class UserService {
 
     final ModelMapper modelMapper = new ModelMapper();
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -75,7 +81,9 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
         //System.out.println(user);
         Optional<CurrentUsers> byUser = currentUsersRepository.findByUser(user);
+
         String requestToken = request.getHeader("Authorization");
+
         if (requestToken != null && requestToken.startsWith("Bearer")) {
             requestToken = requestToken.substring(7);
         }
@@ -97,7 +105,9 @@ public class UserService {
     private UserInfo checkAndReturn(User user) {
 
         UserInfo userInfo = modelMapper.map(user, UserInfo.class);
+
         List<Alert> falseByUser = alertRepository.findFalseByUser(user);
+
         if (falseByUser.isEmpty()) {
             userInfo.setIschecked(true);
         } else {
@@ -107,7 +117,9 @@ public class UserService {
     }
 
     public boolean validationCheck(String value) { //중복값 체크
+
         boolean contains = value.contains("@");
+
         if (contains) { //이메일
             Optional<User> byEmail = userRepository.findByEmail(value);
             if (byEmail.isPresent()) {
@@ -147,29 +159,49 @@ public class UserService {
 
     }
 
+    public UserForm updateUser(UserInfo userInfo) {
 
-    public UserForm UpdateUser(UserInfo userInfo) {
+        Optional<User> byId = userRepository.findById(userInfo.getUser_id());
 
-        try {
-            Optional<User> byId = userRepository.findById(userInfo.getUser_id());
+        if (byId.isPresent()) {
+            User user = modelMapper.map(userInfo,User.class);
 
-            if (byId.isPresent()) {
-                User user = byId.get();
-                user.setUserimg(userInfo.getUserimg());
-                user.setUsername(userInfo.getUsername());
-                user.setEmail(userInfo.getEmail());
-                user.setHeight(userInfo.getHeight());
-                user.setSex(userInfo.getSex());
-                user.setRdate(new Timestamp(System.currentTimeMillis()));
-                JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
-                String data = (String) jsonObject.get("data");
-                user.setUserimg(data);
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+//                user.setUserimg(userInfo.getUserimg());
+//                user.setUsername(userInfo.getUsername());
+//                user.setEmail(userInfo.getEmail());
+//                user.setHeight(userInfo.getHeight());
+//                user.setSex(userInfo.getSex());
+//                user.setRdate(new Timestamp(System.currentTimeMillis()));
+//                JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
+//                String data = (String) jsonObject.get("data");
+//                user.setUserimg(data);
+
+            return modelMapper.map(userRepository.save(user),UserForm.class);
         }
 
         return null;
+    }
+
+    public boolean checkPw(String pw, Long id) {
+
+        Optional<User> byId = userRepository.findById(id);
+
+        String password = byId.get().getPassword();
+
+        String newPassword = passwordEncoder.encode(pw);
+        if (newPassword.equals(password)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public UserpwdForm updatePw(UserpwdForm userpwdForm) {
+
+        Optional<User> byId = userRepository.findById(userpwdForm.getUser_id());
+        userpwdForm.setPassword(passwordEncoder.encode(userpwdForm.getPassword()));
+        User user = modelMapper.map(userpwdForm, User.class);
+
+        return modelMapper.map(userRepository.save(user), UserpwdForm.class);
     }
 }
