@@ -6,16 +6,12 @@ import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.form.UserInfo;
 import com.ownwear.app.form.UserpwdForm;
 import com.ownwear.app.model.Alert;
-import com.ownwear.app.model.CurrentUsers;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.model.User;
 import com.ownwear.app.repository.AlertRepository;
-import com.ownwear.app.repository.CurrentUsersRepository;
-import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.security.CurrentUser;
 import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.service.UserService;
-import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("user")

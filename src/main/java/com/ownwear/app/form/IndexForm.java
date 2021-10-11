@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 public class IndexForm {
 
-    private Map<String , List<PostForm>> postForms = new HashMap<>();
+    private Map<String , List<IndexPost>> postMap = new HashMap<>();
 
     private List<IndexUser> userInfos;
 
