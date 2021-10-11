@@ -27,7 +27,7 @@ public class CommentService {
     final ModelMapper modelMapper = new ModelMapper();
 
     public List<CommentForm> create(CommentForm commentForm) {
-        Optional<Post> postById = postRepository.findById(commentForm.getPost().getPost_id()); //해당 게시글 존재여부
+        Optional<Post> postById = postRepository.findById(commentForm.getPost().getPostid()); //해당 게시글 존재여부
         if (postById.isPresent()) {
             Comment comment = modelMapper.map(commentForm, Comment.class);
             commentRepository.save(comment);
@@ -37,9 +37,9 @@ public class CommentService {
         }
     }
 
-    public List<CommentForm> getComments(long post_id) {
+    public List<CommentForm> getComments(long postid) {
 
-        Optional<Post> postById = postRepository.findById(post_id); //해당 게시글 존재여부
+        Optional<Post> postById = postRepository.findById(postid); //해당 게시글 존재여부
         if (postById.isPresent()) {
 
             return getFormListByPost(postById.get());
@@ -49,7 +49,7 @@ public class CommentService {
     }
 
     public List<CommentForm> update(CommentForm commentForm) {
-        Optional<Post> postById = postRepository.findById(commentForm.getPost().getPost_id()); //해당 게시글 존재여부
+        Optional<Post> postById = postRepository.findById(commentForm.getPost().getPostid()); //해당 게시글 존재여부
         if (postById.isPresent()) {
             Comment comment = modelMapper.map(commentForm, Comment.class);
             commentRepository.save(comment);

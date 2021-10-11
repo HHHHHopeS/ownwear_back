@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BrandForm {
 
-    private Long brand_id;
+    private Long brandid;
 
     private String brandname;
 }

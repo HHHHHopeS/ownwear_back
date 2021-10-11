@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserPwdForm {
 
-    private Long user_id;
+    private Long userid;
 
     private String password;
 }

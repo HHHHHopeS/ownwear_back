@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("user")
 public class UserController {
 
-    @Autowired
+    @Autowired //todo AllArgsConstructor
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -40,16 +40,16 @@ public class UserController {
     }
 
     //    ", user/{username}" permit all
-    @GetMapping("/{username}")
+    @GetMapping("/{username}") //todo 팔로잉 했는지,
     public UserInfo getUserDetail(@PathVariable("username") String username) {
 
         UserInfo userDetail = userService.getUserDetail(username);
 
         return userDetail;
     }
-
+//todo modal (좋,팔 형식) , (타입(좋,팔), 현재 유저, 타겟 유저(포스트))
     //    ", /user/{username}/posts" permit all
-    @GetMapping("/{username}/posts")
+    @GetMapping("/{username}/posts") //todo 인피니티 스크롤,포스트 12 개를 유저 정보와 함께
     public List<Post> getUserPosts(@PathVariable("username") String username) {
         return userService.getUserPosts(username);
     }
@@ -66,11 +66,11 @@ public class UserController {
 
     //    ", /user/mypage/**" auth
     @PostMapping("/mypage")
-    public UserForm getUserData(@RequestBody Long user_id) {
+    public UserForm getUserData(@RequestBody Long userid) {
 
-//        System.out.println("user_id = " + user_id);
+//        System.out.println("userid = " + userid);
 
-        UserForm userData = userService.getUserData(user_id);
+        UserForm userData = userService.getUserData(userid);
 
         return userData;
     }
@@ -93,7 +93,7 @@ public class UserController {
     @PostMapping("/checkpw")
     public boolean checkPw(@RequestBody UserPwdForm userpwdForm) {
         String pw = userpwdForm.getPassword();
-        long id = userpwdForm.getUser_id();
+        long id = userpwdForm.getUserid();
         return userService.checkPw(pw, id);
     }
 

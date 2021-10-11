@@ -37,7 +37,7 @@ class DetailServiceTest {
     @Test
     public void a(){
 //        Optional<Post> byId = postRepository.findById(8L);
-//        byId.get().setPost_id(9L);
+//        byId.get().setPostid(9L);
 //        postRepository.save(byId.get());
 //        List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
 //        for (LikePost likePost : top6ByPost) {
@@ -53,7 +53,7 @@ class DetailServiceTest {
             Long longO = Long.parseLong(big);
             int i = intO.intValue();
             IndexHashTag postHashTagInfo = new IndexHashTag();
-            postHashTagInfo.setHashtag_id(longO);
+            postHashTagInfo.setHashtagid(longO);
             postHashTagInfo.setCount(i);
             //System.out.println(postHashTagInfo);
         }*/
@@ -61,7 +61,7 @@ class DetailServiceTest {
        /* List<IIndexHashTag> top9ByCountByHashtag = postHashTagRepository.findTop9ByCountByHashtagInterface();
         for (IIndexHashTag postHashTagInfo : top9ByCountByHashtag) {
 
-            //System.out.println(postHashTagInfo.getHashtag_id());
+            //System.out.println(postHashTagInfo.getHashtagid());
             //System.out.println(postHashTagInfo.getCount());
         }
 */

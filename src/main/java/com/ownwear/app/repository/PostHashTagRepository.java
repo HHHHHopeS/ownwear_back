@@ -20,20 +20,20 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
 
     void deleteAllByPost(Post post);
 
-    @Query(value = "SELECT Count(p.hashtag_id) as count,h.hashtag_id, h.hashtagname  " +
+    @Query(value = "SELECT Count(p.hashtagid) as count,h.hashtagid, h.hashtagname  " +
             "FROM Post_Hash_Tag p " +
             "NATURAL JOIN HASH_TAG h " +
-            "GROUP BY p.hashtag_id " +
-            "HAVING Count(p.hashtag_id) >= 1 " +
-            "ORDER BY Count(p.hashtag_id) desc LIMIT 9;",nativeQuery = true)
+            "GROUP BY p.hashtagid " +
+            "HAVING Count(p.hashtagid) >= 1 " +
+            "ORDER BY Count(p.hashtagid) desc LIMIT 9;",nativeQuery = true)
     List<IIndexHashTag> findTop9ByCountByHashtagInterface();
 
 
-    @Query(value = "SELECT Count(p.hashtag_id) as count,h.hashtag_id, h.hashtagname  " +
+    @Query(value = "SELECT Count(p.hashtagid) as count,h.hashtagid, h.hashtagname  " +
             "FROM Post_Hash_Tag p " +
             "NATURAL JOIN HASH_TAG h " +
-            "GROUP BY p.hashtag_id " +
-            "HAVING Count(p.hashtag_id) >= 1 " +
-            "ORDER BY Count(p.hashtag_id) desc LIMIT 9;",nativeQuery = true)
+            "GROUP BY p.hashtagid " +
+            "HAVING Count(p.hashtagid) >= 1 " +
+            "ORDER BY Count(p.hashtagid) desc LIMIT 9;",nativeQuery = true)
     List<PostHashTag> findTop6PostByHashTag();
 }

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Data
 public class IndexBrand {
 
-        private long brand_id;
+        private long brandid;
 
         private int tagCount;
 

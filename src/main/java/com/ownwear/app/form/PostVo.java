@@ -1,4 +1,4 @@
-package com.ownwear.app.vo;
+package com.ownwear.app.form;
 
 import com.ownwear.app.form.PostForm;
 import com.ownwear.app.model.Comment;

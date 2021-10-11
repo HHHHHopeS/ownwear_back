@@ -16,18 +16,18 @@ public class PostBrand {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_brand_id")
-    private Long post_brand_id;
+    @Column(name = "post_brandid")
+    private Long post_brandid;
 
 //    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand_id")
-//    @Column(name = "brand_id")
+    @JoinColumn(name = "brandid")
+//    @Column(name = "brandid")
     private Brand brand;
 
 //    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "postid")
     private Post post;
 
     public PostBrand(Post post, Brand brand) {

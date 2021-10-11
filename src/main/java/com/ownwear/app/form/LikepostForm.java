@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Data
 public class LikepostForm {
 
-    private Long likepost_id;
+    private Long likepostid;
 
     private Post post;
 

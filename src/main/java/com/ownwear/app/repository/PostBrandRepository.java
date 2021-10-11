@@ -13,21 +13,21 @@ import java.util.List;
 public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
 
 
-    @Query(value = "SELECT Count(p.brand_id) as count, p.brand_id , b.brandname " +
+    @Query(value = "SELECT Count(p.brandid) as count, p.brandid , b.brandname " +
             "FROM Post_brand p " +
             "NATURAL JOIN Brand b " +
-            "GROUP BY p.brand_id " +
-            "HAVING Count(p.brand_id) >= 1 " +
-            "ORDER BY Count(p.brand_id) desc LIMIT 9;",nativeQuery = true)
+            "GROUP BY p.brandid " +
+            "HAVING Count(p.brandid) >= 1 " +
+            "ORDER BY Count(p.brandid) desc LIMIT 9;",nativeQuery = true)
     List<IIndexBrand> findTop9ByCountByBrand();
 
-
-
-    @Query(value = "SELECT post_id, user_id as user , imgData FROM post where post_id IN (SELECT p.post_id " +
+    @Query(value = "SELECT p.postid " +
             "FROM Post_brand p " +
             "NATURAL JOIN Brand b " +
-            "GROUP BY p.brand_id " +
-            "HAVING Count(p.brand_id) >= 1 " +
-            "ORDER BY Count(p.brand_id) desc ) LIMIT 6;",nativeQuery = true)
-    List<IIndexPost> findTop6PostByBrand();
+            "GROUP BY p.brandid " +
+            "HAVING Count(p.brandid) >= 1 " +
+            "ORDER BY Count(p.brandid) desc  LIMIT 6;",nativeQuery = true)
+    List<Long> findTop6PostidByBrand();
+
+    //, po.imgData as imgData
 }

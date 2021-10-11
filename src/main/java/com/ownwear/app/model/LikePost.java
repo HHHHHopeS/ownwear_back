@@ -17,19 +17,19 @@ import java.util.List;
 public class LikePost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "likepost_id")
-    private Long likepost_id;
+    @Column(name = "likepostid")
+    private Long likepostid;
 
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "postid")
     private Post post;
 
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userid")
     private User user;
 
     public LikePost(Post post, User user) {

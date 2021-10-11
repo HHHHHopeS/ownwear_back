@@ -88,7 +88,7 @@ public class UserService {
             }
             return null; //todo 유효하지않은 토큰입니다.
         } else {
-            //System.out.println("##최초접속 user_id : " + user.getUser_id());
+            //System.out.println("##최초접속 userid : " + user.getUserid());
             CurrentUsers currentUsers = new CurrentUsers(user, requestToken);
             currentUsersRepository.save(currentUsers);
             return checkAndReturn(user);
@@ -129,7 +129,7 @@ public class UserService {
     public boolean addInfoOauth2(UserInfo userInfo) {
 
         try {
-            Optional<User> byId = userRepository.findById((userInfo.getUser_id()));
+            Optional<User> byId = userRepository.findById((userInfo.getUserid()));
             if (byId.isPresent()) {
                 User user = byId.get();
             }
@@ -139,9 +139,9 @@ public class UserService {
         return false;
     }
 
-    public UserForm getUserData(Long user_id) {
+    public UserForm getUserData(Long userid) {
 
-        Optional<User> byId = userRepository.findById(user_id);
+        Optional<User> byId = userRepository.findById(userid);
 
         if (byId.isPresent()) {
             UserForm map = modelMapper.map(byId.get(), UserForm.class);
@@ -194,7 +194,7 @@ public class UserService {
 
     public UserPwdForm updatePw(UserPwdForm userpwdForm) {
 
-        Optional<User> byId = userRepository.findById(userpwdForm.getUser_id());
+        Optional<User> byId = userRepository.findById(userpwdForm.getUserid());
         userpwdForm.setPassword(passwordEncoder.encode(userpwdForm.getPassword()));
         User user = modelMapper.map(userpwdForm, User.class);
 

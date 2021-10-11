@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class IndexHashTag {
     private int count;
-    private Long hashtag_id;
+    private Long hashtagid;
     private String hashtagName;
 }

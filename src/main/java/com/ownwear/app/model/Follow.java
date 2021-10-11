@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "Follow", uniqueConstraints = {@UniqueConstraint(
-        name = "Follow_id_UNIQUE",
+        name = "Followid_UNIQUE",
         columnNames = {"from_user", "to_user"}
 )})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,8 +20,8 @@ public class Follow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "follow_id")
-    private Long follow_id;
+    @Column(name = "followid")
+    private Long followid;
 
 
     @JsonManagedReference
