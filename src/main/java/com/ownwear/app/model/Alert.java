@@ -15,8 +15,8 @@ public class Alert {
 
     @Id
     @GeneratedValue
-    @Column(name = "alert_id")
-    private Long alert_id;
+    @Column(name = "alertid")
+    private Long alertid;
 
 
     String type;//like follow comment

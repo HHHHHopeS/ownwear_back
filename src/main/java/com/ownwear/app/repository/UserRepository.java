@@ -20,9 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllBySex(boolean sex); // 성별로 유저 search
 
-    @Query(value = "SELECT Count(f.to_user) as count, u.user_id , u.username, u.userimg " +
+    @Query(value = "SELECT Count(f.to_user) as count, u.userid , u.username, u.userimg " +
             "FROM follow f " +
-            "Join user u ON u.user_id = f.to_user " +
+            "Join user u ON u.userid = f.to_user " +
             "GROUP BY f.to_user " +
             "HAVING Count(f.to_user) >= 1 " +
             "ORDER BY Count(f.to_user) desc LIMIT 7;",nativeQuery = true)

@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 public class PostForm {
 
-    private Long post_id;
+    private Long postid;
 
     private UserInfo user;
 

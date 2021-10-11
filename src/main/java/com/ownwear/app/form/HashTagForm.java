@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class HashTagForm {
 
-    private Long hashtag_id;
+    private Long hashtagid;
 
     private String hashtagname;
 

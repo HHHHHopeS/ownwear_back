@@ -3,7 +3,7 @@ package com.ownwear.app.service;
 import com.ownwear.app.form.*;
 import com.ownwear.app.model.*;
 import com.ownwear.app.repository.*;
-import com.ownwear.app.vo.PostVo;
+import com.ownwear.app.form.PostVo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,9 +42,9 @@ public class DetailService {
     final ModelMapper modelMapper = new ModelMapper();
 
 
-    public PostVo getDetail(Long post_id) {
+    public PostVo getDetail(Long postid) {
 
-        Optional<Post> byPostno = postRepository.findById(post_id);
+        Optional<Post> byPostno = postRepository.findById(postid);
         if (byPostno.isPresent()) {
             Post post = byPostno.get();
             return getPostVo(post);
@@ -53,7 +53,7 @@ public class DetailService {
     }
 
     public long createPost(PostCreateForm postCreateForm) {
-//        Optional<Post> byId = postRepository.findById(postForm.getPost_id());
+//        Optional<Post> byId = postRepository.findById(postForm.getPostid());
 //        if (byId.isPresent()) {
 //            return null; //todo 에러페이지(잘못된 요청방식)
 //        }
@@ -62,17 +62,13 @@ public class DetailService {
         Post save = postRepository.save(post);
         List<String> hashtags = postCreateForm.getHashtags();
         List<String> brands = postCreateForm.getBrands();
-        for (String brand : brands) {
-            System.out.println(brand);
-        }
-
         updateHashtag(post, hashtags);
         updateBrand(post, brands);
-        return save.getPost_id();
+        return save.getPostid();
     }
 
     public PostForm updatePost(PostForm postForm) {
-        Optional<Post> byId = postRepository.findById(postForm.getPost_id());
+        Optional<Post> byId = postRepository.findById(postForm.getPostid());
 
         if (byId.isPresent()) {
             Timestamp rdate = byId.get().getRdate();
@@ -90,7 +86,7 @@ public class DetailService {
     public List<PostForm> getList(int page, boolean sex) {
         PageRequest pageRequest = PageRequest.of(page, size);
         User user = new User(sex);
-        Page<Post> allByUserIn = postRepository.findAllByUser(user, pageRequest);
+        Page<Post> allByUserIn = postRepository. findAllByUser(user, pageRequest);
         List<PostForm> pp = new ArrayList<>();
         for (Post p : allByUserIn) {
             PostForm postForm = modelMapper.map(p, PostForm.class);
@@ -100,179 +96,18 @@ public class DetailService {
     }
 
 
-    public void deleteById(long post_id) { //todo delete query 직접 작성하여 성능 개선
-        //System.out.println(post_id);
-        postRepository.deleteById(post_id);
+    public void deleteById(long postid) { //todo delete query 직접 작성하여 성능 개선
+        //System.out.println(postid);
+        postRepository.deleteById(postid);
     }
 
 
-    public IndexForm getIndex() {
-        // Rank , Sex , Tag , Brand , 최신
-        IndexForm indexForm = new IndexForm();
-        for (String s : Arrays.asList("rank", "new")) {
-            indexForm.setPostMap(mapSetting(s, indexForm.getPostMap(), null)); //랭크기준 포스트 리스트 담기
-        }//최신기준 포스트 리스트 담기
-        indexForm.setUserInfos(getIndexUsers());
-        indexForm.setHashTagForms(getPostHashTagInfos());
-        indexForm.setBrandForms(getIndexBrands());
-//        indexForm.setUserInfos(userRepository.findTop7ByFollow());
-//                private List<UserInfo> userInfos;
 
-        return indexForm;
-    }
-
-    public Map<String, List<IndexPost>> getIndexScroll(IndexRequest indexRequest) {
-
-        int page = indexRequest.getPage();
-        // Rank , Sex , Tag , Brand , 최신
-
-        Map<String, List<IndexPost>> postMap = null;
-
-        if (page == 1) {
-            postMap = mapSetting("brand", new HashMap<>(), null); //랭크기준 포스트 리스트 담기
-        } else if (page >= 2) {
-            postMap = mapSetting("random", new HashMap<>(), indexRequest.getIds());
-
-        }
-        return postMap;
-    }
-    /*
-     * tag
-     * brand
-     * new
-     * recommend(random)
-     *
-     *
-     * */
-
-    private List<IndexUser> getIndexUsers() {
-        List<IIndexUser> iIndexUsers = userRepository.findTop7ByFollow();
-        List<IndexUser> indexUsers = new ArrayList<>();
-        for (IIndexUser iIndexUser : iIndexUsers) {
-            IndexUser indexUser = new IndexUser();
-            indexUser.setFollow(iIndexUser.getCount());
-            indexUser.setUser_id(iIndexUser.getUser_id());
-            indexUser.setUsername(iIndexUser.getUserName());
-            indexUser.setUserimg(iIndexUser.getUserImg());
-            indexUsers.add(indexUser);
-        }
-        return indexUsers;
-    }
-
-    private List<IndexBrand> getIndexBrands() {
-        List<IIndexBrand> iIndexBrands = postBrandRepository.findTop9ByCountByBrand();
-        List<IndexBrand> indexBrands = new ArrayList<>();
-        for (IIndexBrand iIndexBrand : iIndexBrands) {
-            IndexBrand indexBrand = new IndexBrand();
-            indexBrand.setTagCount(iIndexBrand.getCount());
-            indexBrand.setBrand_id(iIndexBrand.getBrand_id());
-            indexBrand.setBrandName(iIndexBrand.getBrandName());
-            indexBrands.add(indexBrand);
-        }
-        return indexBrands;
-    }
-
-    private List<IndexHashTag> getPostHashTagInfos() {
-
-        List<IIndexHashTag> iIndexHashTags = postHashTagRepository.findTop9ByCountByHashtagInterface();
-        List<IndexHashTag> indexHashTags = new ArrayList<>();
-        for (IIndexHashTag iIndexHashTag : iIndexHashTags) {
-            IndexHashTag indexHashTag = new IndexHashTag();
-            indexHashTag.setCount(iIndexHashTag.getCount());
-            indexHashTag.setHashtag_id(iIndexHashTag.getHashtag_id());
-            indexHashTag.setHashtagName(iIndexHashTag.getHashtagName());
-            indexHashTags.add(indexHashTag);
-        }
-        return indexHashTags;
-    }
-
-    private Map<String, List<IndexPost>> mapSetting(String topic, Map<String, List<IndexPost>> map, List<Long> ids) {
-        List<IndexPost> postFormList = new ArrayList<>();
-        switch (topic) {
-            case "rank":
-                List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
-                for (LikePost likePost : top6ByPost) {
-                    LikepostForm likepostForm = modelMapper.map(likePost, LikepostForm.class);
-                    IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
-                    postFormList.add(indexPost);
-                }
-            case "new":
-                List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc();
-                postFormList = getIndexPost(newPosts, postFormList);
-            case "brand":
-                List<IIndexPost> brandPosts = postBrandRepository.findTop6PostByBrand();
-                postFormList = getIndexPost(brandPosts, postFormList);
-
-            case "random":
-                long totalCount = postRepository.maxById() + 1;
-                Set<Long> randoms = new HashSet<>();
-                List<IIndexPost> iIndexPosts = new ArrayList<>();
-                long random = 0;
-                boolean check = true;
-                if (ids.isEmpty() || ids == null) {
-                        while (check) {
-                            random = ThreadLocalRandom.current().nextLong(totalCount);
-                            if (!randoms.contains(random)) {
-                                Optional<IIndexPost> interfaceById = postRepository.findInterfaceById(random);
-                                if (interfaceById.isPresent()) {
-                                    IIndexPost iIndexPost = interfaceById.get();
-                                    iIndexPosts.add(iIndexPost);
-                                    randoms.add(random);
-                                }
-                            }
-                            check = randoms.size() < 6 && ids.size() + randoms.size() < totalCount;
-                        }
-
-
-                } else {
-                    while (randoms.size() < 6 && ids.size() + randoms.size() < totalCount) {
-                        while (check) {
-                            check = false;
-                            random = ThreadLocalRandom.current().nextLong(totalCount);
-                            for (Long aLong : ids) {
-                                if (aLong == random) {
-                                    check = true;
-                                }
-                            }
-                        }
-                        if (!randoms.contains(random)) {
-                            Optional<IIndexPost> interfaceById = postRepository.findInterfaceById(random);
-                            if (interfaceById.isPresent()) {
-                                IIndexPost iIndexPost = interfaceById.get();
-                                iIndexPosts.add(iIndexPost);
-                                randoms.add(random);
-                            }
-                        }
-                        check = randoms.size() < 6 && ids.size() + randoms.size() < totalCount;
-                    }
-                }
-                postFormList = getIndexPost(iIndexPosts, postFormList);
-
-        }
-
-        map.put(topic, postFormList);
-        return map;
-    }
-
-    private List<IndexPost> getIndexPost(List<IIndexPost> newPosts, List<IndexPost> postFormList) {
-
-        for (IIndexPost newPost : newPosts) {
-            IndexPost indexPost = new IndexPost();
-            indexPost.setPost_id(newPost.getPost_id());
-            Map<String, Map> imgData = newPost.getImgData();
-            System.out.println(imgData);
-//            indexPost.setImgData(i);
-            indexPost.setUser(modelMapper.map(newPost.getUser(), UserInfo.class));
-            postFormList.add(indexPost);
-        }
-
-        return postFormList;
-    }
 
 
     @Transactional(readOnly = true)
-    public PostForm mapPostForm(long post_id) {
-        Post post = postRepository.findById(post_id).get();
+    public PostForm mapPostForm(long postid) {
+        Post post = postRepository.findById(postid).get();
         return modelMapper.map(post, PostForm.class);
     }
 
@@ -286,7 +121,7 @@ public class DetailService {
         List<PostForm> postForms = new ArrayList<>();
         for (Post p : allByUserIn) {
             UserInfo userInfo = modelMapper.map(p.getUser(), UserInfo.class);
-            PostForm postForm = mapPostForm(p.getPost_id());
+            PostForm postForm = mapPostForm(p.getPostid());
             postForm.setUser(userInfo);
             postForms.add(postForm);
         }
@@ -294,7 +129,7 @@ public class DetailService {
     }
 
     private PostVo getPostVo(Post post) {
-        User user = userRepository.findById(post.getUser().getUser_id()).get();
+        User user = userRepository.findById(post.getUser().getUserid()).get();
         long likecount = likePostRepository.countByPost(post);
         List<HashTag> hashtags = postHashTagRepository.findHashTagsByPost(post);
         List<PostForm> postForms = changeToFormList(postRepository.findByUser(user));

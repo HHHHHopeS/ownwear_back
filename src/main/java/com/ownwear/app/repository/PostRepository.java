@@ -15,10 +15,10 @@ import java.util.Set;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Optional<Post> findById(long post_id);
+    Optional<Post> findById(long postid);
 
-    @Query("select p.post_id as post_id , p.user as user , p.imgdata as imgdata from Post p where p.post_id=?1")
-    Optional<IIndexPost> findInterfaceById(long post_id);
+    @Query("select p from Post p where p.postid=?1")
+    Optional<IIndexPost> findInterfaceById(long postid);
 
     List<Post> findByUser(User user); //해당 유저의 게시글
 
@@ -38,7 +38,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<IIndexPost> findTop6ByOrderByRdateAsc();
 
 
-    @Query("select Max(p.post_id) from Post p ")
+    @Query("select Max(p.postid) from Post p ")
     Long maxById();
 
+//    @Query("SELECT p FROM Post p where p.postid In :longs")
+    List<IIndexPost> findAllByPostidIn(List<Long> longs);
 }

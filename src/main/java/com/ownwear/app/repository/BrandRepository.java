@@ -14,12 +14,12 @@ import java.util.Optional;
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
 
-    @Query(value = "SELECT Count(p.brand_id) as count, p.brand_id , b.brandname " +
+    @Query(value = "SELECT Count(p.brandid) as count, p.brandid , b.brandname " +
             "FROM Post_brand p " +
             "NATURAL JOIN Brand b " +
-            "GROUP BY p.brand_id " +
-            "HAVING Count(p.brand_id) >= 1 " +
-            "ORDER BY Count(p.brand_id) desc LIMIT 9;",nativeQuery = true)
+            "GROUP BY p.brandid " +
+            "HAVING Count(p.brandid) >= 1 " +
+            "ORDER BY Count(p.brandid) desc LIMIT 9;",nativeQuery = true)
     List<IIndexBrand> findTop9ByCountByBrand();
 
     List<Brand> findByBrandnameStartsWith(String brandname);

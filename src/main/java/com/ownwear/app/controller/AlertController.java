@@ -20,10 +20,10 @@ public class AlertController {
         return commentService.create(comment);
     }
 
-    @GetMapping("/{post_id}")
-    public List<CommentForm> getComments(@PathVariable("post_id") long post_id) {
+    @GetMapping("/{postid}")
+    public List<CommentForm> getComments(@PathVariable("postid") long postid) {
 
-        return commentService.getComments(post_id);
+        return commentService.getComments(postid);
 
     }
 

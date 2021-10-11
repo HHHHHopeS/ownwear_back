@@ -17,8 +17,8 @@ import java.sql.Timestamp;
 public class Search {
 
     @Id
-    @Column(name = "srch_id", nullable = false, length = 100)
-    private Long srch_id;
+    @Column(name = "srchid", nullable = false, length = 100)
+    private Long srchid;
 
     @Column(name = "srchcategory", nullable = false, length = 100)
     private String srchcategory;

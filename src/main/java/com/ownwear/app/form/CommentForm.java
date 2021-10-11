@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Data
 public class CommentForm {
 
-    private long comment_id;
+    private long commentid;
 
     private Post post;
 

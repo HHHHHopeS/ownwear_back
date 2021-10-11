@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class IndexUser {
     int follow;
-    long user_id;
+    long userid;
     String username;
     String userimg;//todo
 }

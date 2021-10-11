@@ -27,7 +27,7 @@ public class LikePostController {
     //,"like/getlist/**" permit all
     @PostMapping("/getlist")
     public List<LikePost> getLikeUser(@RequestBody LikePost likePost) {
-//        //System.out.println(likePost.getPost().getPost_id());
+//        //System.out.println(likePost.getPost().getPostid());
         List<LikePost> byPost = likePostRepository.findByPost(likePost.getPost());
 
         return byPost;

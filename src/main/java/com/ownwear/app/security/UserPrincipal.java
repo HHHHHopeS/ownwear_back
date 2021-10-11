@@ -32,7 +32,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                 singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new UserPrincipal(
-                user.getUser_id(),
+                user.getUserid(),
                 user.getEmail(),
                 user.getPassword(),
                 authorities

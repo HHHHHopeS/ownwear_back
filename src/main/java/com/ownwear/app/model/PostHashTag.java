@@ -13,18 +13,18 @@ public class PostHashTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "posthashtag_id")
-    private Long posthashtag_id;
+    @Column(name = "posthashtagid")
+    private Long posthashtagid;
 
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "postid")
     private Post post;
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hashtag_id")
+    @JoinColumn(name = "hashtagid")
     private HashTag hashtag;
 
     @Builder

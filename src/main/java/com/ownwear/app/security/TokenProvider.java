@@ -49,7 +49,7 @@ public class TokenProvider {
         CurrentUsers currentUsers = new CurrentUsers(user, token);
         Optional<CurrentUsers> byUser = currentUsersRepository.findByUser(user);
         if (byUser.isPresent()){
-            currentUsersRepository.deleteById(byUser.get().getCurrentusers_id());
+            currentUsersRepository.deleteById(byUser.get().getCurrentusersid());
         }
         currentUsersRepository.save(currentUsers);
         return token;

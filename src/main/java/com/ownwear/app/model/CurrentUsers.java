@@ -17,14 +17,14 @@ public class CurrentUsers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long currentusers_id;
+    private Long currentusersid;
 
     private String token;
 
 
     @JsonManagedReference
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userid")
     private User user;
 
     public CurrentUsers() {

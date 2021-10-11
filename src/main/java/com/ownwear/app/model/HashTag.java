@@ -18,9 +18,9 @@ import java.util.Set;
 public class HashTag {
 
     @Id
-    @Column(name = "hashtag_id")
+    @Column(name = "hashtagid")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long hashtag_id;
+    private Long hashtagid;
 
     @Column(nullable = false, unique = true)
     private String hashtagname;

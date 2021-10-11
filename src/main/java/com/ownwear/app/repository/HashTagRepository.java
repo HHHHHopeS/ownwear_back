@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface HashTagRepository extends JpaRepository<HashTag, Long> {
 
-    Optional<HashTag> findById(long hashTag_id);
+    Optional<HashTag> findById(long hashTagid);
 
     List<HashTag> findByHashtagnameStartsWith(String brandname);
     Optional<HashTag> findByHashtagname(String hashtagString);

@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Data
 public class UserForm {
 
-    private Long user_id;
+    private Long userid;
 
     private String userimg;
 
