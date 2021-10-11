@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findAll(Pageable pageable);//모든 게시글
 
-//    Page<Post> findAllByUserIn(List<User> user, Pageable pageable); //
+//    Page<Post> findAllByUserIn(List<User> user, Pageable pageable);
 
     Page<Post> findAllByUser(User users, Pageable pageable); //유저의 컬럼에 따른 모든 게시글
 

@@ -161,10 +161,15 @@ public class UserService {
 
     public UserForm updateUser(UserInfo userInfo) {
 
-        Optional<User> byId = userRepository.findById(userInfo.getUser_id());
+        Optional<User> byUsername = userRepository.findByUsername(userInfo.getUsername());
+        Optional<User> byEmail = userRepository.findByEmail(userInfo.getEmail());
 
-        if (byId.isPresent()) {
-            User user = modelMapper.map(userInfo,User.class);
+        if (byUsername.isPresent()) {
+
+            return null;
+        } else if (byEmail.isPresent()) {
+            return null;
+        }
 
 //                user.setUserimg(userInfo.getUserimg());
 //                user.setUsername(userInfo.getUsername());
@@ -175,12 +180,9 @@ public class UserService {
 //                JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
 //                String data = (String) jsonObject.get("data");
 //                user.setUserimg(data);
-
+        User user = new User();
             return modelMapper.map(userRepository.save(user),UserForm.class);
         }
-
-        return null;
-    }
 
     public boolean checkPw(String pw, Long id) {
 
@@ -189,6 +191,7 @@ public class UserService {
         String password = byId.get().getPassword();
 
         String newPassword = passwordEncoder.encode(pw);
+
         if (newPassword.equals(password)) {
             return true;
         }

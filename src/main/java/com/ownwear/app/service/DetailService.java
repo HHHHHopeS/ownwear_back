@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +22,22 @@ public class DetailService {
 
     @Autowired
     private PostRepository postRepository;
+
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PostHashTagRepository postHashTagRepository;
+
     @Autowired
     private LikePostRepository likePostRepository;
+
     @Autowired
     private HashTagRepository hashTagRepository;
+
     @Autowired
     private BrandRepository brandRepository;
 
@@ -211,12 +218,21 @@ public class DetailService {
     }
 
     private void updateHashtag(Post post, List<String> hashtags) {
+
         for (String hashtagString : hashtags) {
             HashTag hashTag = new HashTag(hashtagString);
             hashTagRepository.save(hashTag);
             PostHashTag postHashTag = new PostHashTag(post, hashTag);
             postHashTagRepository.save(postHashTag);
         }
+
     }
 
+    public List<Post> postListPage(int page) {
+
+        Page<Post> postPage = postRepository.findAll(PageRequest.of(page, 12));
+        List<Post> posts = postPage.getContent();
+
+        return posts;
+    }
 }

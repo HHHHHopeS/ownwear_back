@@ -3,6 +3,7 @@ package com.ownwear.app.controller;
 import com.ownwear.app.form.IndexForm;
 import com.ownwear.app.form.PostCreateForm;
 import com.ownwear.app.form.PostForm;
+import com.ownwear.app.model.Post;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
 import lombok.extern.slf4j.Slf4j;
@@ -71,4 +72,13 @@ public class PostController {
         JSONArray arr = JSONArray.fromObject(str);
         return arr;
     }
+
+    @GetMapping("/postlist/{id}")
+    public List<Post> getPostListPage(@PathVariable("id") int page) {
+
+        List<Post> posts = service.postListPage(page);
+
+        return posts;
+    }
+
 }

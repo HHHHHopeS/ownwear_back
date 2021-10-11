@@ -91,14 +91,14 @@ public class UserController {
 
         return userForm;
     }
-
+//",/user/updateprofile" auth
     @PostMapping("/updateprofile")
     public UserpwdForm updateprofile(@RequestBody UserpwdForm userpwdForm) {
         UserpwdForm updatepf = userService.updatePw(userpwdForm);
 
         return updatepf;
     }
-
+//",/user/checkpw" auth
     @PostMapping("/checkpw")
     public boolean checkPw(@RequestBody UserpwdForm userpwdForm) {
         String pw = userpwdForm.getPassword();
