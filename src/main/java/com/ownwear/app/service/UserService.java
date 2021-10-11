@@ -1,9 +1,8 @@
 package com.ownwear.app.service;
 
 
-import com.ownwear.app.controller.VisionController;
 import com.ownwear.app.exception.ResourceNotFoundException;
-import com.ownwear.app.form.UserpwdForm;
+import com.ownwear.app.form.UserPwdForm;
 import com.ownwear.app.model.Alert;
 import com.ownwear.app.model.CurrentUsers;
 import com.ownwear.app.form.UserForm;
@@ -14,19 +13,13 @@ import com.ownwear.app.repository.CurrentUsersRepository;
 import com.ownwear.app.repository.PostRepository;
 import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.security.UserPrincipal;
-import net.sf.json.JSONObject;
-import org.joda.time.LocalDate;
-import net.sf.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ownwear.app.form.UserInfo;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -199,12 +192,12 @@ public class UserService {
         return false;
     }
 
-    public UserpwdForm updatePw(UserpwdForm userpwdForm) {
+    public UserPwdForm updatePw(UserPwdForm userpwdForm) {
 
         Optional<User> byId = userRepository.findById(userpwdForm.getUser_id());
         userpwdForm.setPassword(passwordEncoder.encode(userpwdForm.getPassword()));
         User user = modelMapper.map(userpwdForm, User.class);
 
-        return modelMapper.map(userRepository.save(user), UserpwdForm.class);
+        return modelMapper.map(userRepository.save(user), UserPwdForm.class);
     }
 }

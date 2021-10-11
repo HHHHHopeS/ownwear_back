@@ -2,9 +2,7 @@ package com.ownwear.app.controller;
 
 import com.ownwear.app.form.UserForm;
 import com.ownwear.app.form.UserInfo;
-import com.ownwear.app.exception.ResourceNotFoundException;
-import com.ownwear.app.form.UserInfo;
-import com.ownwear.app.form.UserpwdForm;
+import com.ownwear.app.form.UserPwdForm;
 import com.ownwear.app.model.Alert;
 import com.ownwear.app.model.Post;
 import com.ownwear.app.model.User;
@@ -14,8 +12,6 @@ import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,14 +84,14 @@ public class UserController {
     }
 //",/user/updateprofile" auth
     @PostMapping("/updateprofile")
-    public UserpwdForm updateprofile(@RequestBody UserpwdForm userpwdForm) {
-        UserpwdForm updatepf = userService.updatePw(userpwdForm);
+    public UserPwdForm updateprofile(@RequestBody UserPwdForm userpwdForm) {
+        UserPwdForm updatepf = userService.updatePw(userpwdForm);
 
         return updatepf;
     }
 //",/user/checkpw" auth
     @PostMapping("/checkpw")
-    public boolean checkPw(@RequestBody UserpwdForm userpwdForm) {
+    public boolean checkPw(@RequestBody UserPwdForm userpwdForm) {
         String pw = userpwdForm.getPassword();
         long id = userpwdForm.getUser_id();
         return userService.checkPw(pw, id);

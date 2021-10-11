@@ -3,7 +3,7 @@ package com.ownwear.app.form;
 import lombok.Data;
 
 @Data
-public class UserpwdForm {
+public class UserPwdForm {
 
     private Long user_id;
 

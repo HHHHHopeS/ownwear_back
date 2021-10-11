@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,9 +122,12 @@ public class DetailService {
     }
 
     public Map<String, List<IndexPost>> getIndexScroll(IndexRequest indexRequest) {
+
         int page = indexRequest.getPage();
         // Rank , Sex , Tag , Brand , 최신
+
         Map<String, List<IndexPost>> postMap = null;
+
         if (page == 1) {
             postMap = mapSetting("brand", new HashMap<>(), null); //랭크기준 포스트 리스트 담기
         } else if (page >= 2) {
@@ -328,4 +332,17 @@ public class DetailService {
         }
     }
 
+    public List<PostForm> getPostList(UserForm userForm, Pageable pageable) {
+        User user = modelMapper.map(userForm,User.class);
+        Page<Post> allByUser = postRepository.findAllByUser(user, pageable);
+
+        List<PostForm> pp = new ArrayList<>(); //todo 클린코딩으로 바꾸기 (한줄)
+        for (Post p : allByUser) {
+            PostForm postForm = modelMapper.map(p, PostForm.class);
+            pp.add(postForm);
+        }
+        List<Post> content = allByUser.getContent();
+
+        return pp;
+    }
 }

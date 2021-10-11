@@ -1,14 +1,15 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.form.IndexForm;
-import com.ownwear.app.form.PostCreateForm;
-import com.ownwear.app.form.PostForm;
+import com.ownwear.app.form.*;
 import com.ownwear.app.model.Post;
+import com.ownwear.app.model.User;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,9 +50,9 @@ public class PostController {
         System.out.println("getIndex 입장");
         return service.getIndex();
     }
-    @GetMapping("/getlist")
-    public Map<String, List<PostForm>> getIndexScroll(String url , int position){
-        return service.getIndexScroll(url, position);
+    @PostMapping("/getindex")
+    public Map<String, List<IndexPost>> getIndexScroll(@RequestBody IndexRequest indexRequest){
+        return service.getIndexScroll(indexRequest);
     }
 
 //    @GetMapping("getlist/man")
@@ -73,12 +74,13 @@ public class PostController {
         return arr;
     }
 
-    @GetMapping("/postlist/{id}")
-    public List<Post> getPostListPage(@PathVariable("id") int page) {
+    @PostMapping("/postlist")
+    public  List<PostForm> getPostList(@RequestBody UserForm user) {
+        System.out.println(user);
 
-        List<Post> posts = service.postListPage(page);
+        PageRequest pageRequest = PageRequest.of(0,10);
+        List<PostForm> postList = service.getPostList(user, pageRequest);
 
-        return posts;
+        return postList;
     }
-
 }
