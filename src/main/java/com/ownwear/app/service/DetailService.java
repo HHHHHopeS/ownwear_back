@@ -8,12 +8,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class DetailService {
@@ -22,24 +22,21 @@ public class DetailService {
 
     @Autowired
     private PostRepository postRepository;
-
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PostHashTagRepository postHashTagRepository;
-
     @Autowired
     private LikePostRepository likePostRepository;
-
     @Autowired
     private HashTagRepository hashTagRepository;
-
     @Autowired
     private BrandRepository brandRepository;
+    @Autowired
+    private PostBrandRepository postBrandRepository;
+
 
     final ModelMapper modelMapper = new ModelMapper();
 
@@ -63,7 +60,13 @@ public class DetailService {
         Post post = modelMapper.map(postCreateForm, Post.class);
         Post save = postRepository.save(post);
         List<String> hashtags = postCreateForm.getHashtags();
+        List<String> brands = postCreateForm.getBrands();
+        for (String brand : brands) {
+            System.out.println(brand);
+        }
+
         updateHashtag(post, hashtags);
+        updateBrand(post, brands);
         return save.getPost_id();
     }
 
@@ -105,7 +108,9 @@ public class DetailService {
     public IndexForm getIndex() {
         // Rank , Sex , Tag , Brand , 최신
         IndexForm indexForm = new IndexForm();
-        indexForm.setPostForms(getPostForms("rank", indexForm.getPostForms())); //랭크기준 포스트 리스트 담기
+        for (String s : Arrays.asList("rank", "new")) {
+            indexForm.setPostMap(mapSetting(s, indexForm.getPostMap(), null)); //랭크기준 포스트 리스트 담기
+        }//최신기준 포스트 리스트 담기
         indexForm.setUserInfos(getIndexUsers());
         indexForm.setHashTagForms(getPostHashTagInfos());
         indexForm.setBrandForms(getIndexBrands());
@@ -115,13 +120,26 @@ public class DetailService {
         return indexForm;
     }
 
+    public Map<String, List<IndexPost>> getIndexScroll(IndexRequest indexRequest) {
+        int page = indexRequest.getPage();
+        // Rank , Sex , Tag , Brand , 최신
+        Map<String, List<IndexPost>> postMap = null;
+        if (page == 1) {
+            postMap = mapSetting("brand", new HashMap<>(), null); //랭크기준 포스트 리스트 담기
+        } else if (page >= 2) {
+            postMap = mapSetting("random", new HashMap<>(), indexRequest.getIds());
 
-    public Map<String, List<PostForm>> getIndexScroll(String url, int position) {
-//        PageRequest pageRequest = PageRequest.of(page, size);
-//        Page<Post> allByUserIn = postRepository.findAll(pageRequest);
-//        List<PostForm> postForms = changeToFormList(allByUserIn);
-        return null;
+        }
+        return postMap;
     }
+    /*
+     * tag
+     * brand
+     * new
+     * recommend(random)
+     *
+     *
+     * */
 
     private List<IndexUser> getIndexUsers() {
         List<IIndexUser> iIndexUsers = userRepository.findTop7ByFollow();
@@ -138,7 +156,7 @@ public class DetailService {
     }
 
     private List<IndexBrand> getIndexBrands() {
-        List<IIndexBrand> iIndexBrands = brandRepository.findTop9ByCountByBrand();
+        List<IIndexBrand> iIndexBrands = postBrandRepository.findTop9ByCountByBrand();
         List<IndexBrand> indexBrands = new ArrayList<>();
         for (IIndexBrand iIndexBrand : iIndexBrands) {
             IndexBrand indexBrand = new IndexBrand();
@@ -164,22 +182,87 @@ public class DetailService {
         return indexHashTags;
     }
 
-    private Map<String, List<PostForm>> getPostForms(String topic, Map<String, List<PostForm>> map) {
-        List<PostForm> postFormList = new ArrayList<>();
+    private Map<String, List<IndexPost>> mapSetting(String topic, Map<String, List<IndexPost>> map, List<Long> ids) {
+        List<IndexPost> postFormList = new ArrayList<>();
         switch (topic) {
             case "rank":
                 List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
                 for (LikePost likePost : top6ByPost) {
                     LikepostForm likepostForm = modelMapper.map(likePost, LikepostForm.class);
-                    PostForm map1 = modelMapper.map(likepostForm.getPost(), PostForm.class);
-                    postFormList.add(map1);
+                    IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
+                    postFormList.add(indexPost);
                 }
-            case "sex":
+            case "new":
+                List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc();
+                postFormList = getIndexPost(newPosts, postFormList);
+            case "brand":
+                List<IIndexPost> brandPosts = postBrandRepository.findTop6PostByBrand();
+                postFormList = getIndexPost(brandPosts, postFormList);
+
+            case "random":
+                long totalCount = postRepository.maxById() + 1;
+                Set<Long> randoms = new HashSet<>();
+                List<IIndexPost> iIndexPosts = new ArrayList<>();
+                long random = 0;
+                boolean check = true;
+                if (ids.isEmpty() || ids == null) {
+                        while (check) {
+                            random = ThreadLocalRandom.current().nextLong(totalCount);
+                            if (!randoms.contains(random)) {
+                                Optional<IIndexPost> interfaceById = postRepository.findInterfaceById(random);
+                                if (interfaceById.isPresent()) {
+                                    IIndexPost iIndexPost = interfaceById.get();
+                                    iIndexPosts.add(iIndexPost);
+                                    randoms.add(random);
+                                }
+                            }
+                            check = randoms.size() < 6 && ids.size() + randoms.size() < totalCount;
+                        }
+
+
+                } else {
+                    while (randoms.size() < 6 && ids.size() + randoms.size() < totalCount) {
+                        while (check) {
+                            check = false;
+                            random = ThreadLocalRandom.current().nextLong(totalCount);
+                            for (Long aLong : ids) {
+                                if (aLong == random) {
+                                    check = true;
+                                }
+                            }
+                        }
+                        if (!randoms.contains(random)) {
+                            Optional<IIndexPost> interfaceById = postRepository.findInterfaceById(random);
+                            if (interfaceById.isPresent()) {
+                                IIndexPost iIndexPost = interfaceById.get();
+                                iIndexPosts.add(iIndexPost);
+                                randoms.add(random);
+                            }
+                        }
+                        check = randoms.size() < 6 && ids.size() + randoms.size() < totalCount;
+                    }
+                }
+                postFormList = getIndexPost(iIndexPosts, postFormList);
 
         }
 
         map.put(topic, postFormList);
         return map;
+    }
+
+    private List<IndexPost> getIndexPost(List<IIndexPost> newPosts, List<IndexPost> postFormList) {
+
+        for (IIndexPost newPost : newPosts) {
+            IndexPost indexPost = new IndexPost();
+            indexPost.setPost_id(newPost.getPost_id());
+            Map<String, Map> imgData = newPost.getImgData();
+            System.out.println(imgData);
+//            indexPost.setImgData(i);
+            indexPost.setUser(modelMapper.map(newPost.getUser(), UserInfo.class));
+            postFormList.add(indexPost);
+        }
+
+        return postFormList;
     }
 
 
@@ -218,21 +301,31 @@ public class DetailService {
     }
 
     private void updateHashtag(Post post, List<String> hashtags) {
-
         for (String hashtagString : hashtags) {
             HashTag hashTag = new HashTag(hashtagString);
-            hashTagRepository.save(hashTag);
+            Optional<HashTag> byHashtagname = hashTagRepository.findByHashtagname(hashtagString);
+            if (byHashtagname.isPresent()) {
+                hashTag = byHashtagname.get();
+            } else {
+                hashTagRepository.save(hashTag);
+            }
             PostHashTag postHashTag = new PostHashTag(post, hashTag);
             postHashTagRepository.save(postHashTag);
         }
-
     }
 
-    public List<Post> postListPage(int page) {
-
-        Page<Post> postPage = postRepository.findAll(PageRequest.of(page, 12));
-        List<Post> posts = postPage.getContent();
-
-        return posts;
+    private void updateBrand(Post post, List<String> brands) {
+        for (String brandString : brands) {
+            Brand brand = new Brand(brandString);
+            Optional<Brand> byBrandname = brandRepository.findByBrandname(brandString);
+            if (byBrandname.isPresent()) {
+                brand = byBrandname.get();
+            } else {
+                brandRepository.save(brand);
+            }
+            PostBrand postBrand = new PostBrand(post, brand);
+            postBrandRepository.save(postBrand);
+        }
     }
+
 }

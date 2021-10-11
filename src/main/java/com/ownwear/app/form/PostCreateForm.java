@@ -12,7 +12,7 @@ public class PostCreateForm {
 
         private UserInfo user;
 
-        private Map<String , Object> imgdata = new HashMap<>();
+        private Map<String , Object> imgData = new HashMap<>();
 
         private List<String> hashtags;
 

@@ -1,9 +1,6 @@
 package com.ownwear.app.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +12,7 @@ import javax.persistence.*;
 public class PostHashTag {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "posthashtag_id")
     private Long posthashtag_id;
 
