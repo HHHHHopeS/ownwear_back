@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-public class DetailService {
+public class PostService {
 
     final int size = 12;
 

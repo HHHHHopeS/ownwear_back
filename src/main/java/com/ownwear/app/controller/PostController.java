@@ -1,23 +1,21 @@
 package com.ownwear.app.controller;
 
 import com.ownwear.app.form.*;
-import com.ownwear.app.service.DetailService;
+import com.ownwear.app.service.PostService;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/detail")
+@RequestMapping("/detail") //todo post로 바꾸기
 @Slf4j
 public class PostController {
 
     @Autowired
-    private DetailService service;
+    private PostService service;
 
     @GetMapping("/{postid}") // ,"/detail/" permitAll(모두허용) ,authenticated(어떤 권한이든 소유)
     public PostVo getDetail(@PathVariable("postid") long postid){
