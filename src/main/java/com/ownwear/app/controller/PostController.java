@@ -1,8 +1,6 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.form.IndexForm;
-import com.ownwear.app.form.PostCreateForm;
-import com.ownwear.app.form.PostForm;
+import com.ownwear.app.form.*;
 import com.ownwear.app.service.DetailService;
 import com.ownwear.app.vo.PostVo;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +46,10 @@ public class PostController {
         System.out.println("getIndex 입장");
         return service.getIndex();
     }
-    @GetMapping("/getlist")
-    public Map<String, List<PostForm>> getIndexScroll(String url , int position){
-        return service.getIndexScroll(url, position);
+    @PostMapping("/getindex")
+    public Map<String, List<IndexPost>> getIndexScroll(@RequestBody IndexRequest indexRequest){
+
+        return service.getIndexScroll(indexRequest);
     }
 
 //    @GetMapping("getlist/man")

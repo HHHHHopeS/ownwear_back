@@ -27,4 +27,13 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
             "HAVING Count(p.hashtag_id) >= 1 " +
             "ORDER BY Count(p.hashtag_id) desc LIMIT 9;",nativeQuery = true)
     List<IIndexHashTag> findTop9ByCountByHashtagInterface();
+
+
+    @Query(value = "SELECT Count(p.hashtag_id) as count,h.hashtag_id, h.hashtagname  " +
+            "FROM Post_Hash_Tag p " +
+            "NATURAL JOIN HASH_TAG h " +
+            "GROUP BY p.hashtag_id " +
+            "HAVING Count(p.hashtag_id) >= 1 " +
+            "ORDER BY Count(p.hashtag_id) desc LIMIT 9;",nativeQuery = true)
+    List<PostHashTag> findTop6PostByHashTag();
 }
