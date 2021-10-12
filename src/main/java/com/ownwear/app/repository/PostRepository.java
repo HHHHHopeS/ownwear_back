@@ -30,8 +30,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     void deleteById(long id);
 
-    @Query("select p from Post p where p.user = ?1")
-    List<Post> findAllByUser(User user); //유저 디테일 페이지
+//    @Query("select p from Post p where p.user = ?1")
+    List<IIndexPost> findAllByUser(User user); //유저 디테일 페이지
 
     List<IIndexPost> findTop6ByOrderByRdateDesc();
 

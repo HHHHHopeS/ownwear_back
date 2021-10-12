@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @Table(name = "Follow", uniqueConstraints = {@UniqueConstraint(
         name = "Followid_UNIQUE",
-        columnNames = {"from_user", "to_user"}
+        columnNames = {"fromuser", "touser"}
 )})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow {
@@ -26,12 +26,12 @@ public class Follow {
 
     @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "from_user")
+    @JoinColumn(name = "fromuser")
     private User from;
 
 
     @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "to_user")
+    @JoinColumn(name = "touser")
     private User to;
 }

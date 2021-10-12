@@ -227,7 +227,7 @@ public class IndexService {
         for (IIndexPost newPost : newPosts) {
             IndexPost indexPost = new IndexPost();
             indexPost.setPostid(newPost.getPostid());
-            indexPost.setImgdata(newPost.getImgdata());
+            indexPost.setImgData(newPost.getImgdata());
             indexPost.setUser( modelMapper.map(newPost.getUser(), UserInfo.class));
             postFormList.add(indexPost);
         }
