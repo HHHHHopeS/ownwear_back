@@ -1,17 +1,15 @@
 package com.ownwear.app.repository;
 
-import com.ownwear.app.form.IIndexPost;
-import com.ownwear.app.model.Post;
-import com.ownwear.app.model.User;
+import com.ownwear.app.dto.IIndexPost;
+import com.ownwear.app.entity.Post;
+import com.ownwear.app.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -30,8 +28,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     void deleteById(long id);
 
-    @Query("select p from Post p where p.user = ?1")
-    List<Post> findAllByUser(User user); //유저 디테일 페이지
+//    @Query("select p from Post p where p.user = ?1")
+    List<IIndexPost> findAllByUser(User user); //유저 디테일 페이지
 
     List<IIndexPost> findTop6ByOrderByRdateDesc();
 

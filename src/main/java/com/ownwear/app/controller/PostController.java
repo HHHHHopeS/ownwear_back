@@ -1,6 +1,6 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.form.*;
+import com.ownwear.app.dto.*;
 import com.ownwear.app.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,4 +67,8 @@ public class PostController {
 //        return posts;
 //    }
 
+    @GetMapping("post/profiㅣe")
+    public UserInfo getPostProfile(Long current_userid, Long postid){
+        return service.getPostUser(current_userid,postid);
+    }
 }

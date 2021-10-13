@@ -1,37 +1,31 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.form.UserForm;
-import com.ownwear.app.form.UserInfo;
-import com.ownwear.app.form.UserPwdForm;
-import com.ownwear.app.model.Alert;
-import com.ownwear.app.model.Post;
-import com.ownwear.app.model.User;
+import com.ownwear.app.dto.*;
+import com.ownwear.app.entity.Alert;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.AlertRepository;
 import com.ownwear.app.security.CurrentUser;
 import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.service.UserService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("user")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired //todo AllArgsConstructor
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private AlertRepository alertRepository;
-
-    final ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping("/me")
     public UserInfo getCurrentUser(@CurrentUser UserPrincipal userPrincipal, HttpServletRequest request) {
@@ -39,19 +33,26 @@ public class UserController {
 
     }
 
-    //    ", user/{username}" permit all
-    @GetMapping("/{username}") //todo 팔로잉 했는지,
-    public UserInfo getUserDetail(@PathVariable("username") String username) {
+    @GetMapping("/{username}")
+    public List<Object> getUserDetail(@PathVariable("username") String username,Long current_userid) {
 
-        UserInfo userDetail = userService.getUserDetail(username);
-
-        return userDetail;
+        UserInfo userDetail = userService.getUserDetail(username,current_userid);
+        Page<IndexPost> userPosts = userService.getUserPosts(username,0);
+        List<Object> all = new ArrayList<>();
+        all.add(userDetail);
+        all.add(userPosts);
+        return all;
     }
 //todo modal (좋,팔 형식) , (타입(좋,팔), 현재 유저, 타겟 유저(포스트))
-    //    ", /user/{username}/posts" permit all
+@PostMapping("modal")
+    public List<ListModalForm> getModalData(@RequestBody ListModalRequest listModalRequest){
+        return userService.getListModal(listModalRequest);
+}
+
     @GetMapping("/{username}/posts") //todo 인피니티 스크롤,포스트 12 개를 유저 정보와 함께
-    public List<Post> getUserPosts(@PathVariable("username") String username) {
-        return userService.getUserPosts(username);
+    public Page<IndexPost> getUserPosts(@PathVariable("username") String username) {
+        Page<IndexPost> userPosts = userService.getUserPosts(username,0);
+        return userPosts;
     }
 
     @PostMapping("update/oauth2")
@@ -76,7 +77,7 @@ public class UserController {
     }
 
     @PostMapping("/mypage/update")
-    public UserForm UpdateUser(UserInfo userInfo) {
+    public UserForm UpdateUser(@RequestBody UserInfo userInfo) {
 
         UserForm userForm = userService.updateUser(userInfo);
 

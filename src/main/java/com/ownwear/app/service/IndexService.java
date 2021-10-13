@@ -1,16 +1,13 @@
 package com.ownwear.app.service;
 
-import com.ownwear.app.form.*;
-import com.ownwear.app.model.Brand;
-import com.ownwear.app.model.HashTag;
-import com.ownwear.app.model.LikePost;
-import com.ownwear.app.model.User;
+import com.ownwear.app.dto.*;
+import com.ownwear.app.entity.Brand;
+import com.ownwear.app.entity.HashTag;
+import com.ownwear.app.entity.LikePost;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -157,7 +154,7 @@ public class IndexService {
             case "rank":
                 List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
                 for (LikePost likePost : top6ByPost) {
-                    LikepostForm likepostForm = modelMapper.map(likePost, LikepostForm.class);
+                    LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
                     IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
                     postFormList.add(indexPost);
                 }
@@ -227,7 +224,7 @@ public class IndexService {
         for (IIndexPost newPost : newPosts) {
             IndexPost indexPost = new IndexPost();
             indexPost.setPostid(newPost.getPostid());
-            indexPost.setImgdata(newPost.getImgdata());
+            indexPost.setImgData(newPost.getImgdata());
             indexPost.setUser( modelMapper.map(newPost.getUser(), UserInfo.class));
             postFormList.add(indexPost);
         }

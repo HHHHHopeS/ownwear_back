@@ -1,14 +1,12 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.form.IndexForm;
-import com.ownwear.app.form.IndexPost;
-import com.ownwear.app.form.IndexRequest;
-import com.ownwear.app.form.SearchForm;
-import com.ownwear.app.model.User;
+import com.ownwear.app.dto.IndexForm;
+import com.ownwear.app.dto.IndexPost;
+import com.ownwear.app.dto.IndexRequest;
+import com.ownwear.app.dto.SearchForm;
 import com.ownwear.app.service.IndexService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

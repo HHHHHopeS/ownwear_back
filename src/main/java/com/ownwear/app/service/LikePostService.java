@@ -1,7 +1,7 @@
 package com.ownwear.app.service;
 
-import com.ownwear.app.model.LikePost;
-import com.ownwear.app.model.User;
+import com.ownwear.app.entity.LikePost;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.LikePostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

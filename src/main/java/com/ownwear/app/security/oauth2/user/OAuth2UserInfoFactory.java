@@ -1,7 +1,7 @@
 package com.ownwear.app.security.oauth2.user;
 
 import com.ownwear.app.exception.OAuth2AuthenticationProcessingException;
-import com.ownwear.app.model.AuthProvider;
+import com.ownwear.app.entity.AuthProvider;
 
 import java.util.Map;
 

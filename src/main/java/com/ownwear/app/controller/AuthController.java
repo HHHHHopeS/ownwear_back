@@ -1,7 +1,7 @@
 package com.ownwear.app.controller;
 
 import com.ownwear.app.exception.BadRequestException;
-import com.ownwear.app.model.User;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.payload.ApiResponse;
 import com.ownwear.app.payload.AuthResponse;
 import com.ownwear.app.payload.LoginRequest;
