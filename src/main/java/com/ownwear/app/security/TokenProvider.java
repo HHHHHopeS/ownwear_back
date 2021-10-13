@@ -1,8 +1,8 @@
 package com.ownwear.app.security;
 
 import com.ownwear.app.config.AppProperties;
-import com.ownwear.app.model.CurrentUsers;
-import com.ownwear.app.model.User;
+import com.ownwear.app.entity.CurrentUsers;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.CurrentUsersRepository;
 import com.ownwear.app.repository.UserRepository;
 import io.jsonwebtoken.*;

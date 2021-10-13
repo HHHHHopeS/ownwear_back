@@ -1,9 +1,8 @@
 package com.ownwear.app.repository;
 
-import com.ownwear.app.model.HashTag;
+import com.ownwear.app.entity.HashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

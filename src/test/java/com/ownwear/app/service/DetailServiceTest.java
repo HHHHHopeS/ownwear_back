@@ -1,10 +1,5 @@
 package com.ownwear.app.service;
 
-import com.ownwear.app.form.IIndexHashTag;
-import com.ownwear.app.form.IIndexUser;
-import com.ownwear.app.form.IndexHashTag;
-import com.ownwear.app.form.IndexUser;
-import com.ownwear.app.model.User;
 import com.ownwear.app.repository.LikePostRepository;
 import com.ownwear.app.repository.PostHashTagRepository;
 import com.ownwear.app.repository.PostRepository;
@@ -13,10 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 class DetailServiceTest {

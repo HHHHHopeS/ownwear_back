@@ -1,11 +1,11 @@
 package com.ownwear.app.service;
 
-import com.ownwear.app.form.*;
-import com.ownwear.app.model.*;
+import com.ownwear.app.dto.*;
+import com.ownwear.app.entity.*;
 import com.ownwear.app.repository.*;
-import com.ownwear.app.form.PostVo;
+import com.ownwear.app.dto.PostVo;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,32 +14,34 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class PostService {
 
     final int size = 12;
 
-    @Autowired
+
     private PostRepository postRepository;
-    @Autowired
+
     private CommentRepository commentRepository;
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
+
     private PostHashTagRepository postHashTagRepository;
-    @Autowired
+
     private LikePostRepository likePostRepository;
-    @Autowired
+
     private HashTagRepository hashTagRepository;
-    @Autowired
+
     private BrandRepository brandRepository;
-    @Autowired
+
     private PostBrandRepository postBrandRepository;
 
 
     final ModelMapper modelMapper = new ModelMapper();
+    private FollowRepository followRepository;
 
 
     public PostVo getDetail(Long postid) {
@@ -86,7 +88,7 @@ public class PostService {
     public List<PostForm> getList(int page, boolean sex) {
         PageRequest pageRequest = PageRequest.of(page, size);
         User user = new User(sex);
-        Page<Post> allByUserIn = postRepository. findAllByUser(user, pageRequest);
+        Page<Post> allByUserIn = postRepository.findAllByUser(user, pageRequest);
         List<PostForm> pp = new ArrayList<>();
         for (Post p : allByUserIn) {
             PostForm postForm = modelMapper.map(p, PostForm.class);
@@ -127,9 +129,10 @@ public class PostService {
     private PostVo getPostVo(Post post) {
         User user = userRepository.findById(post.getUser().getUserid()).get();
         long likecount = likePostRepository.countByPost(post);
-        List<HashTag> hashtags = postHashTagRepository.findHashTagsByPost(post);
+        List<HashTagForm> hashtags = postHashTagRepository.findHashTagsByPost(post).stream().map(HashTag -> modelMapper.map(HashTag, HashTagForm.class)).collect(Collectors.toList());
         List<PostForm> postForms = changeToFormList(postRepository.findByUser(user));
-        List<Comment> comments = commentRepository.findByPost(post);
+        List<CommentForm> comments = commentRepository.findAllByPost(post).stream().map(Comment -> modelMapper.map(Comment, CommentForm.class)).collect(Collectors.toList());
+        ;
         PostForm postForm = modelMapper.map(post, PostForm.class);
         PostVo postVo = new PostVo(postForm, likecount, hashtags, postForms, comments, user.getUsername());
         return postVo;
@@ -164,9 +167,7 @@ public class PostService {
     }
 
     public List<PostForm> getPostList(UserForm userForm, Pageable pageable) {
-
-        User user = modelMapper.map(userForm,User.class);
-
+        User user = modelMapper.map(userForm, User.class);
         Page<Post> allByUser = postRepository.findAllByUser(user, pageable);
 
         List<PostForm> pp = new ArrayList<>(); //todo 클린코딩으로 바꾸기 (한줄)
@@ -181,5 +182,16 @@ public class PostService {
         return pp;
     }
 
-
+    public UserInfo getPostUser(Long current_userid, Long postid) {
+        Optional<Post> byId = postRepository.findById(postid);
+        if (byId.isPresent()) {
+            Post post = byId.get();
+            User user = post.getUser();
+            User currentUser = userRepository.findById(current_userid).get();
+            UserInfo userInfo = modelMapper.map(user, UserInfo.class);
+            userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
+            return userInfo;
+        }
+        return null; //todo 잘못된 요청 존재하지않는 포스트
+    }
 }

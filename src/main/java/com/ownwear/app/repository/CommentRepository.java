@@ -1,13 +1,9 @@
 package com.ownwear.app.repository;
 
-import com.ownwear.app.form.CommentForm;
-import com.ownwear.app.model.Comment;
-import com.ownwear.app.model.Post;
+import com.ownwear.app.entity.Comment;
+import com.ownwear.app.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +11,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Optional<Comment> findById(long commentid);
 
-    List<Comment> findByPost(Post post);
+//    List<Comment> findAllByPost(Long postid);
 
     List<Comment> findAllByPost(Post post);
     Long countAllByPostPostid(long postId);

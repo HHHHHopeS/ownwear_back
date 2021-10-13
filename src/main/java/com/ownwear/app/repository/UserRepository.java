@@ -1,7 +1,7 @@
 package com.ownwear.app.repository;
 
-import com.ownwear.app.form.IIndexUser;
-import com.ownwear.app.model.User;
+import com.ownwear.app.dto.IIndexUser;
+import com.ownwear.app.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

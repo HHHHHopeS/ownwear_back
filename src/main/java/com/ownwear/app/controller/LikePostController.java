@@ -1,8 +1,7 @@
 package com.ownwear.app.controller;
 
-import com.ownwear.app.model.LikePost;
+import com.ownwear.app.entity.LikePost;
 import com.ownwear.app.repository.LikePostRepository;
-import com.ownwear.app.repository.PostRepository;
 import com.ownwear.app.service.LikePostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/like")

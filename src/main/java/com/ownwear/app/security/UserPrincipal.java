@@ -1,6 +1,6 @@
 package com.ownwear.app.security;
 
-import com.ownwear.app.model.User;
+import com.ownwear.app.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

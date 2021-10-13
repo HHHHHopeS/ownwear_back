@@ -2,8 +2,7 @@ package com.ownwear.app.security;
 
 
 import com.ownwear.app.exception.ResourceNotFoundException;
-import com.ownwear.app.model.User;
-import com.ownwear.app.repository.CurrentUsersRepository;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

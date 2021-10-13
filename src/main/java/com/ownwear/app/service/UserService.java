@@ -2,52 +2,37 @@ package com.ownwear.app.service;
 
 
 import com.ownwear.app.exception.ResourceNotFoundException;
-import com.ownwear.app.form.*;
-import com.ownwear.app.model.Alert;
-import com.ownwear.app.model.CurrentUsers;
-import com.ownwear.app.model.Post;
-import com.ownwear.app.model.User;
+import com.ownwear.app.dto.*;
+import com.ownwear.app.entity.*;
 import com.ownwear.app.repository.*;
 import com.ownwear.app.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserService {
 
-    final ModelMapper modelMapper = new ModelMapper();
-
-
+    private final ModelMapper modelMapper = new ModelMapper();
     private PasswordEncoder passwordEncoder;
-
-
     private UserRepository userRepository;
-
-
     private PostRepository postRepository;
-
-
     private CurrentUsersRepository currentUsersRepository;
-
-
     private AlertRepository alertRepository;
     private CommentRepository commentRepository;
     private LikePostRepository likePostRepository;
     private FollowRepository followRepository;
 
     public UserInfo getUserDetail(String username, Long current_userid) {
-
         Optional<User> tagetUserOp = userRepository.findByUsername(username);
         UserInfo targetUserInfo = null;
         Optional<User> currentUserOp = null;
@@ -57,7 +42,8 @@ public class UserService {
                 User targetUser = tagetUserOp.get();
                 User currentUser = currentUserOp.get();
                 targetUserInfo = modelMapper.map(targetUser, UserInfo.class);
-                targetUserInfo.setIsfollowing(followRepository.findByUsers(currentUser, targetUser).isPresent());
+                boolean present = followRepository.findByUsers(currentUser, targetUser).isPresent();
+                targetUserInfo.setIsfollowing(present);
                 return targetUserInfo;
             } else return null;
             //id로 해당 유저 찾을수 없음
@@ -75,7 +61,7 @@ public class UserService {
 
     public Page<IndexPost> getUserPosts(String username,int page) {
         Optional<User> byUsername = userRepository.findByUsername(username);
-        PageRequest pageRequest = PageRequest.of(page,12);
+        PageRequest pageRequest = PageRequest.of(page,12, Sort.by("rdate").descending());
         if (byUsername.isPresent()) {
             Page<IndexPost> indexPosts = postRepository.findAllByUser(byUsername.get(),pageRequest)
                     .map(Post -> modelMapper.map(Post,IndexPost.class));
@@ -248,5 +234,58 @@ public class UserService {
         User user = modelMapper.map(userpwdForm, User.class);
 
         return modelMapper.map(userRepository.save(user), UserPwdForm.class);
+    }
+
+    public List<ListModalForm> getListModal(ListModalRequest request) {
+
+        Optional<User> byId = userRepository.findById(request.getCurrent_userid());
+        User currentUser = byId.get();
+
+        String type = request.getType();
+
+        List<ListModalForm> listModalForms = new ArrayList<>();
+
+        if (type.equals("like")){
+            Optional<Post> targetPostById = postRepository.findById(request.getTargetid());
+            if (targetPostById.isPresent()){
+                Post target = targetPostById.get();
+                List<LikePostForm> byUserAndPost = likePostRepository.findAllByPost(target)
+                        .stream().map(LikePost -> modelMapper.map(LikePost,LikePostForm.class)).collect(Collectors.toList());
+                for (LikePostForm likePostForm : byUserAndPost) {
+                    ListModalForm listModalForm = new ListModalForm();
+                    User user = userRepository.findById(likePostForm.getUser().getUserid()).get();
+                    Optional<Follow> isFollowing = followRepository.findByUsers(currentUser, user);
+                    Boolean isTrue = isFollowing.isPresent();
+
+                    listModalForm.setUser(modelMapper.map(user,UserForm.class));
+                    listModalForm.setIsTrue(isTrue);
+                    listModalForm.setFollower(followRepository.countByTouser(user));
+
+                    listModalForms.add(listModalForm);
+                }
+                return listModalForms;
+            }
+        }else if (type.equals("follow")){
+            Optional<User> targetUserById = userRepository.findById(request.getTargetid());
+            if (targetUserById.isPresent()){
+                User target = targetUserById.get();
+                List<FollowForm> followForms = followRepository.findAllByTouser(target)
+                        .stream().map(follow -> modelMapper.map(follow,FollowForm.class)).collect(Collectors.toList());
+                for (FollowForm followForm : followForms) {
+                    ListModalForm listModalForm = new ListModalForm();
+                    User follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
+                    Boolean isTrue = followRepository.findByUsers(follower, currentUser).isPresent();
+
+                    listModalForm.setUser(modelMapper.map(follower,UserForm.class));
+                    listModalForm.setIsTrue(isTrue);
+                    listModalForm.setFollower(followRepository.countByTouser(follower));
+
+                    listModalForms.add(listModalForm);
+                }
+                return listModalForms;
+            }
+        }
+        return null;
+
     }
 }

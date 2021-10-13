@@ -1,10 +1,7 @@
 package com.ownwear.app.repository;
 
-import com.ownwear.app.form.IIndexBrand;
-import com.ownwear.app.form.IIndexPost;
-import com.ownwear.app.model.Brand;
-import com.ownwear.app.model.LikePost;
-import com.ownwear.app.model.PostBrand;
+import com.ownwear.app.dto.IIndexBrand;
+import com.ownwear.app.entity.PostBrand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

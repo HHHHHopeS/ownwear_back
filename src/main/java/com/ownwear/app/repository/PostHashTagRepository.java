@@ -1,9 +1,9 @@
 package com.ownwear.app.repository;
 
-import com.ownwear.app.form.IIndexHashTag;
-import com.ownwear.app.model.HashTag;
-import com.ownwear.app.model.Post;
-import com.ownwear.app.model.PostHashTag;
+import com.ownwear.app.dto.IIndexHashTag;
+import com.ownwear.app.entity.HashTag;
+import com.ownwear.app.entity.Post;
+import com.ownwear.app.entity.PostHashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

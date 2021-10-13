@@ -2,14 +2,10 @@ package com.ownwear.app.security.oauth2;
 
 import com.ownwear.app.config.AppProperties;
 import com.ownwear.app.exception.BadRequestException;
-import com.ownwear.app.model.CurrentUsers;
-import com.ownwear.app.repository.CurrentUsersRepository;
 import com.ownwear.app.security.TokenProvider;
-import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;

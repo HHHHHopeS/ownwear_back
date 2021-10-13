@@ -1,8 +1,7 @@
 package com.ownwear.app.security.oauth2;
 
 import com.ownwear.app.exception.OAuth2AuthenticationProcessingException;
-import com.ownwear.app.model.AuthProvider;
-import com.ownwear.app.model.User;
+import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.security.oauth2.user.OAuth2UserInfo;
