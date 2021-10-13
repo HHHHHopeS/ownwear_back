@@ -37,7 +37,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<IIndexPost> findTop6ByOrderByRdateAsc();
 
-
     @Query("select Max(p.postid) from Post p ")
     Long maxById();
 
