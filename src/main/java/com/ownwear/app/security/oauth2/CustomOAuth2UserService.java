@@ -1,11 +1,13 @@
 package com.ownwear.app.security.oauth2;
 
+import com.ownwear.app.dto.UserForm;
 import com.ownwear.app.exception.OAuth2AuthenticationProcessingException;
 import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.UserRepository;
 import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.security.oauth2.user.OAuth2UserInfo;
 import com.ownwear.app.security.oauth2.user.OAuth2UserInfoFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -54,15 +56,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user;
         if(userOptional.isPresent()) { //이메일로 찾았을 때 이미 있으면
             user = userOptional.get();
+            String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
             //System.out.println(user);
-            if(!user.getProvider().equals(oAuth2UserRequest.getClientRegistration().getRegistrationId())) {
+            if(!user.getProvider().equals(registrationId)) {
 //                //System.out.println("이메일은 있는데 페이스북이 아님");
                 /*throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
                         user.getProvider() + " account. Please use your " + user.getProvider() +
                         " account to login.");*/
+                user.setProvider(registrationId);
+//                user.setUsername();
+                user.setProviderid(oAuth2UserInfo.getId());
+                user.setUserimg(oAuth2UserInfo.getImageUrl());
                 userRepository.save(user);
             }
-            user = updateExistingUser(user, oAuth2UserInfo);
         } else { //없으면 회원가입
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
@@ -84,10 +90,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(user);
     }
 
-    private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setUsername(oAuth2UserInfo.getName());
-        existingUser.setUserimg(oAuth2UserInfo.getImageUrl());
-        return userRepository.save(existingUser);
-    }
+
 
 }
