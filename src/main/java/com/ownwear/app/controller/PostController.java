@@ -52,7 +52,6 @@ public class PostController {
 
     @PostMapping("/postlist")
     public  List<PostForm> getPostList(@RequestBody UserForm user) {
-        System.out.println(user);
 
         PageRequest pageRequest = PageRequest.of(0,10);
         List<PostForm> postList = service.getPostList(user, pageRequest);

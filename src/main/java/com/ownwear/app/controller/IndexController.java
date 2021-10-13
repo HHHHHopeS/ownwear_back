@@ -20,17 +20,18 @@ public class IndexController {
     @Autowired
     IndexService indexService;
 
-
     @GetMapping("/getindex")
     public IndexForm getIndex(){
         System.out.println("getIndex 입장");
         return indexService.getIndex();
     }
+
     @PostMapping("/getindex")
     public Map<String, List<IndexPost>> getIndexScroll(@RequestBody IndexRequest indexRequest){
         System.out.println(indexRequest);
         return indexService.getIndexScroll(indexRequest);
     }
+
     @GetMapping("/srchdata")
     public SearchForm SrchData(String keyword) {
 
@@ -38,7 +39,6 @@ public class IndexController {
 
         return searchForm;
     }
-
 
     @RequestMapping("/hashtagAutoComplete") //todo 구성하기
     private static JSONArray hashtagAutoComplete(@RequestBody String data){

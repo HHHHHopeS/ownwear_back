@@ -101,10 +101,6 @@ public class PostService {
         postRepository.deleteById(postid);
     }
 
-
-
-
-
     @Transactional(readOnly = true)
     public PostForm mapPostForm(long postid) {
         Post post = postRepository.findById(postid).get();
@@ -168,16 +164,22 @@ public class PostService {
     }
 
     public List<PostForm> getPostList(UserForm userForm, Pageable pageable) {
+
         User user = modelMapper.map(userForm,User.class);
+
         Page<Post> allByUser = postRepository.findAllByUser(user, pageable);
 
         List<PostForm> pp = new ArrayList<>(); //todo 클린코딩으로 바꾸기 (한줄)
+
         for (Post p : allByUser) {
             PostForm postForm = modelMapper.map(p, PostForm.class);
             pp.add(postForm);
         }
+
         List<Post> content = allByUser.getContent();
 
         return pp;
     }
+
+
 }

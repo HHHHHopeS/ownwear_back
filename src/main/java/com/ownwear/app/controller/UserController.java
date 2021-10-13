@@ -93,6 +93,7 @@ public class UserController {
     @PostMapping("/checkpw")
     public boolean checkPw(@RequestBody UserPwdForm userpwdForm) {
         String pw = userpwdForm.getPassword();
+        System.out.println("pw = " + pw);
         long id = userpwdForm.getUserid();
         return userService.checkPw(pw, id);
     }

@@ -33,7 +33,6 @@ public class Post {
     @JoinColumn(name = "userid")
     private User user;
 
-
     @Column(name = "IMGDATA", columnDefinition = "json")
     @Type(type = "json")
     private Map<String , Object> imgdata = new HashMap<>();
@@ -49,15 +48,11 @@ public class Post {
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<LikePost> likePost;
 
-
     @JsonBackReference
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<PostHashTag> posthashtag;
 
-
     @JsonBackReference
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<Comment> comment;
-
-
 }

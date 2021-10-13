@@ -234,7 +234,7 @@ public class UserService {
 
         String newPassword = passwordEncoder.encode(pw);
 
-        if (newPassword.equals(password)) {
+        if (passwordEncoder.matches(password, newPassword)) {
             return true;
         }
 
