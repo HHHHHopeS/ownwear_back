@@ -158,7 +158,7 @@ public class VisionController {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         try {
             storage.create(blobInfo, imgFile);
-            return "https://storage.googleapis.com/image-post"+objectName;
+            return "https://storage.googleapis.com/image-post/"+objectName;
         } catch (StorageException e) {
             e.printStackTrace();
             return null;

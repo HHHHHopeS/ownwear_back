@@ -5,6 +5,7 @@ import com.ownwear.app.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,9 @@ public interface FollowRepository extends JpaRepository<Follow,Long> {
     Optional<Follow> findByUsers(User from, User to);
 
     long countByTouser(User user);
+    long countByFromuser(User user);
 
     List<Follow> findAllByTouser(User user);
+
+    List<Follow> findAllByFromuser(User user);
 }

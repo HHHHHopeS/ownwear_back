@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("follow")
+@RequestMapping("/follow")
 public class FollowController {
     private FollowService followService;
 
-    @GetMapping("toggle")
+    @GetMapping("/toggle")
     public Boolean toggle(Long current_userid,Long target_userid){
         return followService.toggle(current_userid,target_userid);
     }
+
+
 }

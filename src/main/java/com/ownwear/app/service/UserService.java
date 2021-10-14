@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final ModelMapper modelMapper = new ModelMapper();
+
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private PostRepository postRepository;
@@ -32,55 +35,59 @@ public class UserService {
     private LikePostRepository likePostRepository;
     private FollowRepository followRepository;
 
-    public UserInfo getUserDetail(String username, Long current_userid) {
+    public UserProfile getUserDetail(String username, Long current_userid) {
         Optional<User> tagetUserOp = userRepository.findByUsername(username);
-        UserInfo targetUserInfo = null;
+        UserProfile targetUserProfile = null;
         Optional<User> currentUserOp = null;
         if (current_userid != null) {
             currentUserOp = userRepository.findById(current_userid);
             if (tagetUserOp.isPresent()) {
                 User targetUser = tagetUserOp.get();
                 User currentUser = currentUserOp.get();
-                targetUserInfo = modelMapper.map(targetUser, UserInfo.class);
+                targetUserProfile = modelMapper.map(targetUser, UserProfile.class);
                 boolean present = followRepository.findByUsers(currentUser, targetUser).isPresent();
-                targetUserInfo.setIsfollowing(present);
-                return targetUserInfo;
+                targetUserProfile.setIsfollowing(present);
+                return setUserProfile(targetUserProfile, targetUser);
             } else return null;
             //id로 해당 유저 찾을수 없음
         } else { //현재 비회원유저
             if (tagetUserOp.isPresent()) {
                 User targetUser = tagetUserOp.get();
-                targetUserInfo = modelMapper.map(targetUser, UserInfo.class);
-                targetUserInfo.setIsfollowing(false);
-                return targetUserInfo;
+                targetUserProfile = modelMapper.map(targetUser, UserProfile.class);
+                targetUserProfile.setIsfollowing(false);
+                return setUserProfile(targetUserProfile, targetUser);
             } else return null;
             //id로 해당 유저 찾을수 없음
         }
     }
 
+    private UserProfile setUserProfile(UserProfile targetUserProfile, User targetUser) {
 
-    public Page<IndexPost> getUserPosts(String username,int page) {
+        targetUserProfile.setFollower(followRepository.countByTouser(targetUser));
+        targetUserProfile.setFollowing(followRepository.countByFromuser(targetUser));
+        return targetUserProfile;
+    }
+
+
+    public Page<IndexPost> getUserPosts(String username, int page) {
         Optional<User> byUsername = userRepository.findByUsername(username);
-        PageRequest pageRequest = PageRequest.of(page,12, Sort.by("rdate").descending());
+        PageRequest pageRequest = PageRequest.of(page, 12, Sort.by("rdate").descending());
         if (byUsername.isPresent()) {
-            Page<IndexPost> indexPosts = postRepository.findAllByUser(byUsername.get(),pageRequest)
-                    .map(Post -> modelMapper.map(Post,IndexPost.class));
+            Page<IndexPost> indexPosts = postRepository.findAllByUser(byUsername.get(), pageRequest)
+                    .map(Post -> modelMapper.map(Post, IndexPost.class));
 
-            indexPosts = (Page<IndexPost>) setIndexPosts(indexPosts);
+            indexPosts.forEach(indexPost -> setIndexPosts(indexPost));
+//            indexPosts = (Page<IndexPost>) setIndexPosts(indexPosts);
 
             return indexPosts;
         }
         return null;
     }
 
-    private Iterable<IndexPost> setIndexPosts(Iterable<IndexPost> indexPosts) {
+    private void setIndexPosts(IndexPost indexPost) {
+        indexPost.setCommentcount(commentRepository.countAllByPostPostid(indexPost.getPostid()));
+        indexPost.setLikecount(likePostRepository.countByPostPostid(indexPost.getPostid()));
 
-        for (IndexPost indexPost : indexPosts) {
-            indexPost.setCommentcount(commentRepository.countAllByPostPostid(indexPost.getPostid()));
-            indexPost.setLikecount(likePostRepository.countByPostPostid(indexPost.getPostid()));
-
-        }
-        return indexPosts;
     }
 
     private List<IndexPost> getIndexPosts(List<IIndexPost> iIndexPosts) {
@@ -94,10 +101,11 @@ public class UserService {
         }
         return indexPosts;
     }
+
     private List<IndexPost> getIndexPosts(Page<Post> posts) {
         List<IndexPost> indexPosts = new ArrayList<>();
         for (Post post : posts) {
-            IndexPost indexPost =modelMapper.map(post,IndexPost.class);
+            IndexPost indexPost = modelMapper.map(post, IndexPost.class);
             indexPosts.add(indexPost);
         }
         return indexPosts;
@@ -213,18 +221,8 @@ public class UserService {
     }
 
     public boolean checkPw(String pw, Long id) {
-
-        Optional<User> byId = userRepository.findById(id);
-
-        String password = byId.get().getPassword();
-
-        String newPassword = passwordEncoder.encode(pw);
-
-        if (passwordEncoder.matches(password, newPassword)) {
-            return true;
-        }
-
-        return false;
+        System.out.println(passwordEncoder.encode("aa"));
+        return passwordEncoder.matches(pw, userRepository.findById(id).get().getPassword());
     }
 
     public UserPwdForm updatePw(UserPwdForm userpwdForm) {
@@ -245,19 +243,19 @@ public class UserService {
 
         List<ListModalForm> listModalForms = new ArrayList<>();
 
-        if (type.equals("like")){
+        if (type.equals("like")) {
             Optional<Post> targetPostById = postRepository.findById(request.getTargetid());
-            if (targetPostById.isPresent()){
+            if (targetPostById.isPresent()) {
                 Post target = targetPostById.get();
                 List<LikePostForm> byUserAndPost = likePostRepository.findAllByPost(target)
-                        .stream().map(LikePost -> modelMapper.map(LikePost,LikePostForm.class)).collect(Collectors.toList());
+                        .stream().map(LikePost -> modelMapper.map(LikePost, LikePostForm.class)).collect(Collectors.toList());
                 for (LikePostForm likePostForm : byUserAndPost) {
                     ListModalForm listModalForm = new ListModalForm();
                     User user = userRepository.findById(likePostForm.getUser().getUserid()).get();
                     Optional<Follow> isFollowing = followRepository.findByUsers(currentUser, user);
                     Boolean isTrue = isFollowing.isPresent();
 
-                    listModalForm.setUser(modelMapper.map(user,UserForm.class));
+                    listModalForm.setUser(modelMapper.map(user, UserForm.class));
                     listModalForm.setIsTrue(isTrue);
                     listModalForm.setFollower(followRepository.countByTouser(user));
 
@@ -265,27 +263,44 @@ public class UserService {
                 }
                 return listModalForms;
             }
-        }else if (type.equals("follow")){
+        } else if (type.equals("follower")) {
             Optional<User> targetUserById = userRepository.findById(request.getTargetid());
-            if (targetUserById.isPresent()){
+            if (targetUserById.isPresent()) {
                 User target = targetUserById.get();
                 List<FollowForm> followForms = followRepository.findAllByTouser(target)
-                        .stream().map(follow -> modelMapper.map(follow,FollowForm.class)).collect(Collectors.toList());
+                        .stream().map(follow -> modelMapper.map(follow, FollowForm.class)).collect(Collectors.toList());
                 for (FollowForm followForm : followForms) {
-                    ListModalForm listModalForm = new ListModalForm();
-                    User follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
-                    Boolean isTrue = followRepository.findByUsers(follower, currentUser).isPresent();
+                    setListModalForms(currentUser, listModalForms, followForm);
+                }
+                return listModalForms;
+            }
+        } else if (type.equals("following")) {
+            Optional<User> targetUserById = userRepository.findById(request.getTargetid());
+            if (targetUserById.isPresent()) {
+                User target = targetUserById.get();
+                List<FollowForm> followForms = followRepository.findAllByFromuser(target)
+                        .stream().map(follow -> modelMapper.map(follow, FollowForm.class)).collect(Collectors.toList());
+                for (FollowForm followForm : followForms) {
 
-                    listModalForm.setUser(modelMapper.map(follower,UserForm.class));
-                    listModalForm.setIsTrue(isTrue);
-                    listModalForm.setFollower(followRepository.countByTouser(follower));
+                    setListModalForms(currentUser, listModalForms, followForm);
 
-                    listModalForms.add(listModalForm);
                 }
                 return listModalForms;
             }
         }
         return null;
 
+    }
+
+    private void setListModalForms(User currentUser, List<ListModalForm> listModalForms, FollowForm followForm) {
+        ListModalForm listModalForm = new ListModalForm();
+        User follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
+        Boolean isTrue = followRepository.findByUsers(currentUser, follower).isPresent();
+
+        listModalForm.setUser(modelMapper.map(follower, UserForm.class));
+        listModalForm.setIsTrue(isTrue);
+        listModalForm.setFollower(followRepository.countByTouser(follower));
+
+        listModalForms.add(listModalForm);
     }
 }

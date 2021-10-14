@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -232,4 +233,17 @@ public class IndexService {
         return postFormList;
     }
 
+    public List autoComplete(String data, String type) {
+        switch (type){
+            case "hashtag":
+                List<HashTagForm> hashTagForms = hashTagRepository.findByHashtagnameStartsWith(data)
+                        .stream().map(hashTag -> modelMapper.map(hashTag,HashTagForm.class)).collect(Collectors.toList()).subList(0,4);
+                return hashTagForms;
+            case "usertag":
+                List<UserForm> userForms = userRepository.findByUsernameStartsWith(data)
+                        .stream().map(user -> modelMapper.map(user,UserForm.class)).collect(Collectors.toList()).subList(0,4);
+                return userForms;
+        }
+        return null;
+    }
 }
