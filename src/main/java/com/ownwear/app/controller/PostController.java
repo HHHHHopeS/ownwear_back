@@ -67,8 +67,9 @@ public class PostController {
 //        return posts;
 //    }
 
-    @GetMapping("post/profiㅣe")
+    @GetMapping("post/profile")
     public UserInfo getPostProfile(Long current_userid, Long postid){
         return service.getPostUser(current_userid,postid);
     }
+
 }

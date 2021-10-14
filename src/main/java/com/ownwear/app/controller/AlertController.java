@@ -11,31 +11,4 @@ import java.util.List;
 @RequestMapping("/alert")
 public class AlertController {
 
-    @Autowired
-    private CommentService commentService;
-
-    @PostMapping("/create")
-    public List<CommentForm> createComment(@RequestBody CommentForm comment) {
-
-        return commentService.create(comment);
-    }
-
-    @GetMapping("/{postid}")
-    public List<CommentForm> getComments(@PathVariable("postid") long postid) {
-
-        return commentService.getComments(postid);
-
-    }
-
-    @PostMapping("/update")
-    public List<CommentForm> saveComment(@RequestBody CommentForm comment) {
-        return commentService.update(comment);
-
-    }
-
-    @GetMapping("/delete")
-    public List<CommentForm> deleteComment(@RequestBody CommentForm comment) {
-        return commentService.delete(comment);
-
-    }
 }

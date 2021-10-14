@@ -28,12 +28,12 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
             "ORDER BY Count(p.hashtagid) desc LIMIT 9;",nativeQuery = true)
     List<IIndexHashTag> findTop9ByCountByHashtagInterface();
 
-
+/*
     @Query(value = "SELECT Count(p.hashtagid) as count,h.hashtagid, h.hashtagname  " +
             "FROM Post_Hash_Tag p " +
             "NATURAL JOIN HASH_TAG h " +
             "GROUP BY p.hashtagid " +
             "HAVING Count(p.hashtagid) >= 1 " +
             "ORDER BY Count(p.hashtagid) desc LIMIT 9;",nativeQuery = true)
-    List<PostHashTag> findTop6PostByHashTag();
+    List<PostHashTag> findTop6PostByHashTag();*/
 }

@@ -71,10 +71,10 @@ public class User {
         setSex(sex);
     }
 
-
-    @JsonBackReference
-    @OneToMany(mappedBy = "user")
-    private List<Alert> alerts = new ArrayList<>();
+//
+//    @JsonBackReference
+//    @OneToMany(mappedBy = "fromuser")
+//    private List<Alert> alerts = new ArrayList<>();
 
     @JsonBackReference
     @OneToMany(mappedBy = "user")

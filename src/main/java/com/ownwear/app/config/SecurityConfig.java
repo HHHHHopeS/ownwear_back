@@ -122,7 +122,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/**",
                         "/auth/**",
                         "/oauth2/**",
-                        "/index/**")
+                        "/index/**",
+                        "/AutoComplete/**")
                         .permitAll()
                     .anyRequest()
                         .authenticated()

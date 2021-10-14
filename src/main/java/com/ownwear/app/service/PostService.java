@@ -183,13 +183,18 @@ public class PostService {
     }
 
     public UserInfo getPostUser(Long current_userid, Long postid) {
-        Optional<Post> byId = postRepository.findById(postid);
-        if (byId.isPresent()) {
-            Post post = byId.get();
+        Optional<Post> postById = postRepository.findById(postid);
+        if (postById.isPresent()) {
+            Post post = postById.get();
             User user = post.getUser();
-            User currentUser = userRepository.findById(current_userid).get();
+            Optional<User> userById = userRepository.findById(current_userid);
             UserInfo userInfo = modelMapper.map(user, UserInfo.class);
-            userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
+            if (userById.isPresent()) { //비회원 체크
+                User currentUser = userById.get();
+                userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
+            }else{
+                userInfo.setIsfollowing(false);
+            }
             return userInfo;
         }
         return null; //todo 잘못된 요청 존재하지않는 포스트

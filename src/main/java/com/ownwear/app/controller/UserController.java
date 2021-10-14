@@ -33,25 +33,23 @@ public class UserController {
 
     }
 
-    @GetMapping("/{username}")
-    public List<Object> getUserDetail(@PathVariable("username") String username,Long current_userid) {
+    @GetMapping("/{username}") //todo 팔로우 유무 팔로우 팔로워 수
+    public UserProfile getUserDetail(@PathVariable("username") String username, Long current_userid) {
 
-        UserInfo userDetail = userService.getUserDetail(username,current_userid);
-        Page<IndexPost> userPosts = userService.getUserPosts(username,0);
-        List<Object> all = new ArrayList<>();
-        all.add(userDetail);
-        all.add(userPosts);
-        return all;
+        UserProfile userDetail = userService.getUserDetail(username, current_userid);
+
+        return userDetail;
     }
-//todo modal (좋,팔 형식) , (타입(좋,팔), 현재 유저, 타겟 유저(포스트))
-@PostMapping("modal")
-    public List<ListModalForm> getModalData(@RequestBody ListModalRequest listModalRequest){
-        return userService.getListModal(listModalRequest);
-}
 
-    @GetMapping("/{username}/posts") //todo 인피니티 스크롤,포스트 12 개를 유저 정보와 함께
+    //modal (타입(좋,팔), 현재 유저, 타겟 유저(포스트))
+    @PostMapping("modal")
+    public List<ListModalForm> getModalData(@RequestBody ListModalRequest listModalRequest) {
+        return userService.getListModal(listModalRequest);
+    }
+
+    @GetMapping("/{username}/posts") //인피니티 스크롤,포스트 12 개를 유저 정보와 함께
     public Page<IndexPost> getUserPosts(@PathVariable("username") String username) {
-        Page<IndexPost> userPosts = userService.getUserPosts(username,0);
+        Page<IndexPost> userPosts = userService.getUserPosts(username, 0);
         return userPosts;
     }
 
@@ -83,14 +81,16 @@ public class UserController {
 
         return userForm;
     }
-//",/user/updateprofile" auth
+
+    //",/user/updateprofile" auth
     @PostMapping("/updateprofile")
     public UserPwdForm updateprofile(@RequestBody UserPwdForm userpwdForm) {
         UserPwdForm updatepf = userService.updatePw(userpwdForm);
 
         return updatepf;
     }
-//",/user/checkpw" auth
+
+    //",/user/checkpw" auth
     @PostMapping("/checkpw")
     public boolean checkPw(@RequestBody UserPwdForm userpwdForm) {
         String pw = userpwdForm.getPassword();
