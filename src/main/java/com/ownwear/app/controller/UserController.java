@@ -34,10 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/{username}") //todo 팔로우 유무 팔로우 팔로워 수
-    public UserProfile getUserDetail(@PathVariable("username") String username, Long current_userid) {
-
+    public UserProfile getUserDetail(@PathVariable("username") String username, long current_userid) {
         UserProfile userDetail = userService.getUserDetail(username, current_userid);
-
         return userDetail;
     }
 
@@ -47,9 +45,9 @@ public class UserController {
         return userService.getListModal(listModalRequest);
     }
 
-    @GetMapping("/{username}/posts") //인피니티 스크롤,포스트 12 개를 유저 정보와 함께
-    public Page<IndexPost> getUserPosts(@PathVariable("username") String username) {
-        Page<IndexPost> userPosts = userService.getUserPosts(username, 0);
+    @GetMapping("/{username}/posts/{pageno}") //인피니티 스크롤,포스트 12 개를 유저 정보와 함께
+    public Page<IndexPost> getUserPosts(@PathVariable("username") String username,@PathVariable("pageno") int page) {
+        Page<IndexPost> userPosts = userService.getUserPosts(username, page);
         return userPosts;
     }
 

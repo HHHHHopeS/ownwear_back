@@ -21,6 +21,12 @@ public class PostController {
     public PostVo getDetail(@PathVariable("postid") long postid){
         return service.getDetail(postid);
     }
+    @GetMapping("/like/check")
+    public boolean isLike(long userid,long postid){
+
+        return service.checkIsLike(userid,postid);
+
+    }
 
 
     @PostMapping("/create")//,"detail/create/**" authenicated
@@ -34,9 +40,10 @@ public class PostController {
     }
 
 
-    @PostMapping("/delete")//,"detail/delete/**" authenicated
-    public void deletePost(long postid){
-        service.deleteById(postid);
+    @GetMapping("/delete")//,"detail/delete/**" authenicated
+    public Boolean deletePost(Long postid){
+
+        return service.deleteById(postid);
     }
 
 //    @GetMapping("getlist/man")

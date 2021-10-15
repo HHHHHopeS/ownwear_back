@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface AlertRepository extends JpaRepository<Alert, Long> {
 
-    @Query("select a from Alert a where a.user = ?1 and a.ischecked = false")
+    @Query("select a from Alert a where a.touser = ?1 and a.ischecked = false")
     List<Alert> findFalseByUser(User user);
 }

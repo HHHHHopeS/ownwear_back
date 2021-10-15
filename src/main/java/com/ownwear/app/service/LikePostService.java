@@ -25,7 +25,6 @@ public class LikePostService {
     public boolean likeToggle(LikePost likePost) {
 
         Optional<LikePost> byId = likePostRepository.findById(likePost.getLikepostid());
-
         if (byId.isPresent()) {
             likePostRepository.delete(likePost);
             return  false;

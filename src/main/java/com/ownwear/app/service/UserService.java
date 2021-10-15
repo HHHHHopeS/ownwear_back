@@ -8,6 +8,8 @@ import com.ownwear.app.repository.*;
 import com.ownwear.app.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -37,24 +39,26 @@ public class UserService {
 
     public UserProfile getUserDetail(String username, Long current_userid) {
         Optional<User> tagetUserOp = userRepository.findByUsername(username);
-        UserProfile targetUserProfile = null;
+        UserProfile targetUserProfile = new UserProfile();
         Optional<User> currentUserOp = null;
-        if (current_userid != null) {
+        if (current_userid != -1) {
             currentUserOp = userRepository.findById(current_userid);
             if (tagetUserOp.isPresent()) {
                 User targetUser = tagetUserOp.get();
                 User currentUser = currentUserOp.get();
-                targetUserProfile = modelMapper.map(targetUser, UserProfile.class);
+                UserInfo targetUserInfo = modelMapper.map(targetUser, UserInfo.class);
+                targetUserProfile.setUser(targetUserInfo);
                 boolean present = followRepository.findByUsers(currentUser, targetUser).isPresent();
-                targetUserProfile.setIsfollowing(present);
+                targetUserProfile.getUser().setIsfollowing(present);
                 return setUserProfile(targetUserProfile, targetUser);
             } else return null;
             //id로 해당 유저 찾을수 없음
         } else { //현재 비회원유저
             if (tagetUserOp.isPresent()) {
                 User targetUser = tagetUserOp.get();
-                targetUserProfile = modelMapper.map(targetUser, UserProfile.class);
-                targetUserProfile.setIsfollowing(false);
+                UserInfo targetUserInfo = modelMapper.map(targetUser, UserInfo.class);
+                targetUserProfile.setUser(targetUserInfo);
+                targetUserProfile.getUser().setIsfollowing(false);
                 return setUserProfile(targetUserProfile, targetUser);
             } else return null;
             //id로 해당 유저 찾을수 없음
@@ -221,7 +225,7 @@ public class UserService {
     }
 
     public boolean checkPw(String pw, Long id) {
-        System.out.println(passwordEncoder.encode("aa"));
+
         return passwordEncoder.matches(pw, userRepository.findById(id).get().getPassword());
     }
 
@@ -270,21 +274,23 @@ public class UserService {
                 List<FollowForm> followForms = followRepository.findAllByTouser(target)
                         .stream().map(follow -> modelMapper.map(follow, FollowForm.class)).collect(Collectors.toList());
                 for (FollowForm followForm : followForms) {
-                    setListModalForms(currentUser, listModalForms, followForm);
+                    setListModalForms(currentUser, listModalForms, followForm,type);
                 }
                 return listModalForms;
             }
         } else if (type.equals("following")) {
             Optional<User> targetUserById = userRepository.findById(request.getTargetid());
+
             if (targetUserById.isPresent()) {
                 User target = targetUserById.get();
                 List<FollowForm> followForms = followRepository.findAllByFromuser(target)
                         .stream().map(follow -> modelMapper.map(follow, FollowForm.class)).collect(Collectors.toList());
                 for (FollowForm followForm : followForms) {
 
-                    setListModalForms(currentUser, listModalForms, followForm);
+                    setListModalForms(currentUser, listModalForms, followForm,type);
 
                 }
+
                 return listModalForms;
             }
         }
@@ -292,9 +298,15 @@ public class UserService {
 
     }
 
-    private void setListModalForms(User currentUser, List<ListModalForm> listModalForms, FollowForm followForm) {
+    private void setListModalForms(User currentUser, List<ListModalForm> listModalForms, FollowForm followForm,String type) {
         ListModalForm listModalForm = new ListModalForm();
-        User follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
+        User follower = null;
+        if(type.equals("follower")){
+            follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
+        }
+        else{
+            follower = userRepository.findById(followForm.getTouser().getUserid()).get();
+        }
         Boolean isTrue = followRepository.findByUsers(currentUser, follower).isPresent();
 
         listModalForm.setUser(modelMapper.map(follower, UserForm.class));

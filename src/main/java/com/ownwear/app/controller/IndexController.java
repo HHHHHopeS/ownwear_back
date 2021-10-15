@@ -27,20 +27,20 @@ public class IndexController {
 
     @PostMapping("/getindex")
     public Map<String, List<IndexPost>> getIndexScroll(@RequestBody IndexRequest indexRequest){
-        System.out.println(indexRequest);
         return indexService.getIndexScroll(indexRequest);
     }
 
     @GetMapping("/srchdata")
-    public SearchForm SrchData(String keyword) {
+    public SearchForm SrchData(String value ,String keyword) {
 
-        SearchForm searchForm = indexService.SrchUserData(keyword);
+        SearchForm searchForm = indexService.SrchUserData(value,keyword);
 
         return searchForm;
     }
 
     @GetMapping("AutoComplete/{type}") //todo 구성하기
     private List<Object> hashtagAutoComplete(String data,@PathVariable("type") String type){
+
         return indexService.autoComplete(data,type);
     }
 

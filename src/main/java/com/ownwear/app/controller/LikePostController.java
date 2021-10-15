@@ -43,6 +43,7 @@ public class LikePostController {
     //    ",like/check/**" authenticate
     @PostMapping("/toggle")
     public boolean likeToggle(LikePost likePost) {
+
         return likePostService.likeToggle(likePost);
     }
 

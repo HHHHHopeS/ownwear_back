@@ -29,9 +29,11 @@ public class IndexService {
     private PostHashTagRepository postHashTagRepository;
 
 
-    public SearchForm SrchUserData(String keyword) {
-
-        List<User> byUsernameStartsWith = userRepository.findByUsernameStartsWith(keyword);
+    public SearchForm SrchUserData(String value,String keyword) {
+        SearchForm searchForm = new SearchForm();
+        switch (keyword){
+            case "user":
+        List<User> byUsernameStartsWith = userRepository.findByUsernameStartsWith(value);
 
         List<UserForm> userForms = new ArrayList<>();
 
@@ -39,8 +41,10 @@ public class IndexService {
             UserForm userForm = modelMapper.map(user, UserForm.class);
             userForms.add(userForm);
         }
-
-        List<Brand> byBrandnameStartsWith = brandRepository.findByBrandnameStartsWith(keyword);
+        searchForm.setUserForms(userForms);
+        break;
+            case "brand":
+        List<Brand> byBrandnameStartsWith = brandRepository.findByBrandnameStartsWith(value);
 
         List<BrandForm> brandForms = new ArrayList<>();
 
@@ -48,8 +52,10 @@ public class IndexService {
             BrandForm map = modelMapper.map(brand, BrandForm.class);
             brandForms.add(map);
         }
-
-        List<HashTag> byHashtagnameStartsWith = hashTagRepository.findByHashtagnameStartsWith(keyword);
+                searchForm.setBrandForms(brandForms);
+        break;
+            case "tag":
+        List<HashTag> byHashtagnameStartsWith = hashTagRepository.findByHashtagnameStartsWith(value);
 
         List<HashTagForm> hashTagForms = new ArrayList<>();
 
@@ -57,12 +63,11 @@ public class IndexService {
             HashTagForm map = modelMapper.map(hashTag, HashTagForm.class);
             hashTagForms.add(map);
         }
+                searchForm.setHashTagForms(hashTagForms);
+        break;
+            default :return null;
+        }
 
-        SearchForm searchForm = new SearchForm();
-
-        searchForm.setUserForms(userForms);
-        searchForm.setBrandForms(brandForms);
-        searchForm.setHashTagForms(hashTagForms);
 
         return searchForm;
     }
@@ -233,17 +238,22 @@ public class IndexService {
         return postFormList;
     }
 
+
     public List autoComplete(String data, String type) {
-        switch (type){
+        List list = null;
+        switch (type) {
             case "hashtag":
-                List<HashTagForm> hashTagForms = hashTagRepository.findByHashtagnameStartsWith(data)
-                        .stream().map(hashTag -> modelMapper.map(hashTag,HashTagForm.class)).collect(Collectors.toList()).subList(0,4);
-                return hashTagForms;
+                list = hashTagRepository.findByHashtagnameStartsWith(data)
+                        .stream().map(hashTag -> modelMapper.map(hashTag, HashTagForm.class)).collect(Collectors.toList());
+                break;
             case "usertag":
-                List<UserForm> userForms = userRepository.findByUsernameStartsWith(data)
-                        .stream().map(user -> modelMapper.map(user,UserForm.class)).collect(Collectors.toList()).subList(0,4);
-                return userForms;
+                list = userRepository.findByUsernameStartsWith(data)
+                        .stream().map(user -> modelMapper.map(user, UserForm.class)).collect(Collectors.toList());
+                break;
+            default: return list;
         }
-        return null;
+        if (list.size() > 4) list.subList(0, 4);
+        return list;
+
     }
 }
