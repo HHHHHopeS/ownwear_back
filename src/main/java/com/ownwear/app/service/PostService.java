@@ -98,9 +98,16 @@ public class PostService {
     }
 
 
-    public void deleteById(long postid) { //todo delete query 직접 작성하여 성능 개선
+    public boolean deleteById(long postid) { //todo delete query 직접 작성하여 성능 개선
         //System.out.println(postid);
-        postRepository.deleteById(postid);
+        try {
+
+            postRepository.deleteById(postid);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
     }
 
     @Transactional(readOnly = true)
@@ -133,6 +140,7 @@ public class PostService {
         List<PostForm> postForms = changeToFormList(postRepository.findByUser(user));
         List<CommentForm> comments = commentRepository.findAllByPost(post).stream().map(Comment -> modelMapper.map(Comment, CommentForm.class)).collect(Collectors.toList());
         ;
+
         PostForm postForm = modelMapper.map(post, PostForm.class);
         PostVo postVo = new PostVo(postForm, likecount, hashtags, postForms, comments, user.getUsername());
         return postVo;
@@ -198,5 +206,16 @@ public class PostService {
             return userInfo;
         }
         return null; //todo 잘못된 요청 존재하지않는 포스트
+    }
+
+    public boolean checkIsLike(long userid,long postid){
+        Optional<User> userOPt = userRepository.findById(userid);
+        User user = userOPt.get();
+        Optional<Post> postOpt = postRepository.findById(postid);
+        if(postOpt.isPresent()) {
+            Post post = postOpt.get();
+            return likePostRepository.findByUserAndPost(user,post).isPresent();
+        }
+        return false;
     }
 }
