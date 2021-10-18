@@ -30,7 +30,7 @@ public class PostController {
 
 
     @PostMapping("/create")//,"detail/create/**" authenicated
-    public long createPost(@RequestBody PostCreateForm post){
+    public long createPost(@RequestBody PostForm post){
         //        //System.out.println(post);
         return  service.createPost(post);
     }
@@ -46,17 +46,6 @@ public class PostController {
         return service.deleteById(postid);
     }
 
-//    @GetMapping("getlist/man")
-//    public List<PostForm> getManList(int page){
-//        return service.getList(page,true);
-//    }
-//
-//    @GetMapping("getlist/woman")
-//    public List<PostForm> getWomanList(int page){
-//        return service.getList(page,false);
-//    }
-
-
     @PostMapping("/postlist")
     public  List<PostForm> getPostList(@RequestBody UserForm user) {
 
@@ -65,18 +54,13 @@ public class PostController {
 
         return postList;
     }
-//
-//    @GetMapping("/postlist/{id}")
-//    public List<Post> getPostListPage(@PathVariable("id") int page) {
-//
-//        List<Post> posts = service.postListPage(page);
-//
-//        return posts;
-//    }
-
     @GetMapping("post/profile")
     public UserInfo getPostProfile(Long current_userid, Long postid){
         return service.getPostUser(current_userid,postid);
     }
 
+    @GetMapping("ranking")
+    public List getRankingData(String type, String filter , int page, Long current_userid){
+        return service.getRankingData(type,filter,page,current_userid);
+    }
 }

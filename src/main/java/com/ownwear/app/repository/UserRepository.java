@@ -2,6 +2,8 @@ package com.ownwear.app.repository;
 
 import com.ownwear.app.dto.IIndexUser;
 import com.ownwear.app.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -20,14 +22,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllBySex(boolean sex); // 성별로 유저 search
 
-    @Query(value = "SELECT Count(f.to_user) as count, u.userid , u.username, u.userimg " +
+    @Query(value = "SELECT Count(f.touser) as count, u.userid , u.username, u.userimg " +
             "FROM follow f " +
-            "Join user u ON u.userid = f.to_user " +
-            "GROUP BY f.to_user " +
-            "HAVING Count(f.to_user) >= 1 " +
-            "ORDER BY Count(f.to_user) desc LIMIT 7;",nativeQuery = true)
+            "Join user u ON u.userid = f.touser " +
+            "GROUP BY f.touser " +
+            "HAVING Count(f.touser) >= 1 " +
+            "ORDER BY Count(f.touser) desc LIMIT 7;",nativeQuery = true)
     List<IIndexUser> findTop7ByFollow();
 
     List<User> findByUsernameStartsWith(String username);
 
+
+    @Query("select u  from User u join Follow f on f.touser.userid  = u.userid group by f.touser.userid order by count(f.touser.userid) desc, u.rdate desc")
+    Page<User> findRankingData(String filter, PageRequest pageRequest);
 }

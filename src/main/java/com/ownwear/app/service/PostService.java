@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,16 +56,16 @@ public class PostService {
         return null;
     }
 
-    public long createPost(PostCreateForm postCreateForm) {
+    public long createPost(PostForm postForm) {
 //        Optional<Post> byId = postRepository.findById(postForm.getPostid());
 //        if (byId.isPresent()) {
 //            return null; //todo 에러페이지(잘못된 요청방식)
 //        }
 
-        Post post = modelMapper.map(postCreateForm, Post.class);
+        Post post = modelMapper.map(postForm, Post.class);
         Post save = postRepository.save(post);
-        List<String> hashtags = postCreateForm.getHashtags();
-        List<String> brands = postCreateForm.getBrands();
+        List<String> hashtags = postForm.getHashtags();
+        List<String> brands = postForm.getBrands();
         updateHashtag(post, hashtags);
         updateBrand(post, brands);
         return save.getPostid();
@@ -104,7 +106,7 @@ public class PostService {
 
             postRepository.deleteById(postid);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
 
@@ -200,7 +202,7 @@ public class PostService {
             if (userById.isPresent()) { //비회원 체크
                 User currentUser = userById.get();
                 userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
-            }else{
+            } else {
                 userInfo.setIsfollowing(false);
             }
             return userInfo;
@@ -208,14 +210,59 @@ public class PostService {
         return null; //todo 잘못된 요청 존재하지않는 포스트
     }
 
-    public boolean checkIsLike(long userid,long postid){
+    public boolean checkIsLike(long userid, long postid) {
         Optional<User> userOPt = userRepository.findById(userid);
         User user = userOPt.get();
         Optional<Post> postOpt = postRepository.findById(postid);
-        if(postOpt.isPresent()) {
+        if (postOpt.isPresent()) {
             Post post = postOpt.get();
-            return likePostRepository.findByUserAndPost(user,post).isPresent();
+            return likePostRepository.findByUserAndPost(user, post).isPresent();
         }
         return false;
+    }
+
+
+// 랭킹페이지 리스트 불러오기
+// type = like or brand or user
+// filter = all or man or women ** brand filter always null
+// count = page count
+
+// return
+// like.content = [post]
+// user.content = [userinfo] 팔로잉 팔로워 카운트 포함 유저 프로필 subnav데이터 불러올때랑 완죤 똑같은 데이터유형
+// brand.content = [brandinfo]
+// brandinfo = {
+//     brandname:,
+//     postedcount: 브랜드 태깅한 포스트 카운트,
+//     [post]: 태깅한 포스트 단 3개 순서는 최신순이던 인기순이던 상관 무,
+//     }
+
+    public List getRankingData(String type, String filter, int page , Long current_userid) {
+        System.out.println(page);
+        PageRequest pageRequest = PageRequest.of(page, 12);
+        User currentUser = userRepository.findById(current_userid).get();
+        switch (type) {
+            case "like":
+                return postRepository.findRankingData(filter, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
+            case "brand":
+                return postBrandRepository.findRankingData(filter, pageRequest);
+            case "user":
+                List<UserProfile> collect = userRepository.findRankingData(filter, pageRequest).getContent()
+                        .stream().map(user -> setUserProfile(user,currentUser)).collect(Collectors.toList());//todo current_userid
+
+                return collect;
+            default:
+                return null;
+        }
+    }
+    private UserProfile setUserProfile(User user,User currentUser) {
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUser(modelMapper.map(user, UserInfo.class));
+        userProfile.setFollower(followRepository.countByTouser(user));
+        userProfile.setFollowing(followRepository.countByFromuser(user));
+        User targetUser  = modelMapper.map(userProfile.getUser(),User.class);
+        boolean present = followRepository.findByUsers(currentUser, targetUser ).isPresent();
+        userProfile.getUser().setIsfollowing(present);
+        return userProfile;
     }
 }
