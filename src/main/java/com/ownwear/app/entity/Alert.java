@@ -24,7 +24,7 @@ public class Alert {
           date: "1900-10-5 13:01:00"
     */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "alertid")
     private Long alertid;
 

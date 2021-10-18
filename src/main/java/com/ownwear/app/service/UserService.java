@@ -145,9 +145,10 @@ public class UserService {
     private UserInfo checkAndReturn(User user) {
 
         UserInfo userInfo = modelMapper.map(user, UserInfo.class);
-
+        System.out.println(userInfo);
         List<Alert> falseByUser = alertRepository.findFalseByUser(user);
 
+        System.out.println(falseByUser);
         if (falseByUser.isEmpty()) {
             userInfo.setIschecked(true);
         } else {

@@ -62,7 +62,7 @@ class DetailServiceTest {
         for (IIndexUser iIndexUser : iIndexUsers) {
             IndexUser indexUser = new IndexUser();
             indexUser.setFollow(iIndexUser.getCount());
-            Optional<User> byId = userRepository.findById(iIndexUser.getTo_user());
+            Optional<User> byId = userRepository.findById(iIndexUser.getTouser());
             indexUser.setUsername(byId.get().getUsername());
             //System.out.println(indexUser);
             indexUsers.add(indexUser);
