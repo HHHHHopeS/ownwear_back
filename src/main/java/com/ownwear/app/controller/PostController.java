@@ -1,10 +1,13 @@
 package com.ownwear.app.controller;
 
 import com.ownwear.app.dto.*;
+import com.ownwear.app.entity.Post;
 import com.ownwear.app.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,8 +70,16 @@ public class PostController {
 //        return posts;
 //    }
 
-    @GetMapping("post/profiㅣe")
+    @GetMapping("post/profile")
     public UserInfo getPostProfile(Long current_userid, Long postid){
         return service.getPostUser(current_userid,postid);
+    }
+
+    @GetMapping("/post/brand") //브랜드 리스트
+    public Page<IndexPost> getPostByBrand(Pageable pageable) {
+
+        Page<IndexPost> postByBrand = service.getPostByBrand(pageable);
+
+        return postByBrand;
     }
 }

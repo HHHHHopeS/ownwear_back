@@ -18,7 +18,6 @@ public class Alert {
     @Column(name = "alertid")
     private Long alertid;
 
-
     String type;//like follow comment
 
     @Column(name = "alert_content", nullable = false, length = 500)
@@ -30,7 +29,6 @@ public class Alert {
     @CreationTimestamp
     @Column(name = "alert_date", nullable = false)
     private Timestamp alertdate;
-
 
     @JsonBackReference
     @ManyToOne

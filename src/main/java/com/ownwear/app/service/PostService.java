@@ -194,4 +194,18 @@ public class PostService {
         }
         return null; //todo 잘못된 요청 존재하지않는 포스트
     }
+
+    public Page<IndexPost> getPostByBrand(Pageable pageable) { //브랜드 리스트 불러오기
+
+        Page<IndexPost> byCountByBrand = postBrandRepository.findByCountByBrand("나이키", pageable)
+                .map(iIndexPost -> {
+                    IndexPost indexPost = new IndexPost();
+                    indexPost.setPostid(iIndexPost.getPostid());
+                    indexPost.setImgData(iIndexPost.getImgdata());
+                    indexPost.setUser(modelMapper.map(iIndexPost.getUser(), UserInfo.class));
+                    return indexPost;
+                });
+
+        return byCountByBrand;
+    }
 }

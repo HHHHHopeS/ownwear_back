@@ -16,7 +16,7 @@ import java.util.Map;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @TypeDef(
         name = "json",
         typeClass = JsonStringType.class

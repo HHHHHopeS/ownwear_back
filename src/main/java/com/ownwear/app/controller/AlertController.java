@@ -16,15 +16,12 @@ public class AlertController {
 
     @PostMapping("/create")
     public List<CommentForm> createComment(@RequestBody CommentForm comment) {
-
         return commentService.create(comment);
     }
 
     @GetMapping("/{postid}")
     public List<CommentForm> getComments(@PathVariable("postid") long postid) {
-
         return commentService.getComments(postid);
-
     }
 
     @PostMapping("/update")
@@ -36,6 +33,5 @@ public class AlertController {
     @GetMapping("/delete")
     public List<CommentForm> deleteComment(@RequestBody CommentForm comment) {
         return commentService.delete(comment);
-
     }
 }
