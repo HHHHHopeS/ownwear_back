@@ -132,7 +132,7 @@ public class IndexService {
         List<IndexBrand> indexBrands = new ArrayList<>();
         for (IIndexBrand iIndexBrand : iIndexBrands) {
             IndexBrand indexBrand = new IndexBrand();
-            indexBrand.setTagCount(iIndexBrand.getCount());
+            indexBrand.setTagCount(iIndexBrand.getCounts());
             indexBrand.setBrandid(iIndexBrand.getBrandid());
             indexBrand.setBrandName(iIndexBrand.getBrandName());
             indexBrands.add(indexBrand);

@@ -245,7 +245,25 @@ public class PostService {
             case "like":
                 return postRepository.findRankingData(filter, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
             case "brand":
-                return postBrandRepository.findRankingData(filter, pageRequest);
+                List<BrandInfo> brandInfos = new ArrayList<>();
+                boolean sex = filter.equals("men");
+                List<BrandInfo> rankingData = brandRepository.findRankingData(sex, pageRequest).getContent()
+                        .stream().map(iIndexBrand -> {
+                            BrandInfo brandInfo = new BrandInfo();
+//                            System.out.println(brandRepository.findAllByBrandid(iIndexBrand.getBrandid()).stream().map(post -> {System.out.println(post); return post;}));
+                            List<Post> allByBrandid = brandRepository.findAllByBrandid(iIndexBrand.getBrandid());
+                            for (Post post : allByBrandid) {
+                                brandInfo.getPosts().add(modelMapper.map(post,PostForm.class));
+                            }
+                            brandInfo.setPosts((List) brandInfo.getPosts().stream().distinct().collect(Collectors.toList()));
+                            brandInfo.setPostcount(iIndexBrand.getCounts());
+                            brandInfo.setBrandname(iIndexBrand.getBrandName());
+                            return brandInfo;
+                        }).collect(Collectors.toList());
+                BrandInfo brandInfo = new BrandInfo();
+
+                brandInfos.add(brandInfo);
+                return rankingData;
             case "user":
                 List<UserProfile> collect = userRepository.findRankingData(filter, pageRequest).getContent()
                         .stream().map(user -> setUserProfile(user,currentUser)).collect(Collectors.toList());//todo current_userid

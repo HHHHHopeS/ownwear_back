@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
 
-    @Query(value = "SELECT Count(p.brandid) as count, p.brandid , b.brandname " +
+    @Query(value = "SELECT Count(p.brandid) as counts, p.brandid , b.brandname " +
             "FROM Post_brand p " +
             "NATURAL JOIN Brand b " +
             "GROUP BY p.brandid " +
@@ -27,12 +27,7 @@ public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
     List<Long> findTop6PostidByBrand();
 
 
-    @Query(value = "SELECT p.postid " +
-            "FROM Post_brand p " +
-            "NATURAL JOIN Brand b " +
-            "GROUP BY p.brandid " +
-            "HAVING Count(p.brandid) >= 1 " +
-            "ORDER BY Count(p.brandid) desc  LIMIT 6;",nativeQuery = true)
-    List  findRankingData(String filter, PageRequest pageRequest);
+
+
     //, po.imgData as imgData
 }

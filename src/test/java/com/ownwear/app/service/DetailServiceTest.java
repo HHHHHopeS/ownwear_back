@@ -53,7 +53,7 @@ class DetailServiceTest {
         for (IIndexHashTag postHashTagInfo : top9ByCountByHashtag) {
 
             //System.out.println(postHashTagInfo.getHashtagid());
-            //System.out.println(postHashTagInfo.getCount());
+            //System.out.println(postHashTagInfo.getCounts());
         }
 */
 
@@ -61,7 +61,7 @@ class DetailServiceTest {
         List<IndexUser> indexUsers = new ArrayList<>();
         for (IIndexUser iIndexUser : iIndexUsers) {
             IndexUser indexUser = new IndexUser();
-            indexUser.setFollow(iIndexUser.getCount());
+            indexUser.setFollow(iIndexUser.getCounts());
             Optional<User> byId = userRepository.findById(iIndexUser.getTouser());
             indexUser.setUsername(byId.get().getUsername());
             //System.out.println(indexUser);
