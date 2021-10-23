@@ -145,10 +145,8 @@ public class UserService {
     private UserInfo checkAndReturn(User user) {
 
         UserInfo userInfo = modelMapper.map(user, UserInfo.class);
-        System.out.println(userInfo);
         List<Alert> falseByUser = alertRepository.findFalseByUser(user);
 
-        System.out.println(falseByUser);
         if (falseByUser.isEmpty()) {
             userInfo.setIschecked(true);
         } else {
@@ -179,7 +177,11 @@ public class UserService {
         try {
             Optional<User> byId = userRepository.findById((userInfo.getUserid()));
             if (byId.isPresent()) {
-                User user = byId.get();
+                User user = modelMapper.map(userInfo, User.class);
+                user.setIsverified(true);
+                userRepository.save(user);
+
+
             }
         } catch (Exception e) {
 
