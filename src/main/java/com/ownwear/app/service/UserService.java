@@ -1,12 +1,14 @@
 package com.ownwear.app.service;
 
 
+import com.ownwear.app.controller.VisionController;
 import com.ownwear.app.exception.ResourceNotFoundException;
 import com.ownwear.app.dto.*;
 import com.ownwear.app.entity.*;
 import com.ownwear.app.repository.*;
 import com.ownwear.app.security.UserPrincipal;
 import lombok.AllArgsConstructor;
+import net.sf.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,7 +102,7 @@ public class UserService {
         for (IIndexPost iIndexPost : iIndexPosts) {
             IndexPost indexPost = new IndexPost();
             indexPost.setPostid(iIndexPost.getPostid());
-            indexPost.setImgData(iIndexPost.getImgdata());
+            indexPost.setImgdata(iIndexPost.getImgdata());
             indexPost.setRdate(iIndexPost.getRdate());
             indexPosts.add(indexPost);
         }
@@ -179,6 +182,8 @@ public class UserService {
             if (byId.isPresent()) {
                 User user = modelMapper.map(userInfo, User.class);
                 user.setIsverified(true);
+                user.setProviderid("facebook");
+                user.setProvider("facebook");
                 userRepository.save(user);
 
 
@@ -202,43 +207,69 @@ public class UserService {
 
     }
 
-    public UserForm updateUser(UserInfo userInfo) {
+
+    public Boolean updateUser(UserInfo userInfo) {
 
         Optional<User> byUsername = userRepository.findByUsername(userInfo.getUsername());
         Optional<User> byEmail = userRepository.findByEmail(userInfo.getEmail());
 
-        if (byUsername.isPresent()) {
+        if (!byUsername.isPresent()) {
+
+            return false;
+        } else if (!byEmail.isPresent()) {
+            return false;
+        }
+        putUserinfo(userInfo);
+        return true;
+    }
+    public void putUserinfo(UserInfo userInfo){
+
+        userRepository.updateUser(userInfo.getUserid(),userInfo.getHeight(),userInfo.getInstaid(),userInfo.getTwitterid(),userInfo.getPinterestid(),userInfo.getUserimg());
+    }
+
+    public UserInfo updateUserImg(UserInfo userInfo) throws IOException {
+        Optional<User> byUsername = userRepository.findByUsername(userInfo.getUsername());
+        Optional<User> byEmail = userRepository.findByEmail(userInfo.getEmail());
+
+        if (!byUsername.isPresent()) {
 
             return null;
-        } else if (byEmail.isPresent()) {
+        } else if (!byEmail.isPresent()) {
             return null;
         }
+        if(userInfo.getUserimg()!=null){
+            JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
+            String data = (String) jsonObject.get("data");
+            userInfo.setUserimg(data);
+            putUserinfo(userInfo);
 
-//                user.setUserimg(userInfo.getUserimg());
-//                user.setUsername(userInfo.getUsername());
-//                user.setEmail(userInfo.getEmail());
-//                user.setHeight(userInfo.getHeight());
-//                user.setSex(userInfo.getSex());
-//                user.setRdate(new Timestamp(System.currentTimeMillis()));
-//                JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
-//                String data = (String) jsonObject.get("data");
-//                user.setUserimg(data);
-        User user = new User();
-        return modelMapper.map(userRepository.save(user), UserForm.class);
+        }
+        else{
+            userInfo.setUserimg(null);
+            putUserinfo(userInfo);
+        }
+        return userInfo;
+    }
+
+
+
+
+
+    public Boolean updatePw(String pw, Long id ,String newPw) {
+
+        if(passwordEncoder.matches(pw, userRepository.findById(id).get().getPassword())){
+
+            userRepository.updatePw(id,passwordEncoder.encode(newPw));
+
+
+            return true;
+        }
+        return false;
     }
 
     public boolean checkPw(String pw, Long id) {
 
         return passwordEncoder.matches(pw, userRepository.findById(id).get().getPassword());
-    }
-
-    public UserPwdForm updatePw(UserPwdForm userpwdForm) {
-
-        Optional<User> byId = userRepository.findById(userpwdForm.getUserid());
-        userpwdForm.setPassword(passwordEncoder.encode(userpwdForm.getPassword()));
-        User user = modelMapper.map(userpwdForm, User.class);
-
-        return modelMapper.map(userRepository.save(user), UserPwdForm.class);
     }
 
     public List<ListModalForm> getListModal(ListModalRequest request) {

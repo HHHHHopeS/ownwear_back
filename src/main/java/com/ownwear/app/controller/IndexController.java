@@ -15,14 +15,14 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("index")
 public class IndexController {
 
     private IndexService indexService;
 
     @GetMapping("/getindex")
-    public IndexForm getIndex(){
-        System.out.println("getIndex 입장");
-        return indexService.getIndex();
+    public IndexForm getIndex(String url){
+        return indexService.getIndex(url);
     }
 
     @PostMapping("/getindex")

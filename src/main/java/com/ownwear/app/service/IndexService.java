@@ -29,43 +29,44 @@ public class IndexService {
     private PostHashTagRepository postHashTagRepository;
 
 
-    public SearchForm SrchUserData(String value,String keyword) {
+    public SearchForm SrchUserData(String value, String keyword) {
         SearchForm searchForm = new SearchForm();
-        switch (keyword){
+        switch (keyword) {
             case "user":
-        List<User> byUsernameStartsWith = userRepository.findByUsernameStartsWith(value);
+                List<User> byUsernameStartsWith = userRepository.findByUsernameStartsWith(value);
 
-        List<UserForm> userForms = new ArrayList<>();
+                List<UserForm> userForms = new ArrayList<>();
 
-        for (User user : byUsernameStartsWith) {
-            UserForm userForm = modelMapper.map(user, UserForm.class);
-            userForms.add(userForm);
-        }
-        searchForm.setUserForms(userForms);
-        break;
+                for (User user : byUsernameStartsWith) {
+                    UserForm userForm = modelMapper.map(user, UserForm.class);
+                    userForms.add(userForm);
+                }
+                searchForm.setUserForms(userForms);
+                break;
             case "brand":
-        List<Brand> byBrandnameStartsWith = brandRepository.findByBrandnameStartsWith(value);
+                List<Brand> byBrandnameStartsWith = brandRepository.findByBrandnameStartsWith(value);
 
-        List<BrandForm> brandForms = new ArrayList<>();
+                List<BrandForm> brandForms = new ArrayList<>();
 
-        for (Brand brand : byBrandnameStartsWith) {
-            BrandForm map = modelMapper.map(brand, BrandForm.class);
-            brandForms.add(map);
-        }
+                for (Brand brand : byBrandnameStartsWith) {
+                    BrandForm map = modelMapper.map(brand, BrandForm.class);
+                    brandForms.add(map);
+                }
                 searchForm.setBrandForms(brandForms);
-        break;
+                break;
             case "tag":
-        List<HashTag> byHashtagnameStartsWith = hashTagRepository.findByHashtagnameStartsWith(value);
+                List<HashTag> byHashtagnameStartsWith = hashTagRepository.findByHashtagnameStartsWith(value);
 
-        List<HashTagForm> hashTagForms = new ArrayList<>();
+                List<HashTagForm> hashTagForms = new ArrayList<>();
 
-        for (HashTag hashTag : byHashtagnameStartsWith) {
-            HashTagForm map = modelMapper.map(hashTag, HashTagForm.class);
-            hashTagForms.add(map);
-        }
+                for (HashTag hashTag : byHashtagnameStartsWith) {
+                    HashTagForm map = modelMapper.map(hashTag, HashTagForm.class);
+                    hashTagForms.add(map);
+                }
                 searchForm.setHashTagForms(hashTagForms);
-        break;
-            default :return null;
+                break;
+            default:
+                return null;
         }
 
 
@@ -73,11 +74,11 @@ public class IndexService {
     }
 
 
-    public IndexForm getIndex() {
+    public IndexForm getIndex(String url) {
         // Rank , Sex , Tag , Brand , 최신
         IndexForm indexForm = new IndexForm();
         for (String s : Arrays.asList("rank", "new")) {
-            indexForm.setPostMap(mapSetting(s, indexForm.getPostMap(), null)); //랭크기준 포스트 리스트 담기
+            indexForm.setPostMap(mapSetting(s, indexForm.getPostMap(), null, url)); //랭크기준 포스트 리스트 담기
         }//최신기준 포스트 리스트 담기
         indexForm.setUserInfos(getIndexUsers());
         indexForm.setHashTagForms(getPostHashTagInfos());
@@ -96,9 +97,9 @@ public class IndexService {
         Map<String, List<IndexPost>> postMap = null;
 
         if (page == 1) {
-            postMap = mapSetting("brand", new HashMap<>(), null); //랭크기준 포스트 리스트 담기
+            postMap = mapSetting("brand", new HashMap<>(), null, indexRequest.getUrl()); //랭크기준 포스트 리스트 담기
         } else if (page >= 2) {
-            postMap = mapSetting("random", new HashMap<>(), indexRequest.getIds());
+            postMap = mapSetting("random", new HashMap<>(), indexRequest.getIds(), indexRequest.getUrl());
 
         }
         return postMap;
@@ -154,19 +155,38 @@ public class IndexService {
         return indexHashTags;
     }
 
-    private Map<String, List<IndexPost>> mapSetting(String topic, Map<String, List<IndexPost>> map, List<Long> ids) {
+    private Map<String, List<IndexPost>> mapSetting(String topic, Map<String, List<IndexPost>> map, List<Long> ids, String url) {
         List<IndexPost> postFormList = new ArrayList<>();
+        Boolean sex = null;
+        if (url != null) {
+
+            System.out.println("url: " + url);
+            url = url.trim();
+            sex = url.equals("men");
+        }
         switch (topic) {
             case "rank":
-                List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
-                for (LikePost likePost : top6ByPost) {
-                    LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
-                    IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
-                    postFormList.add(indexPost);
+                if (sex == null) {
+                    System.out.println("all");
+                    List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
+                    for (LikePost likePost : top6ByPost) {
+                        LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
+                        IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
+                        postFormList.add(indexPost);
+                    }
+                } else {
+                    System.out.println(url);
+                    List<LikePost> top6ByPost = likePostRepository.findTop6ByPost(sex);
+                    for (LikePost likePost : top6ByPost) {
+                        LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
+                        IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
+                        postFormList.add(indexPost);
+                    }
                 }
                 break;
             case "new":
-                List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc();
+                List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc()
+                        .stream().sorted(Comparator.comparing(IIndexPost::getRdate).reversed()).collect(Collectors.toList());
                 postFormList = getIndexPost(newPosts, postFormList);
                 break;
             case "brand":
@@ -181,7 +201,7 @@ public class IndexService {
                 List<IIndexPost> iIndexPosts = new ArrayList<>();
                 long random = 0;
                 boolean check = true;
-                if (ids.isEmpty() ) {
+                if (ids.isEmpty()) {
                     while (check) {
                         random = ThreadLocalRandom.current().nextLong(totalCount);
                         if (!randoms.contains(random)) {
@@ -230,8 +250,8 @@ public class IndexService {
         for (IIndexPost newPost : newPosts) {
             IndexPost indexPost = new IndexPost();
             indexPost.setPostid(newPost.getPostid());
-            indexPost.setImgData(newPost.getImgdata());
-            indexPost.setUser( modelMapper.map(newPost.getUser(), UserInfo.class));
+            indexPost.setImgdata(newPost.getImgdata());
+            indexPost.setUser(modelMapper.map(newPost.getUser(), UserInfo.class));
             postFormList.add(indexPost);
         }
 
@@ -250,7 +270,8 @@ public class IndexService {
                 list = userRepository.findByUsernameStartsWith(data)
                         .stream().map(user -> modelMapper.map(user, UserForm.class)).collect(Collectors.toList());
                 break;
-            default: return list;
+            default:
+                return list;
         }
         if (list.size() > 4) list.subList(0, 4);
         return list;

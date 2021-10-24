@@ -21,8 +21,8 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
     void deleteAllByPost(Post post);
 
     @Query(value = "SELECT Count(p.hashtagid) as count,h.hashtagid, h.hashtagname  " +
-            "FROM Post_Hash_Tag p " +
-            "NATURAL JOIN HASH_TAG h " +
+            "FROM post_hash_tag p " +
+            "NATURAL JOIN hash_tag h " +
             "GROUP BY p.hashtagid " +
             "HAVING Count(p.hashtagid) >= 1 " +
             "ORDER BY Count(p.hashtagid) desc LIMIT 9;",nativeQuery = true)

@@ -54,6 +54,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p  from Post p join LikePost l on l.post.postid  = p.postid group by l.post.postid order by count(l.post.postid) desc")
     Page<Post> findRankingData(String filter, Pageable pageRequest); //좋아요 랭킹
-    /*SELECT * FROM Post p  JOIN (SELECT l.postid as postids, COUNT(l.postid) as likecount FROM Like_Post l GROUP BY l.postid ORDER BY likecount DESC) as lp ON lp.postids = p.postid*/
+    /*SELECT * FROM Post p  JOIN (SELECT l.postid as postids, COUNT(l.postid) as likecount FROM like_post l GROUP BY l.postid ORDER BY likecount DESC) as lp ON lp.postids = p.postid*/
 
 }

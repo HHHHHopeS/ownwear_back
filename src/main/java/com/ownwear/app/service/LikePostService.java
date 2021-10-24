@@ -1,8 +1,14 @@
 package com.ownwear.app.service;
 
+import com.ownwear.app.dto.LikePostForm;
+import com.ownwear.app.dto.LikeRequest;
 import com.ownwear.app.entity.LikePost;
+import com.ownwear.app.entity.Post;
 import com.ownwear.app.entity.User;
 import com.ownwear.app.repository.LikePostRepository;
+import com.ownwear.app.repository.PostRepository;
+import com.ownwear.app.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class LikePostService {
 
-    @Autowired
     private LikePostRepository likePostRepository;
+    private UserRepository userRepository;
+    private PostRepository postRepository;
 
     public List<LikePost> checklike(User user) {
 
@@ -22,17 +30,27 @@ public class LikePostService {
         return likePost;
     }
 
-    public boolean likeToggle(LikePost likePost) {
+    public boolean likeToggle(LikeRequest likeRequest) {
 
-        Optional<LikePost> byId = likePostRepository.findById(likePost.getLikepostid());
-        if (byId.isPresent()) {
-            likePostRepository.delete(likePost);
-            return  false;
+        User user = null;
+        Post post = null;
+
+        Optional<User> userOPt = userRepository.findById(likeRequest.getUserid());
+        Optional<Post> postOpt = postRepository.findById(likeRequest.getPostid());
+        Optional<LikePost> likePostOp= null;
+        if (postOpt.isPresent()&& userOPt.isPresent()) {
+            user = userOPt.get();
+            post = postOpt.get();
+            likePostOp = likePostRepository.findByUserAndPost(user, post);
         }
-
-        likePostRepository.save(likePost);
-
-        return true;
+        if (likePostOp.isPresent()) {
+            likePostRepository.delete(likePostOp.get());
+            return  false;
+        }else {
+            LikePost likePost = new LikePost(post,user);
+            likePostRepository.save(likePost);
+            return true;
+        }
     }
 
     public long likecount(LikePost likePost) {

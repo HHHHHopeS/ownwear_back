@@ -17,6 +17,11 @@ public class UserInfo {
 
     private String height;
 
+    //facebook
+    private String provider;
+
+    private String providerid;
+
     private String instaid;
 
     private String pinterestid;
