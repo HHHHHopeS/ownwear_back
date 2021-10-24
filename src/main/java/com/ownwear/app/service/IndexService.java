@@ -168,7 +168,10 @@ public class IndexService {
             case "rank":
                 if (sex == null) {
                     System.out.println("all");
+                    int index = 5;
                     List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
+                    if (top6ByPost.size() < 6) index = top6ByPost.size();
+                    top6ByPost.subList(0, index);
                     for (LikePost likePost : top6ByPost) {
                         LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
                         IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
@@ -176,7 +179,10 @@ public class IndexService {
                     }
                 } else {
                     System.out.println(url);
+                    int index = 5;
                     List<LikePost> top6ByPost = likePostRepository.findTop6ByPost(sex);
+                    if (top6ByPost.size() < 6) index = top6ByPost.size();
+                    top6ByPost.subList(0, index);
                     for (LikePost likePost : top6ByPost) {
                         LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
                         IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
@@ -185,14 +191,40 @@ public class IndexService {
                 }
                 break;
             case "new":
-                List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc()
-                        .stream().sorted(Comparator.comparing(IIndexPost::getRdate).reversed()).collect(Collectors.toList());
-                postFormList = getIndexPost(newPosts, postFormList);
+                if (sex == null) {
+                    int index = 5;
+                    List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc()
+                            .stream().sorted(Comparator.comparing(IIndexPost::getRdate).reversed()).collect(Collectors.toList());
+                    if (newPosts.size() < 6) index = newPosts.size();
+                    newPosts.subList(0, index);
+                    postFormList = getIndexPost(newPosts, postFormList);
+                } else {
+                    int index = 5;
+                    List<IIndexPost> newPosts = postRepository.findTop6ByUserSexOrderByRdateAsc(sex)
+                            .stream().sorted(Comparator.comparing(IIndexPost::getRdate).reversed()).collect(Collectors.toList());
+                    if (newPosts.size() < 6) index = newPosts.size();
+                    newPosts.subList(0, index);
+                    postFormList = getIndexPost(newPosts, postFormList);
+
+                }
                 break;
             case "brand":
-                List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand();
-                List<IIndexPost> brandPosts = postRepository.findAllByPostidIn(top6PostidByBrand);
-                postFormList = getIndexPost(brandPosts, postFormList);
+                if (sex == null) {
+                    int index = 5;
+                    List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand();
+                    if (top6PostidByBrand.size() < 6) index = top6PostidByBrand.size();
+                    top6PostidByBrand.subList(0, index);
+                    List<IIndexPost> brandPosts = postRepository.findAllByPostidIn(top6PostidByBrand);
+                    postFormList = getIndexPost(brandPosts, postFormList);
+                } else {
+                    int index = 5;
+                    List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand(sex);
+                    if (top6PostidByBrand.size() < 6) index = top6PostidByBrand.size();
+                    top6PostidByBrand.subList(0, index);
+                    List<IIndexPost> brandPosts = postRepository.findAllByPostidIn(top6PostidByBrand);
+                    postFormList = getIndexPost(brandPosts, postFormList);
+
+                }
                 break;
             case "random":
                 System.out.println("Random 입장");
