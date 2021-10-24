@@ -11,16 +11,16 @@ import java.util.List;
 public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
 
     @Query(value = "SELECT Count(p.brandid) as counts, p.brandid , b.brandname " +
-            "FROM Post_brand p " +
-            "NATURAL JOIN Brand b " +
+            "FROM post_brand p " +
+            "NATURAL JOIN brand b " +
             "GROUP BY p.brandid " +
             "HAVING Count(p.brandid) >= 1 " +
             "ORDER BY Count(p.brandid) desc LIMIT 9;",nativeQuery = true)
     List<IIndexBrand> findTop9ByCountByBrand();
 
     @Query(value = "SELECT p.postid " +
-            "FROM Post_brand p " +
-            "NATURAL JOIN Brand b " +
+            "FROM post_brand p " +
+            "NATURAL JOIN brand b " +
             "GROUP BY p.brandid " +
             "HAVING Count(p.brandid) >= 1 " +
             "ORDER BY Count(p.brandid) desc  LIMIT 6;",nativeQuery = true)

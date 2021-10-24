@@ -242,7 +242,7 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(page, 12);
         User currentUser = userRepository.findById(current_userid).get();
         switch (type) {
-            case "like":
+            case "likes":
                 return postRepository.findRankingData(filter, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
             case "brand":
                 List<BrandInfo> brandInfos = new ArrayList<>();

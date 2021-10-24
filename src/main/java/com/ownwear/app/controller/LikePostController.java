@@ -1,5 +1,7 @@
 package com.ownwear.app.controller;
 
+import com.ownwear.app.dto.LikePostForm;
+import com.ownwear.app.dto.LikeRequest;
 import com.ownwear.app.entity.LikePost;
 import com.ownwear.app.repository.LikePostRepository;
 import com.ownwear.app.service.LikePostService;
@@ -42,14 +44,14 @@ public class LikePostController {
 
     //    ",like/check/**" authenticate
     @PostMapping("/toggle")
-    public boolean likeToggle(LikePost likePost) {
+    public boolean likeToggle(@RequestBody LikeRequest likeRequest) {
 
-        return likePostService.likeToggle(likePost);
+        return likePostService.likeToggle(likeRequest);
     }
 
 //    ",like/likecount/**" permit all
     @PostMapping("/likecount")
-    public long likecount(LikePost likePost) {
+    public long likecount(@RequestBody LikePost likePost) {
         return likePostService.likecount(likePost);
     }
 }

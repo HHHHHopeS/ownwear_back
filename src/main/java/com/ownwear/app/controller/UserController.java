@@ -8,12 +8,14 @@ import com.ownwear.app.security.CurrentUser;
 import com.ownwear.app.security.UserPrincipal;
 import com.ownwear.app.service.UserService;
 import lombok.AllArgsConstructor;
+import net.sf.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,19 +75,27 @@ public class UserController {
     }
 
     @PostMapping("/mypage/update")
-    public UserForm UpdateUser(@RequestBody UserInfo userInfo) {
+    public Boolean UpdateUser(@RequestBody UserInfo userInfo) {
+        return userService.updateUser(userInfo);
+    }
 
-        UserForm userForm = userService.updateUser(userInfo);
-
-        return userForm;
+    @PostMapping("/mypage/updateImg")
+    public UserInfo UpdateUserImg(@RequestBody UserInfo userInfo) throws IOException {
+        return userService.updateUserImg(userInfo);
     }
 
     //",/user/updateprofile" auth
     @PostMapping("/updateprofile")
-    public UserPwdForm updateprofile(@RequestBody UserPwdForm userpwdForm) {
-        UserPwdForm updatepf = userService.updatePw(userpwdForm);
+    public Boolean updateprofile(@RequestBody String data) { //todo dto 생성
 
-        return updatepf;
+        JSONObject a = JSONObject.fromObject(data);
+        long id = Long.parseLong(a.get("userid").toString());
+
+        String pw = (String) a.get("pw");
+        String newPw = (String)a.get("newPw");
+
+        return userService.updatePw(pw,id,newPw);
+
     }
 
     //",/user/checkpw" auth

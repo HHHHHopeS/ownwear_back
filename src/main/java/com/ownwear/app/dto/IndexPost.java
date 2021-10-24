@@ -13,7 +13,7 @@ public class IndexPost {
 
     private UserInfo user;
 
-    private Map<String , Object> imgData = new HashMap<>();
+    private Map<String , Object> imgdata = new HashMap<>();
 
     private Timestamp rdate;
 

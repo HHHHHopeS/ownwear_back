@@ -15,6 +15,7 @@ public class FollowController {
 
     @GetMapping("/toggle")
     public Boolean toggle(Long current_userid,Long target_userid){
+        System.out.println("current_userid = " + current_userid);
         return followService.toggle(current_userid,target_userid);
     }
 
