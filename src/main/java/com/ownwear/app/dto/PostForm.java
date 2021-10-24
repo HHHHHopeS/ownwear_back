@@ -15,7 +15,6 @@ public class PostForm {
 
     private Map<String , Object> imgdata = new HashMap<>();
 
-
     private List<String> hashtags;
 
     private List<String> brands;

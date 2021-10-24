@@ -28,7 +28,7 @@ public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
             "from PostBrand p join Brand b on p.brand.brandid = b.brandid " +
             "where b.brandname = ?1)";
     @Query(findbyCount_)
-    Page<IIndexPost> findByCountByBrand(String a , Pageable pageable);
+    Page<IIndexPost> findByCountByBrand(String a , Pageable pageable); //브랜드 리스트
 
     @Query(value = "SELECT p.postid " +
             "FROM Post_brand p " +

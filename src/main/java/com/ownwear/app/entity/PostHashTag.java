@@ -16,7 +16,6 @@ public class PostHashTag {
     @Column(name = "posthashtagid")
     private Long posthashtagid;
 
-
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postid")

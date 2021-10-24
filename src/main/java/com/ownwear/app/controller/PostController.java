@@ -75,11 +75,21 @@ public class PostController {
         return service.getPostUser(current_userid,postid);
     }
 
+    //,"detail/post/brand" permit all
     @GetMapping("/post/brand") //브랜드 리스트
     public Page<IndexPost> getPostByBrand(Pageable pageable) {
 
         Page<IndexPost> postByBrand = service.getPostByBrand(pageable);
 
         return postByBrand;
+    }
+
+    //,"detail/post/tag" permit all
+    @GetMapping("/post/tag") //태그 리스트
+    public Page<IndexPost> getPostByTag(Pageable pageable) {
+
+        Page<IndexPost> postByTag = service.getPostByTag(pageable);
+
+        return postByTag;
     }
 }

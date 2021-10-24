@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Index;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -207,5 +208,20 @@ public class PostService {
                 });
 
         return byCountByBrand;
+    }
+
+    public Page<IndexPost> getPostByTag(Pageable pageable) { //태그 리스트 불러오기
+
+        Page<IndexPost> byCountByHashtag = postHashTagRepository.findByCountByHashtag("asd", pageable)
+                .map(iIndexPost -> {
+                    IndexPost indexPost = new IndexPost();
+                    indexPost.setPostid(iIndexPost.getPostid());
+                    indexPost.setImgData(iIndexPost.getImgdata());
+                    indexPost.setUser(modelMapper.map(iIndexPost.getUser(), UserInfo.class));
+                    return indexPost;
+                });
+
+        return byCountByHashtag;
+
     }
 }
