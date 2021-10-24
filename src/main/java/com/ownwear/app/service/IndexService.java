@@ -158,16 +158,16 @@ public class IndexService {
     private Map<String, List<IndexPost>> mapSetting(String topic, Map<String, List<IndexPost>> map, List<Long> ids, String url) {
         List<IndexPost> postFormList = new ArrayList<>();
         Boolean sex = null;
-        if (url != null) {
-
-            System.out.println("url: " + url);
+        if (url==null || url.equals("all")){
+            sex =null;
+        }else {
             url = url.trim();
             sex = url.equals("men");
+
         }
         switch (topic) {
             case "rank":
                 if (sex == null) {
-                    System.out.println("all");
                     int index = 5;
                     List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
                     if (top6ByPost.size() < 6) index = top6ByPost.size();
@@ -178,7 +178,6 @@ public class IndexService {
                         postFormList.add(indexPost);
                     }
                 } else {
-                    System.out.println(url);
                     int index = 5;
                     List<LikePost> top6ByPost = likePostRepository.findTop6ByPost(sex);
                     if (top6ByPost.size() < 6) index = top6ByPost.size();
@@ -210,6 +209,7 @@ public class IndexService {
                 break;
             case "brand":
                 if (sex == null) {
+                    System.out.println("brand");
                     int index = 5;
                     List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand();
                     if (top6PostidByBrand.size() < 6) index = top6PostidByBrand.size();
@@ -217,6 +217,7 @@ public class IndexService {
                     List<IIndexPost> brandPosts = postRepository.findAllByPostidIn(top6PostidByBrand);
                     postFormList = getIndexPost(brandPosts, postFormList);
                 } else {
+                    System.out.println("brand "+url+" " + sex);
                     int index = 5;
                     List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand(sex);
                     if (top6PostidByBrand.size() < 6) index = top6PostidByBrand.size();
@@ -227,7 +228,6 @@ public class IndexService {
                 }
                 break;
             case "random":
-                System.out.println("Random 입장");
                 long totalCount = postRepository.maxById() + 1;
                 Set<Long> randoms = new HashSet<>();
                 List<IIndexPost> iIndexPosts = new ArrayList<>();

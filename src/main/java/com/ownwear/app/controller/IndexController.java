@@ -27,6 +27,7 @@ public class IndexController {
 
     @PostMapping("/getindex")
     public Map<String, List<IndexPost>> getIndexScroll(@RequestBody IndexRequest indexRequest){
+        System.out.println(indexRequest);
         return indexService.getIndexScroll(indexRequest);
     }
 
@@ -44,10 +45,10 @@ public class IndexController {
         return indexService.autoComplete(data,type);
     }
 
-    @GetMapping("ranking")
-    public List<Object> getRanking(String type , String filter , int page){
+//    @GetMapping("ranking")
+//    public List<Object> getRanking(String type , String filter , int page){
 //        return indexService.getRanking(type,filter,page);
-        return null;
-    }
+//        return null;
+//    }
 
 }
