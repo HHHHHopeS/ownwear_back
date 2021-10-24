@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
-    @Query("SELECT b.brandid as brandid,b.brandname as brandName,count(p.brand.brandid) as counts, p.post as post from Brand b JOIN PostBrand p on p.brand.brandid = b.brandid  group by b.brandid order by counts desc")
+    @Query("SELECT b.brandid as brandid,b.brandname as brandName,count(p.brand.brandid) as counts, p.post as post from Brand b JOIN PostBrand p on p.brand.brandid = b.brandid group by b.brandid, p.post_brandid order by counts desc")
     Page<IIndexBrand> findRankingData(boolean sex, Pageable pageRequest);
 
     List<Brand> findByBrandnameStartsWith(String brandname);

@@ -238,7 +238,6 @@ public class PostService {
 //     }
 
     public List getRankingData(String type, String filter, int page , Long current_userid) {
-        System.out.println(page);
         PageRequest pageRequest = PageRequest.of(page, 12);
         User currentUser = userRepository.findById(current_userid).get();
         switch (type) {
