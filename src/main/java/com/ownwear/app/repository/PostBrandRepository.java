@@ -26,6 +26,15 @@ public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
             "ORDER BY Count(p.brandid) desc  LIMIT 6;",nativeQuery = true)
     List<Long> findTop6PostidByBrand();
 
+    @Query(value = "SELECT p.post.postid " +
+            "FROM PostBrand p " +
+            "JOIN Brand b " +
+            "ON p.brand.brandid = b.brandid and p.post.user.sex = ?1 " +
+            "GROUP BY p.brand.brandid, p.post_brandid " +
+            "HAVING Count(p.brand.brandid) >= 1 " +
+            "ORDER BY Count(p.brand.brandid) desc")
+    List<Long> findTop6PostidByBrand(Boolean sex);
+
 
 
 
