@@ -176,39 +176,38 @@ public class PostService {
         }
     }
 
-    public List<PostForm> getPostList(UserForm userForm, Pageable pageable) {
-        User user = modelMapper.map(userForm, User.class);
-        Page<Post> allByUser = postRepository.findAllByUser(user, pageable);
+    public Page getPostList(String type, String value, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 12);
+        switch (type) {
+            case "brand":
+                Page<IndexPost> byCountByBrand = postBrandRepository.findByCountByBrand(value, pageRequest)
+                        .map(iIndexPost -> {
 
-        List<PostForm> pp = new ArrayList<>(); //todo 클린코딩으로 바꾸기 (한줄)
+                            IndexPost indexPost = new IndexPost();
+                            indexPost.setPostid(iIndexPost.getPostid());
+                            indexPost.setImgdata(iIndexPost.getImgdata());
+                            indexPost.setUser(modelMapper.map(iIndexPost.getUser(), UserInfo.class));
+                            return indexPost;
+                        });
+                return byCountByBrand;
+            case "hashtag":
+                Page<IndexPost> byCountByHashTag = postHashTagRepository.findPostHashTagsByHashtag(hashTagRepository.findByHashtagname(value).get(), pageRequest).map(
+                        postHashTag -> {
+                            IndexPost indexPost = new IndexPost();
+                            indexPost.setPostid(postHashTag.getPost().getPostid());
+                            indexPost.setImgdata(postHashTag.getPost().getImgdata());
+                            indexPost.setUser(modelMapper.map(postHashTag.getPost().getUser(), UserInfo.class));
+                            return indexPost;
+                        }
 
-        for (Post p : allByUser) {
-            PostForm postForm = modelMapper.map(p, PostForm.class);
-            pp.add(postForm);
+                );
+                System.out.println(byCountByHashTag);
+
+                return byCountByHashTag;
         }
-
-        List<Post> content = allByUser.getContent();
-
-        return pp;
+        return null;
     }
 
-    public UserInfo getPostUser(Long current_userid, Long postid) {
-        Optional<Post> postById = postRepository.findById(postid);
-        if (postById.isPresent()) {
-            Post post = postById.get();
-            User user = post.getUser();
-            Optional<User> userById = userRepository.findById(current_userid);
-            UserInfo userInfo = modelMapper.map(user, UserInfo.class);
-            if (userById.isPresent()) { //비회원 체크
-                User currentUser = userById.get();
-                userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
-            } else {
-                userInfo.setIsfollowing(false);
-            }
-            return userInfo;
-        }
-        return null; //todo 잘못된 요청 존재하지않는 포스트
-    }
 
     public boolean checkIsLike(long userid, long postid) {
         Optional<User> userOPt = userRepository.findById(userid);
@@ -237,9 +236,13 @@ public class PostService {
 //     [post]: 태깅한 포스트 단 3개 순서는 최신순이던 인기순이던 상관 무,
 //     }
 
-    public List getRankingData(String type, String filter, int page , Long current_userid) {
-        PageRequest pageRequest = PageRequest.of(page, 12);
-        User currentUser = userRepository.findById(current_userid).get();
+    public List getRankingData(String type, String filter, int page, Long current_userid) {
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        User currentUser = null;
+        if (current_userid != -1) {
+            currentUser = userRepository.findById(current_userid).get();
+        }
         switch (type) {
             case "likes":
                 return postRepository.findRankingData(filter, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
@@ -249,10 +252,11 @@ public class PostService {
                 List<BrandInfo> rankingData = brandRepository.findRankingData(sex, pageRequest).getContent()
                         .stream().map(iIndexBrand -> {
                             BrandInfo brandInfo = new BrandInfo();
+
 //                            System.out.println(brandRepository.findAllByBrandid(iIndexBrand.getBrandid()).stream().map(post -> {System.out.println(post); return post;}));
                             List<Post> allByBrandid = brandRepository.findAllByBrandid(iIndexBrand.getBrandid());
                             for (Post post : allByBrandid) {
-                                brandInfo.getPosts().add(modelMapper.map(post,PostForm.class));
+                                brandInfo.getPosts().add(modelMapper.map(post, PostForm.class));
                             }
                             brandInfo.setPosts((List) brandInfo.getPosts().stream().distinct().collect(Collectors.toList()));
                             brandInfo.setPostcount(iIndexBrand.getCounts());
@@ -264,22 +268,41 @@ public class PostService {
                 brandInfos.add(brandInfo);
                 return rankingData;
             case "user":
+                User finalCurrentUser = currentUser;
                 List<UserProfile> collect = userRepository.findRankingData(filter, pageRequest).getContent()
-                        .stream().map(user -> setUserProfile(user,currentUser)).collect(Collectors.toList());//todo current_userid
+                        .stream().map(user -> setUserProfile(user, finalCurrentUser)).collect(Collectors.toList());//todo current_userid
 
                 return collect;
             default:
                 return null;
         }
     }
-    private UserProfile setUserProfile(User user,User currentUser) {
+
+    private UserProfile setUserProfile(User user, User currentUser) {
         UserProfile userProfile = new UserProfile();
         userProfile.setUser(modelMapper.map(user, UserInfo.class));
         userProfile.setFollower(followRepository.countByTouser(user));
         userProfile.setFollowing(followRepository.countByFromuser(user));
-        User targetUser  = modelMapper.map(userProfile.getUser(),User.class);
-        boolean present = followRepository.findByUsers(currentUser, targetUser ).isPresent();
+        User targetUser = modelMapper.map(userProfile.getUser(), User.class);
+        boolean present = followRepository.findByUsers(currentUser, targetUser).isPresent();
         userProfile.getUser().setIsfollowing(present);
         return userProfile;
     }
+
+    public UserInfo getPostUser(Long current_userid, Long postid) {
+        Optional<Post> byId = postRepository.findById(postid);
+        if (byId.isPresent()) {
+            Post post = byId.get();
+            User user = post.getUser();
+            User currentUser = userRepository.findById(current_userid).get();
+            UserInfo userInfo = modelMapper.map(user, UserInfo.class);
+            userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
+            return userInfo;
+        }
+        return null; //todo 잘못된 요청 존재하지않는 포스트
+    }
+
+
 }
+
+
