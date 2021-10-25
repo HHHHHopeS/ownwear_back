@@ -36,10 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByUsernameStartsWith(String username);
 
 
-    @Query("select u  from User u join Follow f on f.touser.userid  = u.userid group by f.touser.userid order by count(f.touser.userid) desc, u.rdate desc")
-    Page<User> findRankingData(String filter, PageRequest pageRequest);
-
-
     @Modifying
     @Transactional
     @Query("update User  set height=:height,instaid=:instaid,twitterid=:twitterid,pinterestid=:pinterestid,userimg=:userimg where userid=:userid")
@@ -49,5 +45,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query("update User set password=:password where userid=:userid")
     void updatePw(long userid,String password);
+
+    @Query("select u  from User u join Follow f on f.touser.userid  = u.userid group by f.touser.userid order by count(f.touser.userid) desc, u.rdate desc")
+    Page<User> findRankingData(String filter, PageRequest pageRequest);
 
 }
