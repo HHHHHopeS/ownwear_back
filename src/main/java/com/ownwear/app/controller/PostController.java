@@ -5,6 +5,8 @@ import com.ownwear.app.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,50 +20,56 @@ public class PostController {
     private PostService service;
 
     @GetMapping("/{postid}") // ,"/detail/" permitAll(모두허용) ,authenticated(어떤 권한이든 소유)
-    public PostVo getDetail(@PathVariable("postid") long postid){
+    public PostVo getDetail(@PathVariable("postid") long postid) {
         return service.getDetail(postid);
     }
-    @GetMapping("/like/check")
-    public boolean isLike(long userid,long postid){
 
-        return service.checkIsLike(userid,postid);
+    @GetMapping("/like/check")
+    public boolean isLike(long userid, long postid) {
+
+        return service.checkIsLike(userid, postid);
 
     }
 
 
     @PostMapping("/create")//,"detail/create/**" authenicated
-    public long createPost(@RequestBody PostForm post){
-        //        //System.out.println(post);
-        return  service.createPost(post);
+    public long createPost(@RequestBody PostForm post) {
+        System.out.println(post);
+        return service.createPost(post);
     }
+
     @PostMapping("/update")//,"detail/update/**" authentticated
-    public PostForm updatePost(@RequestBody PostForm post){
+    public PostForm updatePost(@RequestBody PostForm post) {
         return service.updatePost(post);
     }
 
 
     @GetMapping("/delete")//,"detail/delete/**" authenicated
-    public Boolean deletePost(Long postid){
+    public Boolean deletePost(Long postid) {
 
         return service.deleteById(postid);
     }
 
-    @PostMapping("/postlist")
-    public  List<PostForm> getPostList(@RequestBody UserForm user) {
+    @GetMapping("/postlist")
+    public Object getPostList(String type, int page, String value) {
 
-        PageRequest pageRequest = PageRequest.of(0,10);
-        List<PostForm> postList = service.getPostList(user, pageRequest);
 
-        return postList;
+        return service.getPostList(type, value, page);
+
     }
+
     @GetMapping("post/profile")
-    public UserInfo getPostProfile(Long current_userid, Long postid){
-        return service.getPostUser(current_userid,postid);
+    public UserInfo getPostProfile(Long current_userid, Long postid) {
+        return service.getPostUser(current_userid, postid);
     }
 
     @GetMapping("ranking")
-    public List getRankingData(String type, String filter , int page, Long current_userid){
-        System.out.println(type + filter +page +current_userid);
-        return service.getRankingData(type,filter,page,current_userid);
+    public List getRankingData(String type, String filter, int page, Long current_userid) {
+        System.out.println(type + filter + page + current_userid);
+        return service.getRankingData(type, filter, page, current_userid);
     }
 }
+
+
+
+
