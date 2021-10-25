@@ -3,7 +3,7 @@ FROM maven:3.6.3-openjdk-11-slim as builder
 WORKDIR /app
 COPY pom.xml .
 # Use this optimization to cache the local dependencies. Works as long as the POM doesn't change
-
+COPY keystore.p12 /app/target/
 COPY src/ /app/src/
 RUN mvn package
 
