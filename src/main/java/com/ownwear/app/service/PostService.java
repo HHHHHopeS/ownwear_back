@@ -243,33 +243,42 @@ public class PostService {
         if (current_userid != -1) {
             currentUser = userRepository.findById(current_userid).get();
         }
+        Boolean sex = null;
+        if (!filter.equals("all")) sex = filter.equals("men");
+
         switch (type) {
             case "likes":
-                return postRepository.findRankingData(filter, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
+                if (sex == null)
+                    return postRepository.findRankingData(pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
+                else
+                    return postRepository.findRankingData(sex, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
             case "brand":
                 List<BrandInfo> brandInfos = new ArrayList<>();
-                boolean sex = filter.equals("men");
-                List<BrandInfo> rankingData = brandRepository.findRankingData(sex, pageRequest).getContent()
-                        .stream().map(iIndexBrand -> {
-                            BrandInfo brandInfo = new BrandInfo();
+                List<IIndexBrand> rankingData;
+                if (sex == null) rankingData = brandRepository.findRankingData(pageRequest).getContent();
+                else rankingData = brandRepository.findRankingData(sex, pageRequest).getContent();
+                brandInfos = rankingData.stream().map(iIndexBrand -> {
+                    BrandInfo brandInfo = new BrandInfo();
 
 //                            System.out.println(brandRepository.findAllByBrandid(iIndexBrand.getBrandid()).stream().map(post -> {System.out.println(post); return post;}));
-                            List<Post> allByBrandid = brandRepository.findAllByBrandid(iIndexBrand.getBrandid());
-                            for (Post post : allByBrandid) {
-                                brandInfo.getPosts().add(modelMapper.map(post, PostForm.class));
-                            }
-                            brandInfo.setPosts((List) brandInfo.getPosts().stream().distinct().collect(Collectors.toList()));
-                            brandInfo.setPostcount(iIndexBrand.getCounts());
-                            brandInfo.setBrandname(iIndexBrand.getBrandName());
-                            return brandInfo;
-                        }).collect(Collectors.toList());
-                BrandInfo brandInfo = new BrandInfo();
+                    List<Post> allByBrandid = brandRepository.findAllByBrandid(iIndexBrand.getBrandid());
+                    for (Post post : allByBrandid) {
+                        PostForm map = modelMapper.map(post, PostForm.class);
+                        brandInfo.getPosts().add(map);
+                    }
+                    brandInfo.setPosts((List) brandInfo.getPosts().stream().distinct().collect(Collectors.toList()));
+                    brandInfo.setPostcount(iIndexBrand.getCounts());
+                    brandInfo.setBrandname(iIndexBrand.getBrandName());
+                    return brandInfo;
+                }).collect(Collectors.toList());
 
-                brandInfos.add(brandInfo);
-                return rankingData;
+                return brandInfos;
             case "user":
                 User finalCurrentUser = currentUser;
-                List<UserProfile> collect = userRepository.findRankingData(filter, pageRequest).getContent()
+                List<UserProfile> collect = null;
+                if (sex == null) collect = userRepository.findRankingData(pageRequest).getContent()
+                        .stream().map(user -> setUserProfile(user, finalCurrentUser)).collect(Collectors.toList());//todo current_userid
+                else collect = userRepository.findRankingData(sex, pageRequest).getContent()
                         .stream().map(user -> setUserProfile(user, finalCurrentUser)).collect(Collectors.toList());//todo current_userid
 
                 return collect;

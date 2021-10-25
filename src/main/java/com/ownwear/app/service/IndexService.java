@@ -1,10 +1,7 @@
 package com.ownwear.app.service;
 
 import com.ownwear.app.dto.*;
-import com.ownwear.app.entity.Brand;
-import com.ownwear.app.entity.HashTag;
-import com.ownwear.app.entity.LikePost;
-import com.ownwear.app.entity.User;
+import com.ownwear.app.entity.*;
 import com.ownwear.app.repository.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,6 +27,7 @@ public class IndexService {
 
 
     public SearchForm SrchUserData(String value, String keyword) {
+        System.out.println(value + keyword);
         SearchForm searchForm = new SearchForm();
         switch (keyword) {
             case "user":
@@ -158,72 +156,57 @@ public class IndexService {
     private Map<String, List<IndexPost>> mapSetting(String topic, Map<String, List<IndexPost>> map, List<Long> ids, String url) {
         List<IndexPost> postFormList = new ArrayList<>();
         Boolean sex = null;
-        if (url==null || url.equals("all")){
-            sex =null;
-        }else {
+        if (url == null || url.equals("all")) {
+            sex = null;
+        } else {
             url = url.trim();
             sex = url.equals("men");
-
         }
+        System.out.println("url = " + url + ", sex = " + sex);
         switch (topic) {
             case "rank":
                 if (sex == null) {
-                    int index = 5;
-                    List<LikePost> top6ByPost = likePostRepository.findTop6ByPost();
-                    if (top6ByPost.size() < 6) index = top6ByPost.size();
-                    top6ByPost.subList(0, index);
-                    for (LikePost likePost : top6ByPost) {
-                        LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
-                        IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
-                        postFormList.add(indexPost);
-                    }
+                    postFormList = likePostRepository.findTop6ByPost()
+                            .stream().map(post -> modelMapper.map(post, IndexPost.class)).collect(Collectors.toList());
+                    if (postFormList.size() > 6) postFormList = postFormList.subList(0, 6);
                 } else {
-                    int index = 5;
-                    List<LikePost> top6ByPost = likePostRepository.findTop6ByPost(sex);
-                    if (top6ByPost.size() < 6) index = top6ByPost.size();
-                    top6ByPost.subList(0, index);
-                    for (LikePost likePost : top6ByPost) {
-                        LikePostForm likepostForm = modelMapper.map(likePost, LikePostForm.class);
-                        IndexPost indexPost = modelMapper.map(likepostForm.getPost(), IndexPost.class);
-                        postFormList.add(indexPost);
-                    }
+                    postFormList = likePostRepository.findTop6ByPost(sex)
+                            .stream().map(post -> modelMapper.map(post, IndexPost.class)).collect(Collectors.toList());
+                    if (postFormList.size() > 6) postFormList = postFormList.subList(0, 6);
+
                 }
                 break;
             case "new":
                 if (sex == null) {
-                    int index = 5;
                     List<IIndexPost> newPosts = postRepository.findTop6ByOrderByRdateAsc()
                             .stream().sorted(Comparator.comparing(IIndexPost::getRdate).reversed()).collect(Collectors.toList());
-                    if (newPosts.size() < 6) index = newPosts.size();
-                    newPosts.subList(0, index);
+                    if (newPosts.size() > 6) newPosts = newPosts.subList(0, 6);
                     postFormList = getIndexPost(newPosts, postFormList);
                 } else {
-                    int index = 5;
                     List<IIndexPost> newPosts = postRepository.findTop6ByUserSexOrderByRdateAsc(sex)
                             .stream().sorted(Comparator.comparing(IIndexPost::getRdate).reversed()).collect(Collectors.toList());
-                    if (newPosts.size() < 6) index = newPosts.size();
-                    newPosts.subList(0, index);
+                    if (newPosts.size() > 6) newPosts = newPosts.subList(0, 6);
                     postFormList = getIndexPost(newPosts, postFormList);
-
+                    System.out.println("postFormList.size() = " + postFormList.size());
                 }
                 break;
             case "brand":
                 if (sex == null) {
                     System.out.println("brand");
-                    int index = 5;
-                    List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand();
-                    if (top6PostidByBrand.size() < 6) index = top6PostidByBrand.size();
-                    top6PostidByBrand.subList(0, index);
-                    List<IIndexPost> brandPosts = postRepository.findAllByPostidIn(top6PostidByBrand);
-                    postFormList = getIndexPost(brandPosts, postFormList);
+                    List<IIndexPost> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand().stream().map(postid -> {
+                        return postRepository.findInterfaceById(postid).get();
+                    }).collect(Collectors.toList());
+                    if (top6PostidByBrand.size() > 6) top6PostidByBrand = top6PostidByBrand.subList(0,6);
+                    postFormList = getIndexPost(top6PostidByBrand, postFormList);
                 } else {
-                    System.out.println("brand "+url+" " + sex);
-                    int index = 5;
-                    List<Long> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand(sex);
-                    if (top6PostidByBrand.size() < 6) index = top6PostidByBrand.size();
-                    top6PostidByBrand.subList(0, index);
-                    List<IIndexPost> brandPosts = postRepository.findAllByPostidIn(top6PostidByBrand);
-                    postFormList = getIndexPost(brandPosts, postFormList);
+                    System.out.println("brand");
+                    List<IIndexPost> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand().stream().map(postid -> {
+                        return postRepository.findInterfaceById(postid).get();
+                    }).collect(Collectors.toList());
+                    final boolean check = sex;
+                    top6PostidByBrand.removeIf(iIndexPost -> (postRepository.findById(iIndexPost.getPostid()).get().getUser().getSex()!=check));
+                    if (top6PostidByBrand.size() > 6) top6PostidByBrand = top6PostidByBrand.subList(0,6);
+                    postFormList = getIndexPost(top6PostidByBrand, postFormList);
 
                 }
                 break;
@@ -273,6 +256,7 @@ public class IndexService {
         }
 
         map.put(topic, postFormList);
+        System.out.println("map = " + map);
         return map;
     }
 
@@ -305,7 +289,7 @@ public class IndexService {
             default:
                 return list;
         }
-        if (list.size() > 4) list.subList(0, 4);
+        if (list.size() > 4) list = list.subList(0, 4);
         return list;
 
     }

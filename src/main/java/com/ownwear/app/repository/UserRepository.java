@@ -4,6 +4,7 @@ import com.ownwear.app.dto.IIndexUser;
 import com.ownwear.app.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,6 +48,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updatePw(long userid,String password);
 
     @Query("select u  from User u join Follow f on f.touser.userid  = u.userid group by f.touser.userid order by count(f.touser.userid) desc, u.rdate desc")
-    Page<User> findRankingData(String filter, PageRequest pageRequest);
+    Page<User> findRankingData( Pageable pageRequest);
+
+    @Query("select u  from User u join Follow f on f.touser.userid  = u.userid and u.sex = :sex group by f.touser.userid order by count(f.touser.userid) desc, u.rdate desc")
+    Page<User> findRankingData(Boolean sex, Pageable pageRequest);
 
 }

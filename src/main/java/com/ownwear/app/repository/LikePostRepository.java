@@ -14,11 +14,11 @@ import java.util.Optional;
 @Repository
 public interface LikePostRepository extends JpaRepository<LikePost, Long>{
 
-    @Query(value = "SELECT l FROM LikePost l  GROUP BY l.post.postid , l.likepostid HAVING Count(l.post.postid) >= 1 ORDER BY Count(l.post.postid)")
-    List<LikePost> findTop6ByPost();
+    @Query(value = "SELECT l.post as post FROM LikePost l  GROUP BY l.post.postid HAVING Count(l.post.postid) >= 1 ORDER BY Count(l.post.postid)")
+    List<Post> findTop6ByPost();
 
-    @Query(value = "SELECT l FROM LikePost l JOIN Post p ON l.post.postid = p.postid and l.post.user.sex = ?1 GROUP BY l.post.postid, l.likepostid HAVING Count(l.post.postid) >= 1  ORDER BY Count(l.post.postid) desc")
-    List<LikePost> findTop6ByPost(Boolean sex);
+    @Query(value = "SELECT l.post as post FROM LikePost l where l.post.user.sex = ?1 GROUP BY l.post.postid HAVING Count(l.post.postid) >= 1 ORDER BY Count(l.post.postid) desc")
+    List<Post> findTop6ByPost(Boolean sex);
 
     ArrayList<LikePost> findByPost(Post post);
 
