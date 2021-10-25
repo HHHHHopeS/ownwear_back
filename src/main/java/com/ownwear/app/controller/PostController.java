@@ -65,7 +65,6 @@ public class PostController {
 
     @GetMapping("ranking")
     public List getRankingData(String type, String filter, int page, Long current_userid) {
-        System.out.println(type + filter + page + current_userid);
         return service.getRankingData(type, filter, page, current_userid);
     }
 }
