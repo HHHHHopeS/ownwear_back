@@ -10,13 +10,9 @@ import com.ownwear.app.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import net.sf.json.JSONObject;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -222,9 +218,10 @@ public class UserService {
         putUserinfo(userInfo);
         return true;
     }
-    public void putUserinfo(UserInfo userInfo){
 
-        userRepository.updateUser(userInfo.getUserid(),userInfo.getHeight(),userInfo.getInstaid(),userInfo.getTwitterid(),userInfo.getPinterestid(),userInfo.getUserimg());
+    public void putUserinfo(UserInfo userInfo) {
+
+        userRepository.updateUser(userInfo.getUserid(), userInfo.getHeight(), userInfo.getInstaid(), userInfo.getTwitterid(), userInfo.getPinterestid(), userInfo.getUserimg());
     }
 
     public UserInfo updateUserImg(UserInfo userInfo) throws IOException {
@@ -237,14 +234,13 @@ public class UserService {
         } else if (!byEmail.isPresent()) {
             return null;
         }
-        if(userInfo.getUserimg()!=null){
+        if (userInfo.getUserimg() != null) {
             JSONObject jsonObject = VisionController.uploadImage(userInfo.getUserimg());
             String data = (String) jsonObject.get("data");
             userInfo.setUserimg(data);
             putUserinfo(userInfo);
 
-        }
-        else{
+        } else {
             userInfo.setUserimg(null);
             putUserinfo(userInfo);
         }
@@ -252,14 +248,11 @@ public class UserService {
     }
 
 
+    public Boolean updatePw(String pw, Long id, String newPw) {
 
+        if (passwordEncoder.matches(pw, userRepository.findById(id).get().getPassword())) {
 
-
-    public Boolean updatePw(String pw, Long id ,String newPw) {
-
-        if(passwordEncoder.matches(pw, userRepository.findById(id).get().getPassword())){
-
-            userRepository.updatePw(id,passwordEncoder.encode(newPw));
+            userRepository.updatePw(id, passwordEncoder.encode(newPw));
 
 
             return true;
@@ -295,7 +288,7 @@ public class UserService {
                 for (LikePostForm likePostForm : byUserAndPost) {
                     ListModalForm listModalForm = new ListModalForm();
                     User user = userRepository.findById(likePostForm.getUser().getUserid()).get();
-                    if(currentUser!=null) {
+                    if (currentUser != null) {
                         System.out.println("모달2");
                         Optional<Follow> isFollowing = followRepository.findByUsers(currentUser, user);
                         isTrue = isFollowing.isPresent();
@@ -303,7 +296,7 @@ public class UserService {
                     listModalForm.setUser(modelMapper.map(user, UserForm.class));
                     listModalForm.setIsTrue(isTrue);
                     listModalForm.setFollower(followRepository.countByTouser(user));
-                    System.out.println("모달3 listmodalForm: "+ listModalForm);
+                    System.out.println("모달3 listmodalForm: " + listModalForm);
                     listModalForms.add(listModalForm);
                 }
                 return listModalForms;
@@ -315,7 +308,7 @@ public class UserService {
                 List<FollowForm> followForms = followRepository.findAllByTouser(target)
                         .stream().map(follow -> modelMapper.map(follow, FollowForm.class)).collect(Collectors.toList());
                 for (FollowForm followForm : followForms) {
-                    setListModalForms(currentUser, listModalForms, followForm,type);
+                    setListModalForms(currentUser, listModalForms, followForm, type);
                 }
                 return listModalForms;
             }
@@ -328,7 +321,7 @@ public class UserService {
                         .stream().map(follow -> modelMapper.map(follow, FollowForm.class)).collect(Collectors.toList());
                 for (FollowForm followForm : followForms) {
 
-                    setListModalForms(currentUser, listModalForms, followForm,type);
+                    setListModalForms(currentUser, listModalForms, followForm, type);
 
                 }
 
@@ -339,17 +332,16 @@ public class UserService {
 
     }
 
-    private void setListModalForms(User currentUser, List<ListModalForm> listModalForms, FollowForm followForm,String type) {
+    private void setListModalForms(User currentUser, List<ListModalForm> listModalForms, FollowForm followForm, String type) {
         ListModalForm listModalForm = new ListModalForm();
         Boolean isTrue = false;
         User follower = null;
-        if(type.equals("follower")){
+        if (type.equals("follower")) {
             follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
-        }
-        else{
+        } else {
             follower = userRepository.findById(followForm.getTouser().getUserid()).get();
         }
-        if(currentUser!=null) isTrue = followRepository.findByUsers(currentUser, follower).isPresent();
+        if (currentUser != null) isTrue = followRepository.findByUsers(currentUser, follower).isPresent();
 
         listModalForm.setUser(modelMapper.map(follower, UserForm.class));
         listModalForm.setIsTrue(isTrue);
@@ -359,6 +351,94 @@ public class UserService {
     }
 
     public List activity(Long current_userid) {
-        return null;
+        List<ActivityForm> activityForms = new ArrayList<>();
+//        { type: "following", likepostid: 1, username: "공유", alert_date: "2021-10-21" },
+//        { type: "follower", commentid: 1, username: "주희", alert_date: "2021-10-21" },
+//        { type: "following", likepostid: 1, username: "공유", alert_date: "2021-10-21" },
+//        { type: "following", likepostid: 1, username: "공유", alert_date: "2021-10-21" },
+//        { type: "follower", commentid: 1, username: "주희", alert_date: "2021-10-21" },
+//        { type: "follower", likepostid: 1, username: "주희", alert_date: "2021-10-21" }
+
+//            following: 내가 팔로우한사람의 게시글 (내가 좋아요한 게시글 -> 게시글의 유저가 내가 팔로우한사람인가 ->해당 이슈 리스트 -> 최신순 정렬)
+
+//            follower : 나의 게시물에 좋아요, 댓글(내 게시물을 찾아서 -> 댓글,좋아요 리스트 -> 최신순정렬)
+        User currentUser = userRepository.findById(current_userid).get();
+        activitySetFollower(currentUser, activityForms);
+
+        //내가 좋아요한 게시글 -> 게시글의 유저가 내가 팔로우한사람인가
+        List<LikePost> likes = likePostRepository.findByUser(currentUser).stream().map(likePost -> {
+            User targetUser = likePost.getPost().getUser();
+            Optional<Follow> byUsers = followRepository.findByUsers(currentUser, targetUser);
+            if (byUsers.isPresent()){
+                return likePost;
+            }else return null;
+        }).collect(Collectors.toList());
+        likes.removeIf(likePost -> likePost==null);
+        System.out.println(likes);
+        Collections.sort(likes, (one, other) -> one.getRdate().compareTo(other.getRdate()) == 1 ? -1 : 1);//desc 정렬
+        for (LikePost likePost : likes) {
+            ActivityForm activityForm = new ActivityForm("following",likePost.getLikepostid(),null,likePost.getPost().getUser().getUsername(),likePost.getRdate(),likePost.getPost().getPostid());
+            activityForms.add(activityForm);
+        }
+
+        List<Comment> comments=commentRepository.findAllByUser(currentUser).stream().map(comment -> {
+            User targetUser = comment.getPost().getUser();
+            Optional<Follow> byUsers = followRepository.findByUsers(currentUser, targetUser);
+            if (byUsers.isPresent()){
+                return comment;
+            }else return null;
+        }).collect(Collectors.toList());
+
+        comments.removeIf(likePost -> likePost==null);
+        System.out.println(comments);
+        Collections.sort(comments, (one, other) -> one.getCommentdate().compareTo(other.getCommentdate()) == 1 ? -1 : 1);//desc 정렬
+        for (Comment comment : comments) {
+            ActivityForm activityForm = new ActivityForm("following",null,comment.getCommentid(),comment.getPost().getUser().getUsername(),comment.getCommentdate(),comment.getPost().getPostid());
+            activityForms.add(activityForm);
+        }
+
+        Collections.sort(activityForms, (one, other) -> one.getAlert_date().compareTo(other.getAlert_date()) == 1 ? -1 : 1);//desc 정렬
+
+
+        return activityForms;
+    }
+
+    private void activitySetFollower(User currentUser, List<ActivityForm> activityForms) {
+        List<Post> posts = postRepository.findAllByUser(currentUser);
+
+        List<Comment> comments = new ArrayList<>();
+        List<LikePost> likes = new ArrayList<>();
+        List<List> collect;
+
+         collect = posts.stream().map(post -> {
+            List<Comment> commentOfPost = commentRepository.findAllByPost(post);
+            return commentOfPost;
+        }).collect(Collectors.toList());
+        for (List commentList : collect) {//각 댓글 종합
+            comments.addAll(commentList);
+        }
+        Collections.sort(comments, (one, other) -> one.getCommentdate().compareTo(other.getCommentdate()) == 1 ? -1 : 1);//desc 정렬
+        for (Comment comment : comments) {
+            ActivityForm activityForm = new ActivityForm("follower", null, comment.getCommentid(), comment.getUser().getUsername(), comment.getCommentdate(),comment.getPost().getPostid());
+            activityForms.add(activityForm);
+        }
+
+        collect = posts.stream().map(post -> {
+            List<LikePost> likePostsOfPost = likePostRepository.findAllByPost(post);
+            return likePostsOfPost;
+        }).collect(Collectors.toList());
+
+        for (List likeList : collect) {//각 좋아요 종합
+            likes.addAll(likeList);
+        }
+        Collections.sort(likes, (one, other) -> one.getRdate().compareTo(other.getRdate()) == 1 ? -1 : 1);//desc 정렬
+        for (LikePost likePost : likes) {
+            ActivityForm activityForm = new ActivityForm("follower",likePost.getLikepostid(), null, likePost.getUser().getUsername(), likePost.getRdate(),likePost.getPost().getPostid());
+            activityForms.add(activityForm);
+            System.out.println("activityForm = " + activityForm);
+        }
+
+
+
     }
 }
