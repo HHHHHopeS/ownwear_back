@@ -22,9 +22,9 @@ public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
             "ORDER BY Count(p.brandid) desc LIMIT 9;",nativeQuery = true)
     List<IIndexBrand> findTop9ByCountByBrand();
 
-    String findTop6PostidByBrand = "select p.post from PostBrand p group by p.brand.brandid, p.post.postid having p.brand.brandid = (select p.brand.brandid from PostBrand p group by p.brand.brandid having count(p) = (select max(mycount) from(select count(p) as mycount from PostBrand p group by brandid) as result))";
-    @Query(value = "select p.postid from post_brand p group by p.brandid, p.postid having p.brandid = (select p.brandid from post_brand p group by p.brandid having count(*) = (select max(mycount) from(select count(*) as mycount from post_brand group by brandid) as result));",nativeQuery = true)
-    List<Long>  findTop6PostidByBrand();
+    String findTop6PostidByBrand = "select p.post.postid from PostBrand p group by p.brand.brandid, p.post.postid having p.brand.brandid = ?1";
+    @Query(value = findTop6PostidByBrand )
+    List<Long>  findTop6PostidByBrand(Long brandid);
 
 
 
@@ -47,6 +47,8 @@ public interface PostBrandRepository extends JpaRepository<PostBrand, Long> {
     @Query(findbyCount_)
     Page<IIndexPost> findByCountByBrand(String a , Pageable pageable);
 
+    @Query(value = "select p.brandid from post_brand p group by p.brandid having count(*) = (select max(mycount) from(select count(*) as mycount from post_brand group by brandid) as result) order by rand() limit 1;", nativeQuery = true)
+    Long findTopBrandid();
 
 
     //, po.imgData as imgData

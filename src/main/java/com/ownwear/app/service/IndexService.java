@@ -188,13 +188,15 @@ public class IndexService {
                 break;
             case "brand":
                 if (sex == null) {
-                    List<IIndexPost> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand().stream().map(postid -> {
+                    Long brandid = postBrandRepository.findTopBrandid();
+                    List<IIndexPost> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand(brandid).stream().map(postid -> {
                         return postRepository.findInterfaceById(postid).get();
                     }).collect(Collectors.toList());
                     if (top6PostidByBrand.size() > 6) top6PostidByBrand = top6PostidByBrand.subList(0,6);
                     postFormList = getIndexPost(top6PostidByBrand, postFormList);
                 } else {
-                    List<IIndexPost> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand().stream().map(postid -> {
+                    Long brandid = postBrandRepository.findTopBrandid();
+                    List<IIndexPost> top6PostidByBrand = postBrandRepository.findTop6PostidByBrand(brandid).stream().map(postid -> {
                         return postRepository.findInterfaceById(postid).get();
                     }).collect(Collectors.toList());
                     final boolean check = sex;
