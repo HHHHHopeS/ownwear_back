@@ -33,7 +33,7 @@ public class CommentController {
 
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public List<CommentForm> deleteComment(@RequestBody CommentForm comment) {
         return commentService.delete(comment);
 

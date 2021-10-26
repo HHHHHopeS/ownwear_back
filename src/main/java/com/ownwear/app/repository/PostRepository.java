@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +31,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void deleteById(long id);
 
     //    @Query("select p from Post p where p.user = ?1")
+
     List<IIndexPost> findAllByUser(User user); //유저 디테일 페이지
 
     List<IIndexPost> findTop6ByOrderByRdateDesc();
 
-    List<IIndexPost> findTop6ByOrderByRdateAsc();
     List<IIndexPost> findTop6ByUserSexOrderByRdateAsc(Boolean sex);
 
     @Query("select Max(p.postid) from Post p ")
@@ -58,6 +59,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p  from Post p join LikePost l on l.post.postid  = p.postid and p.user.sex = ?1 group by p.postid, l.post.postid order by count(l.post.postid) desc")
     Page<Post> findRankingData(boolean sex, Pageable pageRequest); //좋아요 랭킹
+
+
+    @Query("select p from Post p order by p.rdate desc")
+    List<IIndexPost> findAllInterface();
+
+    @Query("select p from Post p where p.user.sex = ?1 order by p.rdate desc")
+    List<IIndexPost> findAllInterface(Boolean sex);
+
+
     /*SELECT * FROM Post p  JOIN (SELECT l.postid as postids, COUNT(l.postid) as likecount FROM like_post l GROUP BY l.postid ORDER BY likecount DESC) as lp ON lp.postids = p.postid*/
 
 }
