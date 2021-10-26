@@ -303,7 +303,9 @@ public class PostService {
         if (byId.isPresent()) {
             Post post = byId.get();
             User user = post.getUser();
-            User currentUser = userRepository.findById(current_userid).get();
+            Optional<User> currentUserOp = userRepository.findById(current_userid);
+            User currentUser  = null;
+            if(currentUserOp.isPresent()) currentUser = currentUserOp.get();
             UserInfo userInfo = modelMapper.map(user, UserInfo.class);
             userInfo.setIsfollowing(followRepository.findByUsers(currentUser, user).isPresent());
             return userInfo;

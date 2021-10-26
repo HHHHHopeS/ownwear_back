@@ -121,4 +121,8 @@ public class UserController {
 
         return userInfo;
     }
+    @GetMapping("activity")
+    public List activity (Long current_userid){
+        return userService.activity(current_userid);
+    }
 }
