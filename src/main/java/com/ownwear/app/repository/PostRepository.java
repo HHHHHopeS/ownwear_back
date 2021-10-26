@@ -67,6 +67,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.user.sex = ?1 order by p.rdate desc")
     List<IIndexPost> findAllInterface(Boolean sex);
 
+    @Query("select p from Post p order by p.rdate desc")
+    Page<IIndexPost> findAllInterface(Pageable pageRequest);
 
     /*SELECT * FROM Post p  JOIN (SELECT l.postid as postids, COUNT(l.postid) as likecount FROM like_post l GROUP BY l.postid ORDER BY likecount DESC) as lp ON lp.postids = p.postid*/
 
