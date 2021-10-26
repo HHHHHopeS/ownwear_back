@@ -9,6 +9,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://34.64.199.176:3306/security?serverTimezone=Asia/Seoul
+#    url: jdbc:mysql:///security?cloudSqlInstance=top-branch-323307:asia-northeast3:mysql-ownwear&socketFactory=com.google.cloud.sql.mysql.SocketFactory
     username: ownwear
     password: ow1234
   jpa:

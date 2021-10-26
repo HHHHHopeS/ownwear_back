@@ -203,7 +203,17 @@ public class PostService {
                 );
                 System.out.println(byCountByHashTag);
 
+
                 return byCountByHashTag;
+            case "new": return postRepository.findAllInterface(pageRequest).map(iIndexPost ->{
+                IndexPost indexPost = new IndexPost();
+                indexPost.setPostid(iIndexPost.getPostid());
+                indexPost.setImgdata(iIndexPost.getImgdata());
+                indexPost.setUser(modelMapper.map(iIndexPost.getUser(),UserInfo.class));
+                return indexPost;
+            });
+
+            case "suggestion":return null;
         }
         return null;
     }

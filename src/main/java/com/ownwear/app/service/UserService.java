@@ -182,7 +182,7 @@ public class UserService {
                 user.setProvider("facebook");
                 userRepository.save(user);
 
-
+                return true;
             }
         } catch (Exception e) {
 
