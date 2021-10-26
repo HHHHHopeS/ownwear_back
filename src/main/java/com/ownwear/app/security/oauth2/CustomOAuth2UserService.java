@@ -87,8 +87,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setUsername(username);
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setUserimg(oAuth2UserInfo.getImageUrl());
-        System.out.println(oAuth2UserInfo.getImageUrl());
-        System.out.println(oAuth2UserInfo.getImageUrl().getClass());
         user.setPassword(passwordEncoder.encode("hopes123"));
         user.setIsverified(false);
         return userRepository.save(user);
