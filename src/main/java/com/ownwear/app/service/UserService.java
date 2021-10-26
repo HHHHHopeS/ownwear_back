@@ -274,9 +274,13 @@ public class UserService {
 
     public List<ListModalForm> getListModal(ListModalRequest request) {
 
-        Optional<User> byId = userRepository.findById(request.getCurrent_userid());
-        User currentUser = byId.get();
 
+        Optional<User> byId = userRepository.findById(request.getCurrent_userid());
+        User currentUser = null;
+        Boolean isTrue = false;
+        if (byId.isPresent()) {
+            currentUser = byId.get();
+        }
         String type = request.getType();
 
         List<ListModalForm> listModalForms = new ArrayList<>();
@@ -284,19 +288,22 @@ public class UserService {
         if (type.equals("like")) {
             Optional<Post> targetPostById = postRepository.findById(request.getTargetid());
             if (targetPostById.isPresent()) {
+                System.out.println("모달1");
                 Post target = targetPostById.get();
                 List<LikePostForm> byUserAndPost = likePostRepository.findAllByPost(target)
                         .stream().map(LikePost -> modelMapper.map(LikePost, LikePostForm.class)).collect(Collectors.toList());
                 for (LikePostForm likePostForm : byUserAndPost) {
                     ListModalForm listModalForm = new ListModalForm();
                     User user = userRepository.findById(likePostForm.getUser().getUserid()).get();
-                    Optional<Follow> isFollowing = followRepository.findByUsers(currentUser, user);
-                    Boolean isTrue = isFollowing.isPresent();
-
+                    if(currentUser!=null) {
+                        System.out.println("모달2");
+                        Optional<Follow> isFollowing = followRepository.findByUsers(currentUser, user);
+                        isTrue = isFollowing.isPresent();
+                    }
                     listModalForm.setUser(modelMapper.map(user, UserForm.class));
                     listModalForm.setIsTrue(isTrue);
                     listModalForm.setFollower(followRepository.countByTouser(user));
-
+                    System.out.println("모달3 listmodalForm: "+ listModalForm);
                     listModalForms.add(listModalForm);
                 }
                 return listModalForms;
@@ -334,6 +341,7 @@ public class UserService {
 
     private void setListModalForms(User currentUser, List<ListModalForm> listModalForms, FollowForm followForm,String type) {
         ListModalForm listModalForm = new ListModalForm();
+        Boolean isTrue = false;
         User follower = null;
         if(type.equals("follower")){
             follower = userRepository.findById(followForm.getFromuser().getUserid()).get();
@@ -341,12 +349,16 @@ public class UserService {
         else{
             follower = userRepository.findById(followForm.getTouser().getUserid()).get();
         }
-        Boolean isTrue = followRepository.findByUsers(currentUser, follower).isPresent();
+        if(currentUser!=null) isTrue = followRepository.findByUsers(currentUser, follower).isPresent();
 
         listModalForm.setUser(modelMapper.map(follower, UserForm.class));
         listModalForm.setIsTrue(isTrue);
         listModalForm.setFollower(followRepository.countByTouser(follower));
 
         listModalForms.add(listModalForm);
+    }
+
+    public List activity(Long current_userid) {
+        return null;
     }
 }

@@ -184,7 +184,6 @@ public class IndexService {
                     if (newPosts.size() > 6) newPosts = newPosts.subList(0, 6);
                     postFormList = getIndexPost(newPosts, postFormList);
                 }
-                System.out.println("postFormList = " + postFormList);
                 break;
             case "brand":
                 if (sex == null) {
