@@ -259,9 +259,11 @@ public class PostService {
         switch (type) {
             case "likes":
                 if (sex == null)
-                    return postRepository.findRankingData(pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
+                    return postRepository.findRankingData(pageRequest).getContent()
+                            .stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
                 else
-                    return postRepository.findRankingData(sex, pageRequest).getContent().stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
+                    return postRepository.findRankingData(sex, pageRequest).getContent()
+                            .stream().map(post -> modelMapper.map(post, PostForm.class)).collect(Collectors.toList());
             case "brand":
                 List<BrandInfo> brandInfos = new ArrayList<>();
                 List<IIndexBrand> rankingData;

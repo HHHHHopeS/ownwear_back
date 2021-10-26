@@ -2,6 +2,7 @@ package com.ownwear.app.repository;
 
 import com.ownwear.app.entity.Comment;
 import com.ownwear.app.entity.Post;
+import com.ownwear.app.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByPost(Post post);
     Long countAllByPostPostid(long postId);
+
+    List<Comment> findAllByUser(User user);
 }

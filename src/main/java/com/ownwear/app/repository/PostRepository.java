@@ -32,7 +32,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     //    @Query("select p from Post p where p.user = ?1")
 
-    List<IIndexPost> findAllByUser(User user); //유저 디테일 페이지
+    List<Post> findAllByUser(User user); //유저 디테일 페이지
 
     List<IIndexPost> findTop6ByOrderByRdateDesc();
 
